@@ -1,0 +1,43 @@
+body {
+    background: #98690C; }
+
+section {
+    background: white;
+    color: black;
+    border-radius: 1em;
+    padding: 1em;
+    position: absolute;
+    top:40%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) }
+h1 {
+  color: purple;
+  position: absolute;
+  left: 230px;
+  top: -80px;
+  border: 4px dotted blue;
+}
+p1{
+    background: white;
+    color: black;
+    border-radius: 0em;
+    padding: 1em;
+    position: absolute;
+    top:109%;
+    left: 50%;
+    margin-right: -50%;
+    color: green;
+    transform: translate(-50%, -50%)
+    }
+
+    section2 {
+      background: white;
+      color: black;
+      border-radius: 1em;
+      padding: 1em;
+      position: absolute;
+      top:90%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%) }

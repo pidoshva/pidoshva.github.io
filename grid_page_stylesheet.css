@@ -1,0 +1,39 @@
+body{
+  background-color: #688E27;
+}
+table{
+  width: 400px;
+  height:400px;
+  table-layout:fixed;
+  background: #B0CCD9;
+  color: black;
+  border-radius: 0em;
+  padding: 1em;
+  position: absolute;
+  top:30%;
+  left: 49%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%)
+}
+table,th,td {
+  border: 1px solid #143C4E;
+  border-collapse: collapse
+}
+th,td {
+  padding: 10px;
+  text-align: center;
+}
+  section {
+    width: 400px;
+    height:2100px;
+    table-layout:fixed;
+    background: white;
+    color: black;
+    border-radius: 1em;
+    padding: 1em;
+    position: absolute;
+    top:250%;
+    left: 49%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+  }
