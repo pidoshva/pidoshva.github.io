@@ -1,0 +1,42 @@
+baseURL = "/"
+languageCode = "en-us"
+title = "Vadim Pidoshva"
+theme="cactus"
+copyright = "© geleus"
+# Code Highlight
+pygmentsstyle = "monokai"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+
+
+
+
+[params]
+  colortheme = "light" # dark, light, white, or classic
+  showProjectsList = true
+  projectsUrl = "https://github.com/pidoshva/"
+  showAllPostsOnHomePage = false
+  postsOnHomePage = 5
+
+# Main menu which appears below site header.
+
+
+[[menu.main]]
+name = "Projects"
+url = "/projects"
+weight = 1
+
+# Social media links
+
+[[params.social]]
+  name = "github"
+  link = "https://github.com/pidoshva/"
+
+[[params.social]]
+  name = "email"
+  link = "pidoshva.vadim@gmail.com" # no need for "mailto:" at the start
+
+[[params.social]]
+  name = "instagram"
+
+  link = "https://instagram.com/vp.id/"
