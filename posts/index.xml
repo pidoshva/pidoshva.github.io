@@ -7,14 +7,23 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Mon, 20 Jun 2022 23:41:23 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 21 Jun 2022 18:26:23 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Website is Developing</title>
+      <link>/posts/website_developing/</link>
+      <pubDate>Tue, 21 Jun 2022 18:26:23 -0600</pubDate>
+      
+      <guid>/posts/website_developing/</guid>
+      <description>Alert Website is still in the developing mode. Many features aren&amp;rsquo;t working/working properly yet. This is still a fresh idea that requires time to be realized.</description>
+    </item>
+    
     <item>
       <title>Website Created</title>
       <link>/posts/initialpost/</link>
       <pubDate>Mon, 20 Jun 2022 23:41:23 -0600</pubDate>
       
       <guid>/posts/initialpost/</guid>
-      <description>This is my project/progress page. I will be posting completed/in_progress projects as well as the important links.</description>
+      <description>This is my project/progress website. I will be posting completed/in_progress projects as well as the important links.</description>
     </item>
     
   </channel>
