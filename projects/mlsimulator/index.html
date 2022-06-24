@@ -11,7 +11,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title> MLSmulator | Vadim Pidoshva</title>
   <link rel = 'canonical' href = '/projects/mlsimulator/'>
-  <meta name="description" content="I&#39;m a Computer Science student @UVU.">
+  <meta name="description" content="I&#39;m a Computer Science student [@UVU](https://www.uvu.edu/cet/).">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
@@ -83,7 +83,35 @@
 
   <div class="content" itemprop="articleBody">
   
-    <p>Detailed description coming soon.</p>
+    <h6 id="by-void-vadim-pidoshva-katia-anatska-martin-robinette-devyn-clayson-christopher-pryor-jansen-fuller">by Void (Vadim Pidoshva; Katia Anatska; Martin Robinette; Devyn Clayson; Christopher Pryor; Jansen Fuller)&quot;</h6>
+<h1 id="our-implementation">Our implementation:</h1>
+<p><code>memory.cpp</code> We used a fixed <strong>array</strong> of <strong>100</strong> &ldquo;memory slots&rdquo; and used indexing to access the required memory location.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> memoryArray[<span style="color:#ae81ff">100</span>];
+</span></span></code></pre></div><p><code>main.cpp</code> We implemented a loop to collect all the instructions from the user.<br>
+Example:<br>
+<strong>00? 1000</strong><br>
+<code>vm.cpp</code> Instructions are then passed to the Virtual Machine (VM) and split into <strong>opCode</strong> and <strong>operand</strong> (example: 1000; 10 is opCode/instruction, 00 is memory location). Each opCode is then passed to the function that assigns the actual instruction. Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">call_Operation</span>(<span style="color:#66d9ef">int</span> opCode, <span style="color:#66d9ef">int</span> operand, Memory<span style="color:#f92672">&amp;</span> m){
+</span></span><span style="display:flex;"><span>    instructions instructions;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> continueRunning <span style="color:#f92672">=</span> true;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">switch</span>(opCode) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">case</span> <span style="color:#ae81ff">10</span><span style="color:#f92672">:</span><span style="color:#75715e">//READ
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        instructions.read(operand, m);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span></code></pre></div><p><code>instructions.cpp</code> Is where the instructions are stored. Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> instructions<span style="color:#f92672">::</span>read(<span style="color:#66d9ef">int</span> operand, Memory<span style="color:#f92672">&amp;</span> m){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> input_value;
+</span></span><span style="display:flex;"><span>    cout<span style="color:#f92672">&lt;&lt;</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">Enter an integer: &#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(cin <span style="color:#f92672">&gt;&gt;</span> inputValue)) <span style="color:#75715e">// check if input_value is a valid integer, throw error: not and integer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">throw</span> runtime_error(<span style="color:#e6db74">&#34;Error: Invalid input, must be an integer.&#34;</span>);
+</span></span><span style="display:flex;"><span>    m.setValue(operand,inputValue);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>*This instruction stores an input value at the location specified (example: 1000. 10=reads the value to the location=00)</p>
+<hr>
+<p><img src="https://user-images.githubusercontent.com/84491549/172307312-fc21bcdf-f354-4fb4-a72c-d7ca1a5e0122.png" alt="Alt text"></p>
+<h3 id="sample-execution">Sample execution:</h3>
+<p><img src="https://user-images.githubusercontent.com/84491549/172508137-0bb66367-0fed-49d4-8de5-c2501db48c75.gif" alt="Alt text">
+<a href="https://github.com/pidoshva/UVSimulator">Working Demo</a></p>
 
   
   </div>
