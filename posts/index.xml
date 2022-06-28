@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Tue, 21 Jun 2022 18:26:23 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 28 Jun 2022 00:07:46 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Working on Online Groceries</title>
+      <link>/posts/online_groceries_in_progress/</link>
+      <pubDate>Tue, 28 Jun 2022 00:07:46 -0600</pubDate>
+      
+      <guid>/posts/online_groceries_in_progress/</guid>
+      <description>Currently working on &amp;ldquo;Online Groceries&amp;rdquo; program inspired by UVU class. The idea is to collect items with customer information as you would do when shopping online and create a structure for storage of such data. This data is later being used to create a well structured invoice with items purchased and customers&amp;rsquo; information.
+I&amp;rsquo;ve already created invoice.py program that stores structured receipt to the order_details.txt (that was an in-class project), now I&amp;rsquo;m writing a reverse program order.</description>
+    </item>
+    
     <item>
       <title>Website is Developing</title>
       <link>/posts/website_developing/</link>
