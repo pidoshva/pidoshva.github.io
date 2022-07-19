@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Mon, 18 Jul 2022 23:12:04 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 19 Jul 2022 00:31:25 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Online Groceries Project is Posted</title>
+      <link>/posts/online_groceries_posted/</link>
+      <pubDate>Tue, 19 Jul 2022 00:31:25 -0600</pubDate>
+      
+      <guid>/posts/online_groceries_posted/</guid>
+      <description>Just uploaded my Online Groceries project structure and implementation description. Once again, the project was inspired by UVU project which required me to write invoice.py script.
+I worked on design of reverse program order.py.
+Here I described the structure of data storage and implementation of order.py as well as invoice.py.</description>
+    </item>
+    
     <item>
       <title>Online Groceries</title>
       <link>/projects/online_groceries/</link>
