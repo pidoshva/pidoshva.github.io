@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Projects on Vadim Pidoshva</title>
-    <link>/projects/</link>
-    <description>Recent content in Projects on Vadim Pidoshva</description>
+    <title>[python] on Vadim Pidoshva</title>
+    <link>/tags/python/</link>
+    <description>Recent content in [python] on Vadim Pidoshva</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Tue, 21 Jun 2022 00:58:06 -0600</lastBuildDate><atom:link href="/projects/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 18 Jul 2022 23:12:04 -0600</lastBuildDate><atom:link href="/tags/python/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Online Groceries</title>
       <link>/projects/online_groceries/</link>
@@ -15,15 +15,6 @@
       
       <guid>/projects/online_groceries/</guid>
       <description>Online order handling system that uses .txt file to structure data and use it later to create an invoice.</description>
-    </item>
-    
-    <item>
-      <title>MLSmulator</title>
-      <link>/projects/mlsimulator/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/projects/mlsimulator/</guid>
-      <description>Program that uses simple instructions in order to simulate machine language operations.</description>
     </item>
     
   </channel>

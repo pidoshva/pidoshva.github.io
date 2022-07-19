@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Mon, 18 Jul 2022 15:27:40 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 18 Jul 2022 23:12:04 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Online Groceries</title>
+      <link>/projects/online_groceries/</link>
+      <pubDate>Mon, 18 Jul 2022 23:12:04 -0600</pubDate>
+      
+      <guid>/projects/online_groceries/</guid>
+      <description>Online order handling system that uses .txt file to structure data and use it later to create an invoice.</description>
+    </item>
+    
     <item>
       <title>geleus.com = geleus.io</title>
       <link>/posts/new_com_domain/</link>
