@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Tue, 19 Jul 2022 00:31:25 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 21 Jul 2022 02:43:02 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Resume is Coming Soon</title>
+      <link>/posts/resume_coming_soon/</link>
+      <pubDate>Thu, 21 Jul 2022 02:43:02 -0600</pubDate>
+      
+      <guid>/posts/resume_coming_soon/</guid>
+      <description>Currently working on creating and posting my resume to the website. As of right now I am going to have a &amp;ldquo;Resume&amp;rdquo; section in the menu with temporary message.</description>
+    </item>
+    
+    <item>
+      <title>Resume</title>
+      <link>/resume/</link>
+      <pubDate>Thu, 21 Jul 2022 02:40:24 -0600</pubDate>
+      
+      <guid>/resume/</guid>
+      <description>Resume will be posted soon.</description>
+    </item>
+    
     <item>
       <title>Online Groceries Project is Posted</title>
       <link>/posts/online_groceries_posted/</link>
@@ -62,7 +80,7 @@ I&amp;rsquo;ve already created invoice.py program that stores structured receipt
       <pubDate>Tue, 21 Jun 2022 00:55:11 -0600</pubDate>
       
       <guid>/about/</guid>
-      <description>My name is Vadim Pidoshva. I&amp;rsquo;m originally from Enerhodar, Ukraine 🇺🇦. Currently studying Computer Science with an emphasis on Computer Science at Utah Valley University. </description>
+      <description>My name is Vadim Pidoshva. I&amp;rsquo;m originally from Enerhodar, Ukraine 🇺🇦. Currently studying Computer Science with an emphasis in Computer Science at Utah Valley University.</description>
     </item>
     
     <item>
