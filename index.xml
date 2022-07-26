@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Thu, 21 Jul 2022 02:43:02 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 25 Jul 2022 18:07:07 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Working on Facial Recognition</title>
+      <link>/posts/working_on_facial_recognition/</link>
+      <pubDate>Mon, 25 Jul 2022 18:07:07 -0600</pubDate>
+      
+      <guid>/posts/working_on_facial_recognition/</guid>
+      <description>Currently working on a facial recognition project that is supposed to use a dataset of known faces for recognition and capture unknown faces adding them to the dataset for later training. I&amp;rsquo;m using an OpenCV library to implement all the features.
+This is the next project I will be posting.</description>
+    </item>
+    
     <item>
       <title>Resume is Coming Soon</title>
       <link>/posts/resume_coming_soon/</link>
