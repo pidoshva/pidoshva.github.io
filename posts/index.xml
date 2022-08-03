@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Mon, 25 Jul 2022 18:07:07 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Aug 2022 00:07:47 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Facial Recognition Project is Posted</title>
+      <link>/posts/facial_recognition_posted/</link>
+      <pubDate>Wed, 03 Aug 2022 00:07:47 -0600</pubDate>
+      
+      <guid>/posts/facial_recognition_posted/</guid>
+      <description>Just finished Facial Recognition project. I uploaded it to my Github and posted it&amp;rsquo;s details on the website.</description>
+    </item>
+    
     <item>
       <title>Working on Facial Recognition</title>
       <link>/posts/working_on_facial_recognition/</link>

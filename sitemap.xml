@@ -2,11 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>/posts/facial_recognition_posted/</loc>
+    <lastmod>2022-08-03T00:07:47-06:00</lastmod>
+  </url><url>
     <loc>/posts/</loc>
-    <lastmod>2022-07-25T18:07:07-06:00</lastmod>
+    <lastmod>2022-08-03T00:07:47-06:00</lastmod>
   </url><url>
     <loc>/</loc>
-    <lastmod>2022-07-25T18:07:07-06:00</lastmod>
+    <lastmod>2022-08-03T00:07:47-06:00</lastmod>
+  </url><url>
+    <loc>/tags/python/</loc>
+    <lastmod>2022-08-02T22:41:15-06:00</lastmod>
+  </url><url>
+    <loc>/projects/facial_recognition/</loc>
+    <lastmod>2022-08-02T22:41:15-06:00</lastmod>
+  </url><url>
+    <loc>/tags/</loc>
+    <lastmod>2022-08-02T22:41:15-06:00</lastmod>
   </url><url>
     <loc>/posts/working_on_facial_recognition/</loc>
     <lastmod>2022-07-25T18:07:07-06:00</lastmod>
@@ -20,13 +32,7 @@
     <loc>/posts/online_groceries_posted/</loc>
     <lastmod>2022-07-19T00:31:25-06:00</lastmod>
   </url><url>
-    <loc>/tags/python/</loc>
-    <lastmod>2022-07-18T23:12:04-06:00</lastmod>
-  </url><url>
     <loc>/projects/online_groceries/</loc>
-    <lastmod>2022-07-18T23:12:04-06:00</lastmod>
-  </url><url>
-    <loc>/tags/</loc>
     <lastmod>2022-07-18T23:12:04-06:00</lastmod>
   </url><url>
     <loc>/posts/new_com_domain/</loc>
