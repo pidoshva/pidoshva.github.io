@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Wed, 03 Aug 2022 00:07:47 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 08 Aug 2022 03:00:52 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Updated UVSim Project</title>
+      <link>/posts/uvsim_updated/</link>
+      <pubDate>Mon, 08 Aug 2022 03:00:52 -0600</pubDate>
+      
+      <guid>/posts/uvsim_updated/</guid>
+      <description>I just updated the UVSim project description and uploaded final version of it to my GitHub.</description>
+    </item>
+    
     <item>
       <title>Facial Recognition Project is Posted</title>
       <link>/posts/facial_recognition_posted/</link>
@@ -25,15 +34,6 @@
       <guid>/posts/working_on_facial_recognition/</guid>
       <description>Currently working on a facial recognition project that is supposed to use a dataset of known faces for recognition and capture unknown faces adding them to the dataset for later training. I&amp;rsquo;m using an OpenCV library to implement all the features.
 This is the next project I will be posting.</description>
-    </item>
-    
-    <item>
-      <title>Resume is Coming Soon</title>
-      <link>/posts/resume_coming_soon/</link>
-      <pubDate>Thu, 21 Jul 2022 02:43:02 -0600</pubDate>
-      
-      <guid>/posts/resume_coming_soon/</guid>
-      <description>Currently working on creating and posting my resume to the website. As of right now I am going to have a &amp;ldquo;Resume&amp;rdquo; section in the menu with temporary message.</description>
     </item>
     
     <item>
