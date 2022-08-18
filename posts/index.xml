@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Mon, 08 Aug 2022 03:00:52 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 18 Aug 2022 13:38:29 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Image Compression Project is Posted</title>
+      <link>/posts/image_compression_posted/</link>
+      <pubDate>Thu, 18 Aug 2022 13:38:29 -0600</pubDate>
+      
+      <guid>/posts/image_compression_posted/</guid>
+      <description>Just uploaded my Image Compression Project that I did for my Numerical Software Development class. It was implemented using MATLAB programming language.</description>
+    </item>
+    
     <item>
       <title>Updated UVSim Project</title>
       <link>/posts/uvsim_updated/</link>
