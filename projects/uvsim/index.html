@@ -88,6 +88,13 @@
     <h1 id="-uvsim-httpsgithubcompidoshvaposted-projectstreemainuvsimreadme"><a href="https://github.com/pidoshva/posted-projects/tree/main/UVSim#readme">&raquo; UVSim &laquo;</a></h1>
 <h6 id="by-void-vadim-pidoshva-katia-anatska-martin-robinette-devyn-clayson-christopher-pryor">by Void (Vadim Pidoshva; Katia Anatska; Martin Robinette; Devyn Clayson; Christopher Pryor)&quot;</h6>
 <h1 id="our-implementation">Our implementation:</h1>
+<p>The team project which demonstrates how machine language operates with memory.</p>
+<ul>
+<li>Used a set of operations that were split into the op-code and operand. The op-code determined the operation that needed to be performed at the memory location specified by the operand.</li>
+<li>Implemented a Virtual Machine (VM) that redirected the operation to the instruction function for execution.</li>
+<li>Introduced the memory array where all of the operations were stored as they would do in the computer and perfectly visualized it.</li>
+</ul>
+<h1 id="breakdown">Breakdown:</h1>
 <p><code>memory.cpp</code> We used a fixed <strong>array</strong> of <strong>1000</strong> &ldquo;memory slots&rdquo; and used indexing to access the required memory location.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> memoryArray[<span style="color:#ae81ff">1000</span>];
 </span></span></code></pre></div><p><code>main.cpp</code> We implemented a loop to collect all the instructions from the user.<br>
