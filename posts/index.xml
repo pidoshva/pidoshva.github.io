@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Thu, 18 Aug 2022 13:38:29 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 11 Jul 2023 18:37:46 -0600</lastBuildDate><atom:link href="/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2023 – I&#39;m Back!</title>
+      <link>/posts/2023_comeback/</link>
+      <pubDate>Tue, 11 Jul 2023 18:37:46 -0600</pubDate>
+      
+      <guid>/posts/2023_comeback/</guid>
+      <description>Getting back to working on my website. Just finised my general education section last block, so, now I can fully dive into it.
+So far I&amp;rsquo;m planning on working more on my personal projects for the portfolio so that I have something to present when I apply for the real job. I&amp;rsquo;m thinking to dive deeper into databases, APIs and OS. Also, haven&amp;rsquo;t been using python for A WHILE, gotta refresh it.</description>
+    </item>
+    
     <item>
       <title>Image Compression Project is Posted</title>
       <link>/posts/image_compression_posted/</link>
