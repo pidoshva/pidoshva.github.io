@@ -1,1 +1,1 @@
-Link to the website: https://geleus.io
+Link to the website: https://geleus.com
