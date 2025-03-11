@@ -7,7 +7,26 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Thu, 18 Aug 2022 13:38:29 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 24 Feb 2025 14:03:15 -0700</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Utah County Health Department Project</title>
+      <link>/projects/utah-county-health-department-project/</link>
+      <pubDate>Mon, 24 Feb 2025 14:03:15 -0700</pubDate>
+      
+      <guid>/projects/utah-county-health-department-project/</guid>
+      <description>This project is designed to streamline &lt;strong&gt;data organization, analysis, and security&lt;/strong&gt;, ensuring that information remains accurate, accessible, and protected. While specific details remain confidential, this post provides an overview of the key features and technical aspects of the system.</description>
+    </item>
+    
+    <item>
+      <title>Update February 2025</title>
+      <link>/posts/update-feb-2025/</link>
+      <pubDate>Mon, 24 Feb 2025 13:08:25 -0700</pubDate>
+      
+      <guid>/posts/update-feb-2025/</guid>
+      <description>Yes, I&amp;rsquo;m Alive! Life has been crazy these past couple of years. This post is intended to be an update on my current state of things. Also, I will try to be more consistent with managing my website—I know it has been abandoned for a while now.
+Initially, this website was meant to be my personal space to share academic and personal projects. I always wanted to document, explain, and share my software for aesthetic and professional purposes.</description>
+    </item>
+    
     <item>
       <title>Image Compression Project is Posted</title>
       <link>/posts/image_compression_posted/</link>
@@ -69,7 +88,7 @@ This is the next project I will be posting.</description>
       <pubDate>Thu, 21 Jul 2022 02:40:24 -0600</pubDate>
       
       <guid>/resume/</guid>
-      <description>Resume will be posted soon.</description>
+      <description></description>
     </item>
     
     <item>
@@ -126,7 +145,8 @@ I&amp;rsquo;ve already created invoice.py program that stores structured receipt
       <pubDate>Tue, 21 Jun 2022 00:55:11 -0600</pubDate>
       
       <guid>/about/</guid>
-      <description>My name is Vadim Pidoshva. I&amp;rsquo;m originally from Enerhodar, Ukraine 🇺🇦. Currently studying Computer Science with an emphasis in Computer Science at Utah Valley University.</description>
+      <description>My name is Vadim Pidoshva. I&amp;rsquo;m originally from Enerhodar, Ukraine 🇺🇦.
+I enjoy coding, camping, and skiing on my free time.</description>
     </item>
     
     <item>
