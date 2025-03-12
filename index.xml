@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>© geleus</copyright>
-    <lastBuildDate>Mon, 24 Feb 2025 14:03:15 -0700</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 12 Mar 2025 00:38:03 -0600</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Interactive Resume Added</title>
+      <link>/posts/interactive-resume/</link>
+      <pubDate>Wed, 12 Mar 2025 00:38:03 -0600</pubDate>
+      
+      <guid>/posts/interactive-resume/</guid>
+      <description>Just added an interractive resume to the &amp;ldquo;Resume&amp;rdquo; section of the website. When clicked, you will be transferred to geleus.io where I have set up a terminal-like interactive resume.
+This was mainly done for fun and education purposes. Feel free to play around with it. Just note, that it is still in the development phase. I will be adding more info to it soon.</description>
+    </item>
+    
     <item>
       <title>Utah County Health Department Project</title>
       <link>/projects/utah-county-health-department-project/</link>
