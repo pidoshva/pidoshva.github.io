@@ -45,6 +45,24 @@
     </item>
     
     <item>
+      <title>This Website</title>
+      <link>/projects/this_website/</link>
+      <pubDate>Fri, 24 Jun 2022 00:01:56 -0600</pubDate>
+      
+      <guid>/projects/this_website/</guid>
+      <description>geleus.io</description>
+    </item>
+    
+    <item>
+      <title>Search Engine</title>
+      <link>/projects/search_engine/</link>
+      <pubDate>Thu, 23 Jun 2022 21:55:38 -0600</pubDate>
+      
+      <guid>/projects/search_engine/</guid>
+      <description>Simple search engine for url that can find all links, links to images, count words, display word occurrence table, etc.</description>
+    </item>
+    
+    <item>
       <title>UVSim</title>
       <link>/projects/uvsim/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

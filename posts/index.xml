@@ -19,6 +19,16 @@ Initially, this website was meant to be my personal space to share academic and 
     </item>
     
     <item>
+      <title>2023 – I&#39;m Back!</title>
+      <link>/posts/2023_comeback/</link>
+      <pubDate>Tue, 11 Jul 2023 18:37:46 -0600</pubDate>
+      
+      <guid>/posts/2023_comeback/</guid>
+      <description>Getting back to working on my website. Just finised my general education section last block, so, now I can fully dive into it.
+So far I&amp;rsquo;m planning on working more on my personal projects for the portfolio so that I have something to present when I apply for the real job. I&amp;rsquo;m thinking to dive deeper into databases, APIs and OS. Also, haven&amp;rsquo;t been using python for A WHILE, gotta refresh it.</description>
+    </item>
+    
+    <item>
       <title>Image Compression Project is Posted</title>
       <link>/posts/image_compression_posted/</link>
       <pubDate>Thu, 18 Aug 2022 13:38:29 -0600</pubDate>
@@ -53,6 +63,15 @@ Initially, this website was meant to be my personal space to share academic and 
       <guid>/posts/working_on_facial_recognition/</guid>
       <description>Currently working on a facial recognition project that is supposed to use a dataset of known faces for recognition and capture unknown faces adding them to the dataset for later training. I&amp;rsquo;m using an OpenCV library to implement all the features.
 This is the next project I will be posting.</description>
+    </item>
+    
+    <item>
+      <title>Resume is Coming Soon</title>
+      <link>/posts/resume_coming_soon/</link>
+      <pubDate>Thu, 21 Jul 2022 02:43:02 -0600</pubDate>
+      
+      <guid>/posts/resume_coming_soon/</guid>
+      <description>Currently working on creating and posting my resume to the website. As of right now I am going to have a &amp;ldquo;Resume&amp;rdquo; section in the menu with temporary message.</description>
     </item>
     
     <item>

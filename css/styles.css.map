@@ -1,7 +1,7 @@
 {
 	"version": 3,
 	"file": "styles.css",
-	"sourceRoot": "/Users/vadimpidoshva/Documents/geleus_io/website",
+	"sourceRoot": "/Users/vadimpidoshva/Documents/geleus_com/website_edit",
 	"sources": [
 		"themes/cactus/assets/scss/style.scss",
 		"themes/cactus/assets/scss/_variables.scss",

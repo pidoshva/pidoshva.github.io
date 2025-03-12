@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title> [css] on Vadim Pidoshva</title>
+    <link>/tags/css/</link>
+    <description>Recent content in  [css] on Vadim Pidoshva</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>© geleus</copyright>
+    <lastBuildDate>Fri, 24 Jun 2022 00:01:56 -0600</lastBuildDate><atom:link href="/tags/css/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>This Website</title>
+      <link>/projects/this_website/</link>
+      <pubDate>Fri, 24 Jun 2022 00:01:56 -0600</pubDate>
+      
+      <guid>/projects/this_website/</guid>
+      <description>geleus.io</description>
+    </item>
+    
+  </channel>
+</rss>

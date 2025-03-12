@@ -35,5 +35,14 @@
       <description>Online order handling system that uses .txt file to structure data and use it later to create an invoice.</description>
     </item>
     
+    <item>
+      <title>Search Engine</title>
+      <link>/projects/search_engine/</link>
+      <pubDate>Thu, 23 Jun 2022 21:55:38 -0600</pubDate>
+      
+      <guid>/projects/search_engine/</guid>
+      <description>Simple search engine for url that can find all links, links to images, count words, display word occurrence table, etc.</description>
+    </item>
+    
   </channel>
 </rss>
