@@ -1,149 +1,99 @@
-# geleus.com - Personal Portfolio & Blog
+# geleus.com - Resource Center for Engineers
 
-Personal website and blog for Vadim Pidoshva, a Software Engineer based in Utah. The site showcases software projects, blog posts, and a resume. Hosted on GitHub Pages at geleus.com (also geleus.io for the interactive resume).
+Personal resource center and open source hub for Vadim Pidoshva, a Software Engineer based in Utah. Hosted on GitHub Pages at geleus.com. Interactive terminal resume at geleus.io.
 
 ## Tech Stack
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| Static Site Generator | Hugo 0.x | Generates the HTML output committed to this repo |
-| Frontend | HTML, CSS, JavaScript | Static pages with responsive layout |
-| JS Library | jQuery | DOM manipulation, responsive nav, scroll behavior |
+| Frontend | HTML, CSS, vanilla JS | Static pages, no build step, no framework |
 | Icons | Font Awesome 5.x | UI icons throughout the site |
-| Code Font | JetBrains Mono | Monospace font for code blocks |
-| Gallery | Justified Gallery | Image gallery layout (jQuery plugin) |
-| Comments | Cactus Chat | Matrix-based commenting system |
-| Clipboard | clipboard.min.js | Code block copy functionality |
-| Hosting | GitHub Pages | Static hosting with custom domain |
+| Font | JetBrains Mono | Monospace font used site-wide |
+| Hosting | GitHub Pages | Static hosting from `main` branch |
 | Domain | geleus.com | Custom domain via CNAME |
+| APIs | GitHub API, jogruber contributions API | Repo cards and contribution graph |
 
-## Critical: This Is Hugo Build Output
+## Design
 
-**This repository contains the compiled/generated static site, NOT the Hugo source.**
-
-There are no Hugo templates, `config.toml`, `content/` markdown files, or `themes/` directory here. The Hugo source project lives elsewhere. All HTML files in this repo are generated output that gets deployed directly to GitHub Pages via the `main` branch.
-
-When making changes:
-- **Content edits** (post text, about page) can be done by editing the HTML files directly
-- **Structural/template changes** should ideally be made in the Hugo source project and re-generated
-- **Static assets** (JS, CSS, images) can be modified directly
+- **Dark terminal aesthetic**: `#1d1f21` background, `#2bbc8a` green accent, `#d480aa` pink accent
+- **JetBrains Mono** monospace font everywhere
+- **Terminal-style headings**: `$ whoami`, `$ ls ~/projects`, `$ cat ~/blog`
+- **No jQuery** — all vanilla JS
 
 ## Project Structure
 
 ```
 pidoshva.github.io/
-├── about/                  # About page
-│   └── index.html
-├── categories/             # Hugo taxonomy (categories)
-│   ├── index.html
-│   └── index.xml
-├── css/                    # Compiled stylesheet (hashed filename)
-│   ├── styles.[hash].css
-│   └── styles.css.map
-├── images/                 # Site-wide images
+├── index.html              # Homepage: bio, contribution graph, nav cards
+├── goodies/index.html      # Repo cards from GitHub API
+├── blog/index.html         # Blog (empty state for now)
+├── css/styles.css          # Hand-written CSS with CSS variables
+├── js/
+│   ├── nav.js              # Hamburger menu + active nav link
+│   ├── contributions.js    # GitHub contribution heatmap
+│   └── goodies.js          # Repo cards + clipboard copy
+├── images/
 │   ├── favicon.ico
 │   └── logo.png
-├── js/                     # JavaScript files
-│   ├── code-copy.js        # Copy button for code blocks
-│   ├── feather.min.js      # Feather icons (unused in current pages)
-│   ├── main.js             # Responsive nav, scroll behavior, gallery
-│   └── search.js           # Client-side search using XML feed
-├── lib/                    # Third-party libraries (vendored)
-│   ├── clipboard/          # clipboard.min.js
+├── lib/
 │   ├── font-awesome/       # Icons (CSS + webfonts)
-│   ├── JetBrainsMono/      # Code font (ttf, woff, woff2, eot)
-│   ├── jquery/             # jQuery
-│   └── justified-gallery/  # Image gallery plugin
-├── posts/                  # Blog posts (each in own directory)
-│   ├── images/             # Shared post images
-│   ├── interactive-resume/
-│   ├── update-feb-2025/
-│   ├── 2023_comeback/
-│   ├── [other posts]/
-│   ├── index.html          # Posts listing page
-│   └── index.xml           # Posts RSS feed
-├── projects/               # Project showcases (each in own directory)
-│   ├── images/             # Shared project images
-│   ├── utah-county-health-department-project/
-│   ├── facial_recognition/
-│   ├── image_compression/
-│   ├── online_groceries/
-│   ├── search_engine/
-│   ├── this_website/
-│   ├── uvsim/
-│   ├── index.html          # Projects listing page
-│   └── index.xml           # Projects RSS feed
-├── resume/                 # Resume page (links to geleus.io)
-│   └── index.html
-├── tags/                   # Hugo taxonomy (tags: python, c++, matlab, etc.)
+│   └── JetBrainsMono/      # Font files (woff2, woff, ttf, eot)
 ├── CNAME                   # Custom domain: geleus.com
-├── index.html              # Homepage
-├── index.xml               # Site-wide RSS feed
-├── sitemap.xml             # Sitemap for SEO
-└── README.md               # Repo readme
+├── sitemap.xml             # Sitemap (3 pages)
+└── README.md
 ```
 
-## Architecture Overview
+## Pages
 
-The site follows Hugo's standard output structure where each page lives in its own directory as `index.html`. The homepage displays a short bio with social links (GitHub, email, Instagram) and a chronological list of blog posts. Navigation has four sections: Home, Projects, Resume, and About.
-
-Posts are blog-style entries documenting project progress and personal updates. Projects are showcase pages describing completed work (tagged with technologies like Python, C++, MATLAB). The Resume link redirects externally to geleus.io, which hosts an interactive terminal-style resume.
-
-All pages share a common layout with a header (logo + nav), content area, and footer. On mobile, the nav collapses into a hamburger menu. Post pages include additional features: previous/next navigation, social sharing buttons, table of contents, and a scroll-to-top button.
+| Page | URL | Description |
+|------|-----|-------------|
+| Home | `/` | Hero with `$ whoami`, GitHub contribution graph, nav cards |
+| Goodies | `/goodies/` | Open source repo cards with git clone copy-to-clipboard |
+| Blog | `/blog/` | Empty state with blinking cursor, ready for future posts |
+| Resume | nav link | External link to `https://geleus.io/` (interactive terminal resume) |
 
 ## Key JavaScript Modules
 
 | File | Purpose |
 |------|---------|
-| `js/main.js` | Responsive hamburger menu, post page scroll behavior, Justified Gallery init |
-| `js/search.js` | Client-side search against XML feed (from hexo-generator-search, adapted) |
-| `js/code-copy.js` | Adds "copy" buttons to `<pre><code>` blocks |
+| `js/nav.js` | Hamburger toggle + active nav link highlighting (~15 lines) |
+| `js/contributions.js` | Fetches GitHub contributions, renders CSS Grid heatmap, localStorage caching (1hr TTL) |
+| `js/goodies.js` | Fetches GitHub repos, renders cards with language/stars/forks, clipboard copy for clone URLs |
 
-## File & Content Naming
+## GitHub API Integration
 
-### File Naming
-- Post directories: mixed convention - older posts use `snake_case` (`facial_recognition_posted/`), newer posts use `kebab-case` (`interactive-resume/`, `update-feb-2025/`)
-- Project directories: mostly `snake_case` (`image_compression/`, `online_groceries/`), with one `kebab-case` (`utah-county-health-department-project/`)
-- JS files: `kebab-case` (`code-copy.js`) or `camelCase` (`justifiedGallery.min.js` for vendored libs)
-- CSS: single hashed file (`styles.[hash].css`)
+### Contribution Graph (Homepage)
+- **API**: `https://github-contributions-api.jogruber.de/v4/pidoshva?y=last`
+- **Rendering**: CSS Grid, 7 rows x auto columns, 10px squares
+- **Colors**: custom green scale (`#161b22` → `#0a3d1f` → `#147a3e` → `#2bbc8a` → `#5ae0b0`)
+- **Caching**: localStorage key `geleus_contrib`, 1hr TTL
 
-### Code Naming (JavaScript)
-- Functions: `camelCase` (`createCopyButton`, `searchFunc`, `stripHtml`, `getAllCombinations`)
-- Variables: `camelCase` (`copyBtn`, `resetTimer`, `dataTitle`, `resultList`)
-- jQuery selectors: string IDs/classes (`#header`, `.post`, `#nav-footer`)
+### Repo Cards (Goodies)
+- **API**: `https://api.github.com/users/pidoshva/repos?sort=updated&per_page=30` (60 req/hr unauthenticated)
+- **Filters**: excludes forks and `pidoshva.github.io`
+- **Features**: language badge, stars, forks, "updated X ago", `git clone` URL copy button
+- **Caching**: localStorage key `geleus_repos`, 1hr TTL
+- **Security**: HTML escaping on all user-generated content (repo descriptions)
+
+## Code Naming (JavaScript)
+- Functions: `camelCase` (`escapeHtml`, `timeAgo`, `formatDate`, `getCached`, `setCache`)
+- Variables: `camelCase` (`CACHE_KEY`, `CACHE_TTL`, `LANG_COLORS`)
+- All JS in IIFEs to avoid global scope pollution
+- DOM queries: `document.getElementById`, `document.querySelector`
 
 ## Deployment
 
-The site deploys automatically via GitHub Pages from the `main` branch. The `CNAME` file maps the custom domain `geleus.com` to the GitHub Pages site.
+Push to `main` branch → GitHub Pages auto-deploys at geleus.com.
 
-To deploy changes:
-1. Edit files directly in this repo (or regenerate from Hugo source)
-2. Commit and push to `main`
-3. GitHub Pages serves the updated site at geleus.com
+## CSS Architecture
 
-## Navigation Structure
-
-| Section | URL | Description |
-|---------|-----|-------------|
-| Home | `/` | Bio, social links, recent posts list |
-| Projects | `/projects` | Portfolio of completed projects |
-| Resume | `https://geleus.io/` | External link to interactive terminal resume |
-| About | `/about` | Personal bio with photo |
-
-## External Services
-
-- **Cactus Chat** (`latest.cactus.chat`) - Matrix-based comment system loaded on all pages
-- **geleus.io** - Separate site hosting the interactive terminal resume
-- **GitHub** (`github.com/pidoshva`) - Source code for projects
-
-## Content Tags
-
-Projects and posts use these technology tags: `python`, `c++`, `matlab`, `html`, `css`, `json`.
+Single file `css/styles.css` using CSS custom properties (variables) defined in `:root`. No build step, no preprocessor. Mobile breakpoint at 640px with hamburger nav.
 
 ## Notes for Development
 
-- The CSS is a single compiled file with a content-hash in the filename. If you modify styles, the hash in the `<link>` tags across all HTML files must be updated to match.
-- jQuery is used extensively in `main.js` and `search.js`. The site depends on it being loaded before those scripts.
-- The `lib/` directory contains vendored third-party assets. These should not be modified directly; update by replacing with newer versions from upstream.
-- All HTML pages include Font Awesome CSS and jQuery at the bottom of `<body>`. Post pages additionally load `code-copy.js`.
-- The `search.js` file was adapted from hexo-generator-search and uses the `index.xml` RSS feed as its data source.
+- **No build step**: edit HTML/CSS/JS directly, commit, push
+- **Shared layout**: all 3 pages share the same header/footer HTML (duplicated, not templated)
+- **Font Awesome** is loaded in `<head>` on every page
+- **JetBrains Mono** is preloaded via `<link rel="preload">`
+- The `lib/` directory contains vendored assets — update by replacing with newer upstream versions
+- All API data is cached in localStorage; clear `geleus_contrib` and `geleus_repos` keys to force refresh

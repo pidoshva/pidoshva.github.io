@@ -1,185 +1,100 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en">
 <head>
-	<meta name="generator" content="Hugo 0.101.0" />
-  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Vadim Pidoshva</title>
-  <link rel = 'canonical' href = '/'>
-  <meta name="description" content="I&#39;m a Software Engineer in Utah 🏜">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="all,follow">
-  <meta name="googlebot" content="index,follow,snippet,archive">
-  <meta property="og:title" content="Vadim Pidoshva" />
-<meta property="og:description" content="I&#39;m a Software Engineer in Utah 🏜" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="/" />
-
-
-  <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Vadim Pidoshva"/>
-<meta name="twitter:description" content="I&#39;m a Software Engineer in Utah 🏜"/>
-
-  
-  
-    
-  
-  
-  <link rel="stylesheet" href="/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css" integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N&#43;XoIuZg=="> 
-
-  
-  
-  
-  
-
-  
-<link rel="icon" type="image/png" href="/images/favicon.ico" />
-
-  
-  
+  <title>geleus — Vadim Pidoshva</title>
+  <meta name="description" content="Software Engineer in Utah. Open source projects, blog, and resources.">
+  <meta property="og:title" content="geleus — Vadim Pidoshva">
+  <meta property="og:description" content="Software Engineer in Utah. Open source projects, blog, and resources.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://geleus.com/">
+  <link rel="icon" type="image/png" href="/images/favicon.ico">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
+<body>
 
-<body class="max-width mx-auto px3 ltr">
-  <div class="content index py4">
+  <header>
+    <div class="container">
+      <a href="/" class="logo">geleus</a>
+      <button class="hamburger" aria-label="Menu" aria-expanded="false">
+        <i class="fas fa-bars"></i>
+      </button>
+      <nav>
+        <ul>
+          <li><a href="/">home</a></li>
+          <li><a href="/goodies/">goodies</a></li>
+          <li><a href="/blog/">blog</a></li>
+          <li><a href="https://geleus.io/" target="_blank" rel="noopener" class="external">resume</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-    <header id="header">
-  <a href="/">
-  
-    <div id="logo" style="background-image: url(/images/logo.png)"></div>
-  
-  <div id="title">
-    <h1>Vadim Pidoshva</h1>
-  </div>
-  </a>
-  <div id="nav">
-    <ul>
-      <li class="icon">
-        <a href="#" aria-label="Menu"><i class="fas fa-bars fa-2x" aria-hidden="true"></i></a>
-      </li>
-      
-        <li><a href="/">Home</a></li>
-      
-        <li><a href="/projects">Projects</a></li>
-      
-        <li><a href="https://geleus.io/">Resume</a></li>
-      
-        <li><a href="/about">About</a></li>
-      
-    </ul>
-  </div>
-</header>
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-heading"><span class="prompt">$</span> whoami</div>
+        <h1>Vadim Pidoshva</h1>
+        <p class="bio">Software Engineer in Utah. Building things, sharing what I learn.</p>
+        <div class="social-links">
+          <a href="https://github.com/pidoshva" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="mailto:pidoshva.vadim@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+          <a href="https://instagram.com/vp.id/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </section>
 
+    <!-- Contribution Graph -->
+    <section class="contrib-section">
+      <div class="container">
+        <div class="section-heading"><span class="prompt">$</span> git log --graph</div>
+        <div id="contrib-root">
+          <div class="contrib-loading">Loading contributions...</div>
+        </div>
+      </div>
+    </section>
 
+    <!-- Nav Cards -->
+    <section class="nav-cards">
+      <div class="container">
+        <div class="section-heading"><span class="prompt">$</span> ls ~/</div>
+        <div class="cards-grid">
+          <a href="/goodies/" class="nav-card">
+            <div class="card-icon"><i class="fas fa-box-open"></i></div>
+            <h3>goodies/</h3>
+            <p>Open source repos, tools, and experiments.</p>
+          </a>
+          <a href="/blog/" class="nav-card">
+            <div class="card-icon"><i class="fas fa-terminal"></i></div>
+            <h3>blog/</h3>
+            <p>Notes, writeups, and things I've learned.</p>
+          </a>
+          <a href="https://geleus.io/" target="_blank" rel="noopener" class="nav-card">
+            <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+            <h3>resume <span style="font-size:0.75rem">&nearr;</span></h3>
+            <p>Interactive terminal resume at geleus.io.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
 
-    
-  <section id="about">
-  
-    I&rsquo;m a Software Engineer in Utah 🏜
-  
-  
-      <p>Links:
-      
-      
-      
-        <a class="icon" target="_blank" rel="noopener" href="https://github.com/pidoshva/" aria-label="github">
-          <i class="fab fa-github" aria-hidden="true"></i>
-        </a>
-        
-         | 
-      
-      
-        <a class="icon" target="_blank" rel="noopener" href="mailto:pidoshva.vadim@gmail.com" aria-label="Email">
-          <i class="fas fa-envelope" aria-hidden="true"></i>
-        </a>
-        
-         | 
-      
-      
-        <a class="icon" target="_blank" rel="noopener" href="https://instagram.com/vp.id/" aria-label="instagram">
-          <i class="fab fa-instagram" aria-hidden="true"></i>
-        </a>
-        
-        .
-      
-      </p>
-  
-  
-  </section>
+  <footer>
+    <div class="container">
+      <span>&copy; 2026 geleus</span>
+      <span>
+        <a href="https://github.com/pidoshva" target="_blank" rel="noopener">github</a>
+      </span>
+    </div>
+  </footer>
 
-  <section id="writing">
-    <span class="h1"><a href="/posts">Posts</a></span>
-    
+  <div class="contrib-tooltip" id="contrib-tooltip"></div>
 
-    
-    
-      
-    
-    
-    
-    
-    <ul class="post-list">
-      
-      
-        
-      
-      
-        <li class="post-item">
-          <div class="meta"><time datetime="2025-03-12 00:38:03 -0600 MDT" itemprop="datePublished">2025-03-12</time></div>
-          <span><a href="/posts/interactive-resume/">Interactive Resume Added</a></span>
-        </li>
-      
-        <li class="post-item">
-          <div class="meta"><time datetime="2025-02-24 13:08:25 -0700 MST" itemprop="datePublished">2025-02-24</time></div>
-          <span><a href="/posts/update-feb-2025/">Update February 2025</a></span>
-        </li>
-      
-        <li class="post-item">
-          <div class="meta"><time datetime="2023-07-11 18:37:46 -0600 MDT" itemprop="datePublished">2023-07-11</time></div>
-          <span><a href="/posts/2023_comeback/">2023 – I&#39;m Back!</a></span>
-        </li>
-      
-
-    </ul>
-    
-  </section>
-
-  
-  
-    
-  
-  
-
-
-    <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy; 2026 geleus
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-         
-        <li><a href="/">Home</a></li>
-         
-        <li><a href="/projects">Projects</a></li>
-         
-        <li><a href="https://geleus.io/">Resume</a></li>
-         
-        <li><a href="/about">About</a></li>
-        
-      </ul>
-    </nav>
-  </div>
-</footer>
-
-
-  </div>
+  <script src="/js/nav.js"></script>
+  <script src="/js/contributions.js"></script>
 </body>
-
-<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
-<script src=/lib/jquery/jquery.min.js></script>
-<script src=/js/main.js></script>
 </html>
