@@ -12,207 +12,95 @@
       <title>Interactive Resume Added</title>
       <link>/posts/interactive-resume/</link>
       <pubDate>Wed, 12 Mar 2025 00:38:03 -0600</pubDate>
-      
+
       <guid>/posts/interactive-resume/</guid>
       <description>Just added an interractive resume to the &amp;ldquo;Resume&amp;rdquo; section of the website. When clicked, you will be transferred to geleus.io where I have set up a terminal-like interactive resume.
 This was mainly done for fun and education purposes. Feel free to play around with it. Just note, that it is still in the development phase. I will be adding more info to it soon.</description>
     </item>
-    
+
     <item>
       <title>Utah County Health Department Project</title>
       <link>/projects/utah-county-health-department-project/</link>
       <pubDate>Mon, 24 Feb 2025 14:03:15 -0700</pubDate>
-      
+
       <guid>/projects/utah-county-health-department-project/</guid>
       <description>This project is designed to streamline &lt;strong&gt;data organization, analysis, and security&lt;/strong&gt;, ensuring that information remains accurate, accessible, and protected. While specific details remain confidential, this post provides an overview of the key features and technical aspects of the system.</description>
     </item>
-    
+
     <item>
       <title>Update February 2025</title>
       <link>/posts/update-feb-2025/</link>
       <pubDate>Mon, 24 Feb 2025 13:08:25 -0700</pubDate>
-      
+
       <guid>/posts/update-feb-2025/</guid>
       <description>Yes, I&amp;rsquo;m Alive! Life has been crazy these past couple of years. This post is intended to be an update on my current state of things. Also, I will try to be more consistent with managing my website—I know it has been abandoned for a while now.
 Initially, this website was meant to be my personal space to share academic and personal projects. I always wanted to document, explain, and share my software for aesthetic and professional purposes.</description>
     </item>
-    
+
     <item>
       <title>2023 – I&#39;m Back!</title>
       <link>/posts/2023_comeback/</link>
       <pubDate>Tue, 11 Jul 2023 18:37:46 -0600</pubDate>
-      
+
       <guid>/posts/2023_comeback/</guid>
       <description>Getting back to working on my website. Just finised my general education section last block, so, now I can fully dive into it.
 So far I&amp;rsquo;m planning on working more on my personal projects for the portfolio so that I have something to present when I apply for the real job. I&amp;rsquo;m thinking to dive deeper into databases, APIs and OS. Also, haven&amp;rsquo;t been using python for A WHILE, gotta refresh it.</description>
     </item>
-    
-    <item>
-      <title>Image Compression Project is Posted</title>
-      <link>/posts/image_compression_posted/</link>
-      <pubDate>Thu, 18 Aug 2022 13:38:29 -0600</pubDate>
-      
-      <guid>/posts/image_compression_posted/</guid>
-      <description>Just uploaded my Image Compression Project that I did for my Numerical Software Development class. It was implemented using MATLAB programming language.</description>
-    </item>
-    
+
     <item>
       <title>Image Compression</title>
       <link>/projects/image_compression/</link>
       <pubDate>Mon, 08 Aug 2022 03:28:30 -0600</pubDate>
-      
+
       <guid>/projects/image_compression/</guid>
       <description>Compressing images using Discrete Cosine Transform (DCT).</description>
     </item>
-    
-    <item>
-      <title>Updated UVSim Project</title>
-      <link>/posts/uvsim_updated/</link>
-      <pubDate>Mon, 08 Aug 2022 03:00:52 -0600</pubDate>
-      
-      <guid>/posts/uvsim_updated/</guid>
-      <description>I just updated the UVSim project description and uploaded final version of it to my GitHub.</description>
-    </item>
-    
-    <item>
-      <title>Facial Recognition Project is Posted</title>
-      <link>/posts/facial_recognition_posted/</link>
-      <pubDate>Wed, 03 Aug 2022 00:07:47 -0600</pubDate>
-      
-      <guid>/posts/facial_recognition_posted/</guid>
-      <description>Just finished Facial Recognition project. I uploaded it to my Github and posted it&amp;rsquo;s details on the website.</description>
-    </item>
-    
+
     <item>
       <title>Facial Recognition</title>
       <link>/projects/facial_recognition/</link>
       <pubDate>Tue, 02 Aug 2022 22:41:15 -0600</pubDate>
-      
+
       <guid>/projects/facial_recognition/</guid>
       <description>AI that recognizes known faces and adds unknown ones to the dataset for further training.</description>
     </item>
-    
-    <item>
-      <title>Working on Facial Recognition</title>
-      <link>/posts/working_on_facial_recognition/</link>
-      <pubDate>Mon, 25 Jul 2022 18:07:07 -0600</pubDate>
-      
-      <guid>/posts/working_on_facial_recognition/</guid>
-      <description>Currently working on a facial recognition project that is supposed to use a dataset of known faces for recognition and capture unknown faces adding them to the dataset for later training. I&amp;rsquo;m using an OpenCV library to implement all the features.
-This is the next project I will be posting.</description>
-    </item>
-    
-    <item>
-      <title>Resume is Coming Soon</title>
-      <link>/posts/resume_coming_soon/</link>
-      <pubDate>Thu, 21 Jul 2022 02:43:02 -0600</pubDate>
-      
-      <guid>/posts/resume_coming_soon/</guid>
-      <description>Currently working on creating and posting my resume to the website. As of right now I am going to have a &amp;ldquo;Resume&amp;rdquo; section in the menu with temporary message.</description>
-    </item>
-    
-    <item>
-      <title>Resume</title>
-      <link>/resume/</link>
-      <pubDate>Thu, 21 Jul 2022 02:40:24 -0600</pubDate>
-      
-      <guid>/resume/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Online Groceries Project is Posted</title>
-      <link>/posts/online_groceries_posted/</link>
-      <pubDate>Tue, 19 Jul 2022 00:31:25 -0600</pubDate>
-      
-      <guid>/posts/online_groceries_posted/</guid>
-      <description>Just uploaded my Online Groceries project structure and implementation description. Once again, the project was inspired by UVU project which required me to write invoice.py script.
-I worked on design of reverse program order.py.
-Here I described the structure of data storage and implementation of order.py as well as invoice.py.</description>
-    </item>
-    
+
     <item>
       <title>Online Groceries</title>
       <link>/projects/online_groceries/</link>
       <pubDate>Mon, 18 Jul 2022 23:12:04 -0600</pubDate>
-      
+
       <guid>/projects/online_groceries/</guid>
       <description>Online order handling system that uses .txt file to structure data and use it later to create an invoice.</description>
     </item>
-    
-    <item>
-      <title>geleus.com = geleus.io</title>
-      <link>/posts/new_com_domain/</link>
-      <pubDate>Mon, 18 Jul 2022 15:27:40 -0600</pubDate>
-      
-      <guid>/posts/new_com_domain/</guid>
-      <description>geleus.com redirects to geleus.io Recently reserved geleus.com domain and set up redirection to this website geleus.io.</description>
-    </item>
-    
-    <item>
-      <title>Working on Online Groceries</title>
-      <link>/posts/online_groceries_in_progress/</link>
-      <pubDate>Tue, 28 Jun 2022 00:07:46 -0600</pubDate>
-      
-      <guid>/posts/online_groceries_in_progress/</guid>
-      <description>Currently working on &amp;ldquo;Online Groceries&amp;rdquo; program inspired by UVU class. The idea is to collect items with customer information as you would do when shopping online and create a structure for storage of such data. This data is later being used to create a well structured invoice with items purchased and customers&amp;rsquo; information.
-I&amp;rsquo;ve already created invoice.py program that stores structured receipt to the order_details.txt (that was an in-class project), now I&amp;rsquo;m writing a reverse program order.</description>
-    </item>
-    
-    <item>
-      <title>This Website</title>
-      <link>/projects/this_website/</link>
-      <pubDate>Fri, 24 Jun 2022 00:01:56 -0600</pubDate>
-      
-      <guid>/projects/this_website/</guid>
-      <description>geleus.io</description>
-    </item>
-    
+
     <item>
       <title>Search Engine</title>
       <link>/projects/search_engine/</link>
       <pubDate>Thu, 23 Jun 2022 21:55:38 -0600</pubDate>
-      
+
       <guid>/projects/search_engine/</guid>
       <description>Simple search engine for url that can find all links, links to images, count words, display word occurrence table, etc.</description>
     </item>
-    
-    <item>
-      <title>Website is Developing</title>
-      <link>/posts/website_developing/</link>
-      <pubDate>Tue, 21 Jun 2022 18:26:23 -0600</pubDate>
-      
-      <guid>/posts/website_developing/</guid>
-      <description>Alert Website is still in the developing mode. Many features aren&amp;rsquo;t working/working properly yet. This is still a fresh idea that requires time to be realized.</description>
-    </item>
-    
+
     <item>
       <title>About</title>
       <link>/about/</link>
       <pubDate>Tue, 21 Jun 2022 00:55:11 -0600</pubDate>
-      
+
       <guid>/about/</guid>
       <description>My name is Vadim Pidoshva. I&amp;rsquo;m originally from Enerhodar, Ukraine 🇺🇦.
 I enjoy coding, camping, and skiing on my free time.</description>
     </item>
-    
-    <item>
-      <title>Website Created</title>
-      <link>/posts/initialpost/</link>
-      <pubDate>Mon, 20 Jun 2022 23:41:23 -0600</pubDate>
-      
-      <guid>/posts/initialpost/</guid>
-      <description>This is my project/progress website. I will be posting completed/in_progress projects as well as the important links.</description>
-    </item>
-    
+
     <item>
       <title>UVSim</title>
       <link>/projects/uvsim/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
+
       <guid>/projects/uvsim/</guid>
       <description>Program that uses simple instructions in order to simulate machine language operations.</description>
     </item>
-    
+
   </channel>
 </rss>

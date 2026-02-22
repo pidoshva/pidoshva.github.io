@@ -12,64 +12,55 @@
       <title>Utah County Health Department Project</title>
       <link>/projects/utah-county-health-department-project/</link>
       <pubDate>Mon, 24 Feb 2025 14:03:15 -0700</pubDate>
-      
+
       <guid>/projects/utah-county-health-department-project/</guid>
       <description>This project is designed to streamline &lt;strong&gt;data organization, analysis, and security&lt;/strong&gt;, ensuring that information remains accurate, accessible, and protected. While specific details remain confidential, this post provides an overview of the key features and technical aspects of the system.</description>
     </item>
-    
+
     <item>
       <title>Image Compression</title>
       <link>/projects/image_compression/</link>
       <pubDate>Mon, 08 Aug 2022 03:28:30 -0600</pubDate>
-      
+
       <guid>/projects/image_compression/</guid>
       <description>Compressing images using Discrete Cosine Transform (DCT).</description>
     </item>
-    
+
     <item>
       <title>Facial Recognition</title>
       <link>/projects/facial_recognition/</link>
       <pubDate>Tue, 02 Aug 2022 22:41:15 -0600</pubDate>
-      
+
       <guid>/projects/facial_recognition/</guid>
       <description>AI that recognizes known faces and adds unknown ones to the dataset for further training.</description>
     </item>
-    
+
     <item>
       <title>Online Groceries</title>
       <link>/projects/online_groceries/</link>
       <pubDate>Mon, 18 Jul 2022 23:12:04 -0600</pubDate>
-      
+
       <guid>/projects/online_groceries/</guid>
       <description>Online order handling system that uses .txt file to structure data and use it later to create an invoice.</description>
     </item>
-    
-    <item>
-      <title>This Website</title>
-      <link>/projects/this_website/</link>
-      <pubDate>Fri, 24 Jun 2022 00:01:56 -0600</pubDate>
-      
-      <guid>/projects/this_website/</guid>
-      <description>geleus.io</description>
-    </item>
-    
+
     <item>
       <title>Search Engine</title>
       <link>/projects/search_engine/</link>
       <pubDate>Thu, 23 Jun 2022 21:55:38 -0600</pubDate>
-      
+
       <guid>/projects/search_engine/</guid>
       <description>Simple search engine for url that can find all links, links to images, count words, display word occurrence table, etc.</description>
     </item>
-    
+
     <item>
       <title>UVSim</title>
       <link>/projects/uvsim/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
+
       <guid>/projects/uvsim/</guid>
       <description>Program that uses simple instructions in order to simulate machine language operations.</description>
     </item>
-    
+
   </channel>
 </rss>
