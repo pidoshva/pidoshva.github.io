@@ -9,10 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Active nav link
-  const path = location.pathname.replace(/\/$/, '') || '/';
+  // Active nav link (prefix match for sub-pages like /blog/post.html)
+  const path = location.pathname;
   document.querySelectorAll('nav a[href]').forEach(a => {
-    const href = a.getAttribute('href').replace(/\/$/, '') || '/';
-    if (href === path) a.classList.add('active');
+    const href = a.getAttribute('href');
+    if (href.startsWith('http')) return; // skip external links
+    const hrefClean = href.replace(/\/$/, '') || '/';
+    const pathClean = path.replace(/\/$/, '') || '/';
+    if (hrefClean === pathClean || (hrefClean !== '/' && pathClean.startsWith(hrefClean))) {
+      a.classList.add('active');
+    }
   });
 });

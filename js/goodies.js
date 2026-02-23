@@ -1,4 +1,4 @@
-// GitHub repo cards
+// GitHub repo cards with expandable README
 (function () {
   const USERNAME = 'pidoshva';
   const API_URL = `https://api.github.com/users/${USERNAME}/repos?sort=updated&per_page=30`;
@@ -14,6 +14,9 @@
     Rust: '#dea584', Ruby: '#701516', MATLAB: '#e16737',
     'Jupyter Notebook': '#DA5B0B', Swift: '#F05138', Kotlin: '#A97BFF',
   };
+
+  // Cache for fetched READMEs (in-memory, per session)
+  const readmeCache = {};
 
   function escapeHtml(str) {
     const div = document.createElement('div');
@@ -48,6 +51,58 @@
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
     } catch { /* ignore */ }
+  }
+
+  function fetchReadme(repoName, defaultBranch) {
+    if (readmeCache[repoName]) return Promise.resolve(readmeCache[repoName]);
+
+    const url = `https://raw.githubusercontent.com/${USERNAME}/${repoName}/${defaultBranch}/README.md`;
+    return fetch(url)
+      .then(r => {
+        if (!r.ok) throw new Error(r.status);
+        return r.text();
+      })
+      .then(md => {
+        readmeCache[repoName] = md;
+        return md;
+      });
+  }
+
+  function toggleReadme(card, repoName, defaultBranch) {
+    const existing = card.querySelector('.repo-readme');
+    const btn = card.querySelector('.repo-expand-btn');
+
+    // Collapse if already open
+    if (existing) {
+      existing.remove();
+      btn.classList.remove('expanded');
+      btn.querySelector('i').className = 'fas fa-chevron-down';
+      btn.querySelector('.btn-text').textContent = 'readme';
+      return;
+    }
+
+    // Show loading
+    btn.classList.add('expanded');
+    btn.querySelector('i').className = 'fas fa-spinner fa-spin';
+    btn.querySelector('.btn-text').textContent = 'loading...';
+
+    fetchReadme(repoName, defaultBranch)
+      .then(md => {
+        const readme = document.createElement('div');
+        readme.className = 'repo-readme post-content';
+        readme.innerHTML = marked.parse(md);
+        card.appendChild(readme);
+        btn.querySelector('i').className = 'fas fa-chevron-up';
+        btn.querySelector('.btn-text').textContent = 'collapse';
+      })
+      .catch(() => {
+        const readme = document.createElement('div');
+        readme.className = 'repo-readme';
+        readme.innerHTML = '<p class="readme-error">Could not load README.</p>';
+        card.appendChild(readme);
+        btn.querySelector('i').className = 'fas fa-chevron-up';
+        btn.querySelector('.btn-text').textContent = 'collapse';
+      });
   }
 
   function render(repos) {
@@ -91,6 +146,9 @@
             <i class="fas fa-copy"></i>
           </button>
         </div>
+        <button class="repo-expand-btn" data-repo="${escapeHtml(repo.name)}" data-branch="${escapeHtml(repo.default_branch)}" aria-label="Toggle README">
+          <i class="fas fa-chevron-down"></i> <span class="btn-text">readme</span>
+        </button>
       `;
 
       grid.appendChild(card);
@@ -99,19 +157,29 @@
     root.innerHTML = '';
     root.appendChild(grid);
 
-    // Clipboard handlers
+    // Event delegation
     grid.addEventListener('click', e => {
-      const btn = e.target.closest('.clone-btn');
-      if (!btn) return;
-      const url = btn.dataset.url;
-      navigator.clipboard.writeText(`git clone ${url}`).then(() => {
-        btn.classList.add('copied');
-        btn.innerHTML = '<i class="fas fa-check"></i>';
-        setTimeout(() => {
-          btn.classList.remove('copied');
-          btn.innerHTML = '<i class="fas fa-copy"></i>';
-        }, 2000);
-      });
+      // Clone button
+      const cloneBtn = e.target.closest('.clone-btn');
+      if (cloneBtn) {
+        const url = cloneBtn.dataset.url;
+        navigator.clipboard.writeText(`git clone ${url}`).then(() => {
+          cloneBtn.classList.add('copied');
+          cloneBtn.innerHTML = '<i class="fas fa-check"></i>';
+          setTimeout(() => {
+            cloneBtn.classList.remove('copied');
+            cloneBtn.innerHTML = '<i class="fas fa-copy"></i>';
+          }, 2000);
+        });
+        return;
+      }
+
+      // Expand button
+      const expandBtn = e.target.closest('.repo-expand-btn');
+      if (expandBtn) {
+        const card = expandBtn.closest('.repo-card');
+        toggleReadme(card, expandBtn.dataset.repo, expandBtn.dataset.branch);
+      }
     });
   }
 

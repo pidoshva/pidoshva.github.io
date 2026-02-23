@@ -416,6 +416,37 @@ nav .external::after {
 .clone-btn:hover { border-color: var(--green); color: var(--green); }
 .clone-btn.copied { border-color: var(--green); color: var(--green); }
 
+/* Expand/collapse README button */
+.repo-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-family: var(--font);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.repo-expand-btn:hover { border-color: var(--green); color: var(--green); }
+.repo-expand-btn.expanded { border-color: var(--green); color: var(--green); }
+
+/* Expanded README content */
+.repo-readme {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.readme-error {
+  color: var(--pink);
+  font-size: 0.8rem;
+}
+
 .goodies-loading {
   color: var(--text-dim);
   font-size: 0.85rem;
@@ -753,6 +784,17 @@ footer a:hover { color: var(--green); }
     grid-template-rows: repeat(7, 8px);
     grid-auto-columns: 8px;
   }
+
+  /* Blog post reader */
+  .post-header h1 { font-size: 1.25rem; }
+  .post-content { font-size: 0.85rem; }
+  .post-content h2 { font-size: 1.1rem; }
+  .post-content h3 { font-size: 0.95rem; }
+  .post-content pre { padding: 0.75rem; }
+
+  /* Repo cards */
+  .clone-url { font-size: 0.7rem; }
+  .repo-readme.post-content pre { font-size: 0.75rem; }
 
   footer .container {
     flex-direction: column;
