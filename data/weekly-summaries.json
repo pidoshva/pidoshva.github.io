@@ -3,34 +3,124 @@
     {
       "week_start": "2026-02-17",
       "week_end": "2026-02-23",
-      "generated": "2026-02-23T03:43:52.980880+00:00",
+      "generated": "2026-02-23T05:40:20.636759+00:00",
       "trigger": "workflow_dispatch",
-      "summary": "Focused on geleus.com redesign with automated weekly summaries, expandable READMEs on goodies page, and blog system. Contributed to OrderProtection repos including monolog and cart-widget.",
+      "summary": "Shipped 8 warranty validation fixes in OrderProtection/monolog (TypeScript) with 21 commits. Updated pidoshva.github.io portfolio with automated weekly summaries. Advanced cart-widget customization features.",
       "highlights": [
-        "pidoshva.github.io: built markdown blog system with no build step",
-        "pidoshva.github.io: added expandable README to goodies repo cards",
-        "pidoshva.github.io: automated weekly journal with GitHub Actions + Claude API",
-        "pidoshva.github.io: added contribution graph with green heatmap",
-        "geleus-io: maintained interactive terminal resume"
+        "monolog (OrderProtection): Fixed warranty display logic, validation, and ID handling across 8 merged PRs",
+        "monolog (OrderProtection): Resolved warranty duration type handling and premium/pricing rule integration",
+        "monolog (OrderProtection): Added dependsOn to test targets and fixed mobile layout issues",
+        "pidoshva.github.io: Updated portfolio with weekly summary automation and GitHub email configuration",
+        "pidoshva.github.io: Added blog post and refined journal workflow with 20 commits",
+        "cart-widget (OrderProtection): Reviewed customizable info modal PR and merged fluid/API widget feature",
+        "geleus-io: Updated resume with OrderProtection role and refreshed skills section",
+        "monolog (OrderProtection): Open PR for Monaco editor integration in customizer advanced config"
       ],
       "repos": [
+        "cart-widget",
         "geleus-io",
+        "monolog",
         "pidoshva.github.io"
       ],
-      "prs": [],
-      "repo_orgs": {},
+      "prs": [
+        {
+          "title": "refactor: tagging to allow extended warranties",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: ensure no warranties are displayed under Warranties if its off",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: warrantyID issues in create-policy",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: warranty id defaulting to null",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: determine warranty validity from extended premium and pricing rules",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: add validity field to WarrantyDto",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: DTO validation for extended warranties",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix: broken mobile layout",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(customizer): use Monaco editor in advanced config",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(merchant-svc): wire up LaunchDarkly for extended warranty featur",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: customizable info modal content",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(api/fluid): add fluid and API widget.",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: make sure hbs is available",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
       "repo_languages": {
         "pidoshva.github.io": "JavaScript",
-        "geleus-io": "HTML"
+        "geleus-io": "HTML",
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript"
       },
       "languages": [
         "HTML",
-        "JavaScript"
+        "JavaScript",
+        "TypeScript"
       ],
       "stats": {
-        "commits": 12,
-        "prs": 0,
-        "repos_active": 2
+        "commits": 42,
+        "prs": 12,
+        "repos_active": 4
       }
     }
   ]
