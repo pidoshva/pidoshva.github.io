@@ -3,6 +3,7 @@
 
 import json
 import os
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -28,8 +29,25 @@ if GH_PAT:
     HEADERS["Authorization"] = f"Bearer {GH_PAT}"
 
 
-def gh_get(url: str, params: dict | None = None) -> requests.Response:
-    return requests.get(url, headers=HEADERS, params=params or {}, timeout=30)
+def gh_get(url: str, params: dict | None = None, retries: int = 3) -> requests.Response:
+    for attempt in range(retries):
+        try:
+            resp = requests.get(url, headers=HEADERS, params=params or {}, timeout=30)
+            if resp.status_code == 403 and "rate limit" in resp.text.lower():
+                wait = int(resp.headers.get("Retry-After", 60))
+                print(f"  Rate limited, waiting {wait}s...")
+                time.sleep(wait)
+                continue
+            if resp.status_code >= 500 and attempt < retries - 1:
+                time.sleep(2 ** attempt)
+                continue
+            return resp
+        except requests.RequestException as e:
+            if attempt < retries - 1:
+                time.sleep(2 ** attempt)
+                continue
+            raise
+    return resp
 
 
 def fetch_active_repos(since_iso: str) -> list[dict]:
@@ -112,6 +130,14 @@ def fetch_user_issues(since: str) -> list[dict]:
     if resp.ok:
         return resp.json().get("items", [])
     return []
+
+
+def fetch_repo_language(full_name: str) -> str | None:
+    """Fetch primary language for a repo."""
+    resp = gh_get(f"https://api.github.com/repos/{full_name}")
+    if resp.ok:
+        return resp.json().get("language")
+    return None
 
 
 def gather_activity(week_start: str, week_end: str) -> dict:
@@ -282,7 +308,18 @@ Return ONLY valid JSON, no markdown fencing."""
             text = text[: text.rfind("```")]
         text = text.strip()
 
-    result = json.loads(text)
+    try:
+        result = json.loads(text)
+    except json.JSONDecodeError:
+        print(f"Warning: Claude returned invalid JSON, using fallback")
+        print(f"  Raw response: {text[:200]}")
+        return fallback_summary(activity, week_start, week_end)
+
+    if not isinstance(result.get("summary"), str):
+        result["summary"] = ""
+    if not isinstance(result.get("highlights"), list):
+        result["highlights"] = []
+
     return build_entry(activity, result, week_start, week_end)
 
 

@@ -4,22 +4,31 @@
       "week_start": "2026-02-17",
       "week_end": "2026-02-23",
       "generated": "2026-02-23T03:43:52.980880+00:00",
-      "summary": "No commits recorded this week across active repositories.",
+      "trigger": "workflow_dispatch",
+      "summary": "Focused on geleus.com redesign with automated weekly summaries, expandable READMEs on goodies page, and blog system. Contributed to OrderProtection repos including monolog and cart-widget.",
       "highlights": [
-        "Maintained activity in geleus-io and pidoshva.github.io repositories",
-        "Languages tracked: HTML and JavaScript",
-        "Week focused on planning or review rather than code changes"
+        "pidoshva.github.io: built markdown blog system with no build step",
+        "pidoshva.github.io: added expandable README to goodies repo cards",
+        "pidoshva.github.io: automated weekly journal with GitHub Actions + Claude API",
+        "pidoshva.github.io: added contribution graph with green heatmap",
+        "geleus-io: maintained interactive terminal resume"
       ],
       "repos": [
         "geleus-io",
         "pidoshva.github.io"
       ],
+      "prs": [],
+      "repo_orgs": {},
+      "repo_languages": {
+        "pidoshva.github.io": "JavaScript",
+        "geleus-io": "HTML"
+      },
       "languages": [
         "HTML",
         "JavaScript"
       ],
       "stats": {
-        "commits": 0,
+        "commits": 12,
         "prs": 0,
         "repos_active": 2
       }
