@@ -193,6 +193,13 @@ nav .external::after {
   padding: 2rem 0;
 }
 
+.contrib-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
 .contrib-graph {
   overflow-x: auto;
   padding-bottom: 0.5rem;
@@ -221,11 +228,17 @@ nav .external::after {
 .contrib-cell[data-level="3"] { background: var(--contrib-3); }
 .contrib-cell[data-level="4"] { background: var(--contrib-4); }
 
+.contrib-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
 .contrib-legend {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin-top: 0.75rem;
   font-size: 0.7rem;
   color: var(--text-dim);
 }
@@ -252,9 +265,8 @@ nav .external::after {
 .contrib-tooltip.visible { opacity: 1; }
 
 .contrib-summary {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-dim);
-  margin-top: 0.5rem;
 }
 
 .contrib-loading {

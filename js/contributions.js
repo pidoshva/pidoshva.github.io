@@ -50,7 +50,14 @@
 
     graph.appendChild(grid);
 
-    // Legend
+    // Footer row: summary left, legend right
+    const footer = document.createElement('div');
+    footer.className = 'contrib-footer';
+
+    const summary = document.createElement('div');
+    summary.className = 'contrib-summary';
+    summary.textContent = `${totalCount.toLocaleString()} contributions in the last year`;
+
     const legend = document.createElement('div');
     legend.className = 'contrib-legend';
     legend.innerHTML = '<span>Less</span>';
@@ -59,15 +66,17 @@
     }
     legend.innerHTML += '<span>More</span>';
 
-    // Summary
-    const summary = document.createElement('div');
-    summary.className = 'contrib-summary';
-    summary.textContent = `${totalCount.toLocaleString()} contributions in the last year`;
+    footer.appendChild(summary);
+    footer.appendChild(legend);
+
+    // Wrap in card
+    const card = document.createElement('div');
+    card.className = 'contrib-card';
+    card.appendChild(graph);
+    card.appendChild(footer);
 
     root.innerHTML = '';
-    root.appendChild(graph);
-    root.appendChild(legend);
-    root.appendChild(summary);
+    root.appendChild(card);
 
     // Tooltip
     const tooltip = document.getElementById('contrib-tooltip');
