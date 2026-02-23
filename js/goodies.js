@@ -86,6 +86,11 @@
         readme.className = 'repo-readme post-content';
         readme.innerHTML = marked.parse(md);
         card.appendChild(readme);
+        if (window.hljs) {
+          readme.querySelectorAll('pre code').forEach(function (block) {
+            hljs.highlightElement(block);
+          });
+        }
         btn.querySelector('i').className = 'fas fa-chevron-up';
         btn.querySelector('.btn-text').textContent = 'collapse';
       })

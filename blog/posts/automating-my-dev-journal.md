@@ -26,40 +26,37 @@ No database. No server. No build step. Just a GitHub Action, a JSON file, and so
 
 ### Data Collection
 
-The script runs authenticated against GitHub's REST API with a PAT that has access to both personal repos and organization repos. It does three things:
+The script runs authenticated against GitHub's REST API with a personal access token. It does three things:
 
 - **Finds active repos** — queries `/user/repos` sorted by push date, filters to the past 7 days
-- **Fetches commits per repo** — pulls all commits in the date range, then filters by my GitHub login or commit email (important for org repos where your commit identity might differ)
+- **Fetches commits per repo** — pulls all commits in the date range, then filters by login or commit email
 - **Searches for PRs** — uses the Search API with both `author:` and `involves:` queries to catch PRs I opened *and* PRs I reviewed
 
 ```python
-USER_EMAILS = {
-    "vpgeleus@gmail.com",
-    "vadim.pidoshva@orderprotection.com",
-}
-
 # Match by GitHub login OR commit email
+# Important for org repos where commit identity may differ
 author_login = (c.get("author") or {}).get("login", "")
 author_email = (c.get("commit", {}).get("author") or {}).get("email", "")
+
 if author_login == USERNAME or author_email in USER_EMAILS:
     user_commits.append(c)
 ```
 
-This is the part that took the most iteration. GitHub's APIs have subtle gaps — the Events API only returns public activity, the Search Commits API doesn't index private repos, and the `author` filter on the commits endpoint uses email matching that can miss org contributions. The solution was to fetch *all* commits without filtering, then match locally by login and email.
+This is the part that took the most iteration. GitHub's APIs have subtle gaps — the Events API only returns public activity, the Search Commits API doesn't index private repos, and the `author` filter on the commits endpoint uses email matching that can miss org contributions. The solution was to fetch *all* commits without filtering, then match locally by login and a set of known emails.
 
 ### AI Summary Generation
 
 The aggregated data — repos, commit messages, PR titles, languages — gets packed into a structured prompt and sent to Claude Haiku:
 
-```
-Activity for 2026-02-17 to 2026-02-23:
+```text
+Activity for the week:
 - Total commits: 21
 - Per-repo breakdown:
-  - monolog (OrderProtection) (TypeScript, 15 commits): fix warranty validation...
-  - pidoshva.github.io (JavaScript, 6 commits): add blog system...
+  - project-api (TypeScript, 15 commits): fix validation logic...
+  - portfolio-site (JavaScript, 6 commits): add blog system...
 - Pull requests:
-  - [merged] OrderProtection/monolog#412: Fix warranty edge case
-  - [open] OrderProtection/cart-widget#89: Customizable info modal
+  - [merged] org/project-api#412: Fix edge case in validation
+  - [open] org/cart-widget#89: Customizable info modal
 ```
 
 Claude returns a JSON object with a 2–3 sentence summary and 5–8 bullet-point highlights. The prompt is specific: start each highlight with the repo name, mention organizations, be concrete about what changed.
@@ -68,20 +65,20 @@ If Claude returns invalid JSON (it happens), the script falls back to a basic su
 
 ### The Tree Timeline
 
-On the frontend, `summary.js` fetches the JSON and renders it as an interactive tree — inspired by the `tree` command:
+On the frontend, the renderer fetches the JSON and builds an interactive tree — inspired by the `tree` command:
 
-```
+```text
 2026
 ├── February
 │   └── Week 8 (Feb 17–23)              12 commits · 2 repos
-│       ├── pidoshva.github.io           JavaScript
+│       ├── portfolio-site               JavaScript
 │       │   ├── Built markdown blog system
 │       │   ├── Added expandable README to goodies cards
 │       │   └── Automated weekly journal with Actions + Claude
-│       └── geleus-io                    HTML
+│       └── terminal-resume              HTML
 │           └── Maintained interactive terminal resume
 │
-│       "Focused on geleus.com redesign with blog system,
+│       "Focused on site redesign with blog system,
 │        expandable READMEs, and automated weekly summaries."
 ```
 
@@ -102,7 +99,7 @@ Saturday 5am UTC is Friday night in Mountain Time — the end of the work week. 
 
 `workflow_dispatch` lets me trigger it manually for testing or when I want an off-cycle update.
 
-The footer on the homepage is trigger-aware: scheduled runs show "Next update: Saturday, Mar 7", manual triggers just show "Last updated: Feb 23".
+The footer on the homepage is trigger-aware: scheduled runs show the next update date, manual triggers just show when it was last updated.
 
 ## What I Learned
 
@@ -112,18 +109,18 @@ The footer on the homepage is trigger-aware: scheduled runs show "Next update: S
 
 **Claude is remarkably good at structured output.** With a specific prompt and examples, Haiku returns valid JSON on the first try almost every time. The fallback logic has only triggered once in testing, and that was a network timeout.
 
-**Progressive enhancement makes this bulletproof.** The homepage always has hardcoded HTML that loads instantly. The summary section renders "No summaries yet" if the JSON fetch fails. Profile sync from the GitHub API updates the name and bio but falls back to the static HTML. Nothing breaks if an API is down.
+**Progressive enhancement makes this bulletproof.** The homepage always has hardcoded HTML that loads instantly. The summary section renders "No summaries yet" if the JSON fetch fails. Profile sync from the GitHub API updates the hero section but falls back to static HTML. Nothing breaks if an API is down.
 
 ## Cost
 
-Effectively zero. The GitHub Action runs once a week on the free tier. Claude Haiku costs fractions of a cent per call. The PAT is free. GitHub Pages is free.
+Effectively zero. The GitHub Action runs once a week on the free tier. Claude Haiku costs fractions of a cent per call. GitHub Pages is free.
 
 ## Source
 
-The full implementation is in this repo:
+The full implementation is open source in this site's repo:
 
 - [`scripts/weekly-summary.py`](https://github.com/pidoshva/pidoshva.github.io/blob/main/scripts/weekly-summary.py) — data collection + Claude API
 - [`js/summary.js`](https://github.com/pidoshva/pidoshva.github.io/blob/main/js/summary.js) — tree timeline renderer
 - [`.github/workflows/weekly-summary.yml`](https://github.com/pidoshva/pidoshva.github.io/blob/main/.github/workflows/weekly-summary.yml) — the Action
 
-If you want to adapt this for your own site, the only prerequisites are an Anthropic API key and a GitHub PAT with repo access. The rest is just a cron job and some vanilla JS.
+If you want to adapt this for your own site, you'll need an Anthropic API key and a GitHub PAT with repo scope stored as repository secrets. The rest is just a cron job and some vanilla JS.

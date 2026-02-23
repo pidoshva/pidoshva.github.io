@@ -152,6 +152,13 @@
               '<a href="/blog/" class="back-link"><i class="fas fa-arrow-left"></i> back to blog</a>' +
             '</footer>' +
           '</article>';
+
+        // Syntax highlighting
+        if (window.hljs) {
+          root.querySelectorAll('pre code').forEach(function (block) {
+            hljs.highlightElement(block);
+          });
+        }
       })
       .catch(function () {
         window.location.replace('/blog/');

@@ -871,6 +871,12 @@ nav .external::after {
   line-height: 1.6;
 }
 
+/* Override hljs theme bg to match site palette */
+.post-content pre code.hljs {
+  background: transparent;
+  padding: 0;
+}
+
 .post-content blockquote {
   border-left: 3px solid var(--green);
   padding: 0.5rem 1rem;
