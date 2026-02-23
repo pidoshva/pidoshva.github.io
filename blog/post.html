@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>blog — geleus</title>
-  <meta name="description" content="Blog posts by Vadim Pidoshva.">
+  <meta name="description" content="Blog post by Vadim Pidoshva.">
   <meta property="og:title" content="blog — geleus">
-  <meta property="og:description" content="Blog posts by Vadim Pidoshva.">
-  <meta property="og:type" content="website">
+  <meta property="og:description" content="Blog post by Vadim Pidoshva.">
+  <meta property="og:type" content="article">
   <meta property="og:url" content="https://geleus.com/blog/">
   <link rel="icon" type="image/png" href="/images/favicon.ico">
   <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
@@ -36,9 +36,8 @@
   <main>
     <section class="blog-section">
       <div class="container">
-        <div class="section-heading"><span class="prompt">$</span> cat ~/blog</div>
-        <div id="blog-list-root">
-          <div class="blog-loading">Loading posts...</div>
+        <div id="post-root">
+          <div class="blog-loading">Loading post...</div>
         </div>
       </div>
     </section>
@@ -54,6 +53,7 @@
   </footer>
 
   <script src="/js/nav.js"></script>
+  <script src="/lib/marked/marked.min.js"></script>
   <script src="/js/blog.js"></script>
 </body>
 </html>
