@@ -24,7 +24,7 @@ jobs:
       - name: Generate weekly summary
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
           TRIGGER: ${{ github.event_name }}
         run: python scripts/weekly-summary.py
 

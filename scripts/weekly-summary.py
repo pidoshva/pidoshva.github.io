@@ -11,25 +11,22 @@ import anthropic
 import requests
 
 USERNAME = "pidoshva"
-EVENTS_URL = f"https://api.github.com/users/{USERNAME}/events?per_page=100"
-REPO_URL = "https://api.github.com/repos/{owner}/{repo}"
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 SUMMARIES_FILE = DATA_DIR / "weekly-summaries.json"
 NOTES_FILE = DATA_DIR / "notes.md"
 
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GH_PAT = os.environ.get("GH_PAT", "")
 TRIGGER = os.environ.get("TRIGGER", "manual")  # "schedule" or "workflow_dispatch"
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 
 HEADERS = {"Accept": "application/vnd.github.v3+json"}
-if GITHUB_TOKEN:
-    HEADERS["Authorization"] = f"Bearer {GITHUB_TOKEN}"
+if GH_PAT:
+    HEADERS["Authorization"] = f"Bearer {GH_PAT}"
 
 
-def fetch_events(since: datetime) -> list[dict]:
-    """Fetch GitHub events from the past week."""
+def fetch_paginated(url: str, since: datetime) -> list[dict]:
+    """Fetch paginated events, stopping when we hit events older than `since`."""
     events = []
-    url = EVENTS_URL
     while url:
         resp = requests.get(url, headers=HEADERS, timeout=30)
         resp.raise_for_status()
@@ -39,16 +36,45 @@ def fetch_events(since: datetime) -> list[dict]:
             if created < since:
                 return events
             events.append(event)
-        # Follow pagination
         url = resp.links.get("next", {}).get("url")
     return events
 
 
-def fetch_repo_language(owner: str, repo: str) -> str | None:
-    """Fetch primary language for a repo."""
+def fetch_all_events(since: datetime) -> list[dict]:
+    """Fetch events from personal + all org feeds."""
+    # Personal events (includes private repos when authed with PAT)
+    personal_url = f"https://api.github.com/users/{USERNAME}/events?per_page=100"
+    events = fetch_paginated(personal_url, since)
+    seen_ids = {e["id"] for e in events}
+
+    # Fetch orgs the user belongs to
+    if GH_PAT:
+        try:
+            resp = requests.get(
+                "https://api.github.com/user/orgs?per_page=100",
+                headers=HEADERS,
+                timeout=15,
+            )
+            if resp.ok:
+                orgs = [org["login"] for org in resp.json()]
+                for org in orgs:
+                    org_url = f"https://api.github.com/users/{USERNAME}/events/orgs/{org}?per_page=100"
+                    org_events = fetch_paginated(org_url, since)
+                    for e in org_events:
+                        if e["id"] not in seen_ids:
+                            events.append(e)
+                            seen_ids.add(e["id"])
+        except Exception as ex:
+            print(f"Warning: could not fetch org events: {ex}")
+
+    return events
+
+
+def fetch_repo_language(full_name: str) -> str | None:
+    """Fetch primary language for a repo. full_name is 'owner/repo'."""
     try:
         resp = requests.get(
-            REPO_URL.format(owner=owner, repo=repo),
+            f"https://api.github.com/repos/{full_name}",
             headers=HEADERS,
             timeout=15,
         )
@@ -61,7 +87,7 @@ def fetch_repo_language(owner: str, repo: str) -> str | None:
 
 def aggregate_events(events: list[dict]) -> dict:
     """Aggregate events into structured data."""
-    repos = set()
+    repos = {}  # full_name -> short_name
     commit_count = 0
     commit_messages = []
     prs_opened = 0
@@ -69,20 +95,21 @@ def aggregate_events(events: list[dict]) -> dict:
     issues = 0
 
     for event in events:
-        repo_name = event.get("repo", {}).get("name", "").split("/")[-1]
+        full_name = event.get("repo", {}).get("name", "")
+        short_name = full_name.split("/")[-1]
         etype = event.get("type", "")
 
         if etype == "PushEvent":
-            repos.add(repo_name)
+            repos[full_name] = short_name
             commits = event.get("payload", {}).get("commits", [])
             commit_count += len(commits)
-            for c in commits[:3]:  # Keep top 3 messages per push
+            for c in commits[:3]:
                 msg = c.get("message", "").split("\n")[0]
                 if msg and msg not in commit_messages:
                     commit_messages.append(msg)
 
         elif etype == "PullRequestEvent":
-            repos.add(repo_name)
+            repos[full_name] = short_name
             action = event.get("payload", {}).get("action", "")
             if action == "opened":
                 prs_opened += 1
@@ -90,23 +117,26 @@ def aggregate_events(events: list[dict]) -> dict:
                 prs_merged += 1
 
         elif etype == "IssuesEvent":
-            repos.add(repo_name)
+            repos[full_name] = short_name
             issues += 1
 
         elif etype in ("CreateEvent", "DeleteEvent", "ForkEvent", "WatchEvent"):
-            repos.add(repo_name)
+            repos[full_name] = short_name
 
-    # Fetch languages for active repos
+    # Fetch languages for active repos (using full_name for API)
     languages = set()
-    for repo in repos:
-        lang = fetch_repo_language(USERNAME, repo)
+    for full_name in repos:
+        lang = fetch_repo_language(full_name)
         if lang:
             languages.add(lang)
 
+    # Use short names for display
+    display_repos = sorted(set(repos.values()))
+
     return {
-        "repos": sorted(repos),
+        "repos": display_repos,
         "commit_count": commit_count,
-        "commit_messages": commit_messages[:15],  # Cap at 15
+        "commit_messages": commit_messages[:15],
         "prs_opened": prs_opened,
         "prs_merged": prs_merged,
         "issues": issues,
@@ -147,7 +177,7 @@ Activity for {week_start} to {week_end}:
 
 Return a JSON object with exactly these fields:
 - "summary": A single sentence (max 120 chars) summarizing the week's focus
-- "highlights": An array of 2-5 short bullet points (each max 80 chars) describing key accomplishments
+- "highlights": An array of 2-5 short bullet points (each max 80 chars) describing key accomplishments. Infer what the developer worked on from commit messages and repo names. Be specific.
 
 Return ONLY valid JSON, no markdown fencing."""
 
@@ -218,7 +248,7 @@ def main():
 
     # Fetch and aggregate events
     since = datetime(week_start.year, week_start.month, week_start.day, tzinfo=timezone.utc)
-    events = fetch_events(since)
+    events = fetch_all_events(since)
     print(f"Found {len(events)} events")
 
     aggregated = aggregate_events(events)
