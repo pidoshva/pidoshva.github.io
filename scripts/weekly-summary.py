@@ -10,6 +10,11 @@ import anthropic
 import requests
 
 USERNAME = "pidoshva"
+# All emails used across personal and org repos
+USER_EMAILS = {
+    "vpgeleus@gmail.com",
+    "vadim.pidoshva@orderprotection.com",
+}
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 SUMMARIES_FILE = DATA_DIR / "weekly-summaries.json"
 NOTES_FILE = DATA_DIR / "notes.md"
@@ -68,10 +73,15 @@ def fetch_repo_commits(full_name: str, since: str, until: str) -> list[dict]:
         if not page:
             break
         for c in page:
-            # Match by GitHub login (works regardless of commit email)
+            # Match by GitHub login OR commit email
             author_login = (c.get("author") or {}).get("login", "")
             committer_login = (c.get("committer") or {}).get("login", "")
-            if author_login == USERNAME or committer_login == USERNAME:
+            author_email = (c.get("commit", {}).get("author") or {}).get("email", "")
+            committer_email = (c.get("commit", {}).get("committer") or {}).get("email", "")
+            if (author_login == USERNAME
+                    or committer_login == USERNAME
+                    or author_email in USER_EMAILS
+                    or committer_email in USER_EMAILS):
                 user_commits.append(c)
         url = resp.links.get("next", {}).get("url")
         params = {}
