@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Generate weekly activity summary using GitHub Events API and Claude."""
+"""Generate weekly activity summary using GitHub APIs and Claude."""
 
 import json
 import os
-import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -16,7 +15,7 @@ SUMMARIES_FILE = DATA_DIR / "weekly-summaries.json"
 NOTES_FILE = DATA_DIR / "notes.md"
 
 GH_PAT = os.environ.get("GH_PAT", "")
-TRIGGER = os.environ.get("TRIGGER", "manual")  # "schedule" or "workflow_dispatch"
+TRIGGER = os.environ.get("TRIGGER", "manual")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 
 HEADERS = {"Accept": "application/vnd.github.v3+json"}
@@ -24,128 +23,150 @@ if GH_PAT:
     HEADERS["Authorization"] = f"Bearer {GH_PAT}"
 
 
-def fetch_paginated(url: str, since: datetime) -> list[dict]:
-    """Fetch paginated events, stopping when we hit events older than `since`."""
-    events = []
+def gh_get(url: str, params: dict | None = None) -> requests.Response:
+    return requests.get(url, headers=HEADERS, params=params or {}, timeout=30)
+
+
+def fetch_all_repos() -> list[dict]:
+    """Fetch all repos the authenticated user can access (owned + org member)."""
+    repos = []
+    # Authenticated user's repos: includes private, org repos where user is member
+    url = "https://api.github.com/user/repos"
+    params = {"per_page": 100, "sort": "pushed", "direction": "desc"}
     while url:
-        resp = requests.get(url, headers=HEADERS, timeout=30)
-        resp.raise_for_status()
-        page = resp.json()
-        for event in page:
-            created = datetime.fromisoformat(event["created_at"].replace("Z", "+00:00"))
-            if created < since:
-                return events
-            events.append(event)
+        resp = gh_get(url, params)
+        if not resp.ok:
+            print(f"Warning: repos fetch failed: {resp.status_code}")
+            break
+        repos.extend(resp.json())
         url = resp.links.get("next", {}).get("url")
-    return events
+        params = {}  # pagination URL includes params
+    return repos
 
 
-def fetch_all_events(since: datetime) -> list[dict]:
-    """Fetch events from personal + all org feeds."""
-    # Personal events (includes private repos when authed with PAT)
-    personal_url = f"https://api.github.com/users/{USERNAME}/events?per_page=100"
-    events = fetch_paginated(personal_url, since)
-    seen_ids = {e["id"] for e in events}
-
-    # Fetch orgs the user belongs to
-    if GH_PAT:
-        try:
-            resp = requests.get(
-                "https://api.github.com/user/orgs?per_page=100",
-                headers=HEADERS,
-                timeout=15,
-            )
-            if resp.ok:
-                orgs = [org["login"] for org in resp.json()]
-                for org in orgs:
-                    org_url = f"https://api.github.com/users/{USERNAME}/events/orgs/{org}?per_page=100"
-                    org_events = fetch_paginated(org_url, since)
-                    for e in org_events:
-                        if e["id"] not in seen_ids:
-                            events.append(e)
-                            seen_ids.add(e["id"])
-        except Exception as ex:
-            print(f"Warning: could not fetch org events: {ex}")
-
-    return events
+def fetch_repo_commits(full_name: str, since: str, until: str) -> list[dict]:
+    """Fetch commits by the user in a specific repo within date range."""
+    commits = []
+    url = f"https://api.github.com/repos/{full_name}/commits"
+    params = {"author": USERNAME, "since": since, "until": until, "per_page": 100}
+    while url:
+        resp = gh_get(url, params)
+        if not resp.ok:
+            break
+        page = resp.json()
+        if not page:
+            break
+        commits.extend(page)
+        url = resp.links.get("next", {}).get("url")
+        params = {}
+    return commits
 
 
-def fetch_repo_language(full_name: str) -> str | None:
-    """Fetch primary language for a repo. full_name is 'owner/repo'."""
-    try:
-        resp = requests.get(
-            f"https://api.github.com/repos/{full_name}",
-            headers=HEADERS,
-            timeout=15,
-        )
-        if resp.ok:
-            return resp.json().get("language")
-    except Exception:
-        pass
-    return None
+def fetch_user_prs(since: str) -> list[dict]:
+    """Fetch PRs authored by the user since a date."""
+    query = f"author:{USERNAME} created:>={since}"
+    resp = gh_get(
+        "https://api.github.com/search/issues",
+        {"q": query + " type:pr", "per_page": 100, "sort": "created"},
+    )
+    if resp.ok:
+        return resp.json().get("items", [])
+    return []
 
 
-def aggregate_events(events: list[dict]) -> dict:
-    """Aggregate events into structured data."""
-    repos = {}  # full_name -> short_name
-    commit_count = 0
-    commit_messages = []
-    prs_opened = 0
-    prs_merged = 0
-    issues = 0
+def fetch_user_issues(since: str) -> list[dict]:
+    """Fetch issues authored by the user since a date."""
+    query = f"author:{USERNAME} created:>={since}"
+    resp = gh_get(
+        "https://api.github.com/search/issues",
+        {"q": query + " type:issue", "per_page": 100, "sort": "created"},
+    )
+    if resp.ok:
+        return resp.json().get("items", [])
+    return []
 
-    for event in events:
-        full_name = event.get("repo", {}).get("name", "")
-        short_name = full_name.split("/")[-1]
-        etype = event.get("type", "")
 
-        if etype == "PushEvent":
-            repos[full_name] = short_name
-            commits = event.get("payload", {}).get("commits", [])
-            commit_count += len(commits)
-            for c in commits[:3]:
-                msg = c.get("message", "").split("\n")[0]
-                if msg and msg not in commit_messages:
-                    commit_messages.append(msg)
+def gather_activity(week_start: str, week_end_dt: datetime) -> dict:
+    """Gather all activity across all accessible repos."""
+    since_iso = f"{week_start}T00:00:00Z"
+    until_iso = week_end_dt.strftime("%Y-%m-%dT23:59:59Z")
 
-        elif etype == "PullRequestEvent":
-            repos[full_name] = short_name
-            action = event.get("payload", {}).get("action", "")
-            if action == "opened":
-                prs_opened += 1
-            elif action == "closed" and event["payload"].get("pull_request", {}).get("merged"):
-                prs_merged += 1
+    # Get all repos, check which were pushed to recently
+    all_repos = fetch_all_repos()
+    print(f"Accessible repos: {len(all_repos)}")
 
-        elif etype == "IssuesEvent":
-            repos[full_name] = short_name
-            issues += 1
+    # Filter to repos pushed within the week (use pushed_at field)
+    cutoff = datetime.fromisoformat(since_iso.replace("Z", "+00:00"))
+    active_repos = []
+    for repo in all_repos:
+        pushed = repo.get("pushed_at", "")
+        if pushed:
+            pushed_dt = datetime.fromisoformat(pushed.replace("Z", "+00:00"))
+            if pushed_dt >= cutoff:
+                active_repos.append(repo)
 
-        elif etype in ("CreateEvent", "DeleteEvent", "ForkEvent", "WatchEvent"):
-            repos[full_name] = short_name
+    print(f"Repos pushed this week: {len(active_repos)}")
 
-    # Fetch languages for active repos (using full_name for API)
+    # Fetch commits from each active repo
+    repo_data = {}  # short_name -> {commits, messages, language, full_name}
+    total_commits = 0
+
+    for repo in active_repos:
+        full_name = repo["full_name"]
+        short_name = repo["name"]
+        language = repo.get("language")
+
+        commits = fetch_repo_commits(full_name, since_iso, until_iso)
+        if not commits:
+            continue
+
+        messages = []
+        for c in commits:
+            msg = c.get("commit", {}).get("message", "").split("\n")[0]
+            # Skip bot commits and merge commits
+            if msg and not msg.startswith("[bot]") and not msg.startswith("Merge"):
+                messages.append(msg)
+
+        total_commits += len(commits)
+        repo_data[short_name] = {
+            "commits": len(commits),
+            "messages": messages[:5],
+            "language": language,
+            "full_name": full_name,
+        }
+
+    # Fetch PRs and issues
+    prs = fetch_user_prs(week_start)
+    issues = fetch_user_issues(week_start)
+
+    prs_opened = len([p for p in prs if p.get("state") == "open"])
+    prs_merged = len([p for p in prs if p.get("pull_request", {}).get("merged_at")])
+    prs_closed = len(prs) - prs_opened
+
+    # Collect languages
     languages = set()
-    for full_name in repos:
-        lang = fetch_repo_language(full_name)
-        if lang:
-            languages.add(lang)
+    for rd in repo_data.values():
+        if rd["language"]:
+            languages.add(rd["language"])
 
-    # Use short names for display
-    display_repos = sorted(set(repos.values()))
+    # Collect all commit messages for Claude
+    all_messages = []
+    for rd in repo_data.values():
+        all_messages.extend(rd["messages"])
 
     return {
-        "repos": display_repos,
-        "commit_count": commit_count,
-        "commit_messages": commit_messages[:15],
+        "repos": sorted(repo_data.keys()),
+        "repo_details": repo_data,
+        "commit_count": total_commits,
+        "commit_messages": all_messages[:20],
         "prs_opened": prs_opened,
         "prs_merged": prs_merged,
-        "issues": issues,
+        "issues": len(issues),
         "languages": sorted(languages),
     }
 
 
 def read_notes() -> str:
-    """Read optional user notes."""
     if NOTES_FILE.exists():
         content = NOTES_FILE.read_text().strip()
         return content if content else ""
@@ -153,31 +174,38 @@ def read_notes() -> str:
 
 
 def clear_notes():
-    """Clear notes file after processing."""
     if NOTES_FILE.exists():
         NOTES_FILE.write_text("")
 
 
-def generate_summary(aggregated: dict, notes: str, week_start: str, week_end: str) -> dict:
+def generate_summary(activity: dict, notes: str, week_start: str, week_end: str) -> dict:
     """Call Claude API to generate a summary."""
     if not ANTHROPIC_API_KEY:
         print("Warning: No ANTHROPIC_API_KEY set, using fallback summary")
-        return fallback_summary(aggregated, week_start, week_end)
+        return fallback_summary(activity, week_start, week_end)
+
+    # Build per-repo detail for the prompt
+    repo_lines = []
+    for name, rd in activity["repo_details"].items():
+        lang = rd["language"] or "unknown"
+        msgs = "; ".join(rd["messages"][:3]) if rd["messages"] else "no messages"
+        repo_lines.append(f"  - {name} ({lang}, {rd['commits']} commits): {msgs}")
 
     prompt = f"""You are summarizing a developer's weekly GitHub activity for their portfolio website.
 
 Activity for {week_start} to {week_end}:
-- Repos active: {', '.join(aggregated['repos']) or 'none'}
-- Commits: {aggregated['commit_count']}
-- Key commit messages: {json.dumps(aggregated['commit_messages'][:10])}
-- Languages: {', '.join(aggregated['languages']) or 'none'}
-- PRs opened: {aggregated['prs_opened']}, merged: {aggregated['prs_merged']}
-- Issues: {aggregated['issues']}
+- Total commits: {activity['commit_count']}
+- Repos active: {', '.join(activity['repos']) or 'none'}
+- Per-repo breakdown:
+{chr(10).join(repo_lines) or '  (none)'}
+- Languages: {', '.join(activity['languages']) or 'none'}
+- PRs opened: {activity['prs_opened']}, merged: {activity['prs_merged']}
+- Issues created: {activity['issues']}
 {"- Personal notes: " + notes if notes else ""}
 
 Return a JSON object with exactly these fields:
-- "summary": A single sentence (max 120 chars) summarizing the week's focus
-- "highlights": An array of 2-5 short bullet points (each max 80 chars) describing key accomplishments. Infer what the developer worked on from commit messages and repo names. Be specific.
+- "summary": A single sentence (max 120 chars) summarizing the week's focus areas
+- "highlights": An array of 2-5 short bullet points (each max 80 chars) describing key accomplishments. Be specific about what was built or changed based on commit messages.
 
 Return ONLY valid JSON, no markdown fencing."""
 
@@ -189,7 +217,6 @@ Return ONLY valid JSON, no markdown fencing."""
     )
 
     text = message.content[0].text.strip()
-    # Strip markdown fencing if present
     if text.startswith("```"):
         text = text.split("\n", 1)[1]
         if text.endswith("```"):
@@ -198,6 +225,19 @@ Return ONLY valid JSON, no markdown fencing."""
 
     result = json.loads(text)
 
+    return build_entry(activity, result, week_start, week_end)
+
+
+def fallback_summary(activity: dict, week_start: str, week_end: str) -> dict:
+    repos_str = ", ".join(activity["repos"][:3]) if activity["repos"] else "various projects"
+    result = {
+        "summary": f"Worked on {repos_str} with {activity['commit_count']} commits.",
+        "highlights": activity["commit_messages"][:5],
+    }
+    return build_entry(activity, result, week_start, week_end)
+
+
+def build_entry(activity: dict, result: dict, week_start: str, week_end: str) -> dict:
     return {
         "week_start": week_start,
         "week_end": week_end,
@@ -205,96 +245,54 @@ Return ONLY valid JSON, no markdown fencing."""
         "trigger": TRIGGER,
         "summary": result.get("summary", ""),
         "highlights": result.get("highlights", []),
-        "repos": aggregated["repos"],
-        "languages": aggregated["languages"],
+        "repos": activity["repos"],
+        "languages": activity["languages"],
         "stats": {
-            "commits": aggregated["commit_count"],
-            "prs": aggregated["prs_opened"] + aggregated["prs_merged"],
-            "repos_active": len(aggregated["repos"]),
-        },
-    }
-
-
-def fallback_summary(aggregated: dict, week_start: str, week_end: str) -> dict:
-    """Generate a summary without Claude API."""
-    repos_str = ", ".join(aggregated["repos"][:3]) if aggregated["repos"] else "various projects"
-    summary = f"Worked on {repos_str} with {aggregated['commit_count']} commits."
-    highlights = aggregated["commit_messages"][:5]
-
-    return {
-        "week_start": week_start,
-        "week_end": week_end,
-        "generated": datetime.now(timezone.utc).isoformat(),
-        "trigger": TRIGGER,
-        "summary": summary,
-        "highlights": highlights,
-        "repos": aggregated["repos"],
-        "languages": aggregated["languages"],
-        "stats": {
-            "commits": aggregated["commit_count"],
-            "prs": aggregated["prs_opened"] + aggregated["prs_merged"],
-            "repos_active": len(aggregated["repos"]),
+            "commits": activity["commit_count"],
+            "prs": activity["prs_opened"] + activity["prs_merged"],
+            "repos_active": len(activity["repos"]),
         },
     }
 
 
 def main():
-    # Calculate week range (past 7 days)
     now = datetime.now(timezone.utc)
     week_end = now.date()
     week_start = week_end - timedelta(days=6)
 
     print(f"Generating summary for {week_start} to {week_end}")
 
-    # Fetch and aggregate events
-    since = datetime(week_start.year, week_start.month, week_start.day, tzinfo=timezone.utc)
-    events = fetch_all_events(since)
-    print(f"Found {len(events)} events")
+    activity = gather_activity(str(week_start), now)
+    print(f"Repos: {activity['repos']}")
+    print(f"Commits: {activity['commit_count']}")
+    print(f"Languages: {activity['languages']}")
 
-    aggregated = aggregate_events(events)
-    print(f"Repos: {aggregated['repos']}")
-    print(f"Commits: {aggregated['commit_count']}")
-
-    # Read optional notes
     notes = read_notes()
     if notes:
         print(f"Notes found: {len(notes)} chars")
 
-    # Skip if no activity and no notes
-    if aggregated["commit_count"] == 0 and not notes and not aggregated["repos"]:
+    if activity["commit_count"] == 0 and not notes and not activity["repos"]:
         print("No activity this week, skipping summary generation")
         return
 
-    # Generate summary
-    entry = generate_summary(
-        aggregated, notes, str(week_start), str(week_end)
-    )
+    entry = generate_summary(activity, notes, str(week_start), str(week_end))
 
-    # Load existing summaries
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     if SUMMARIES_FILE.exists():
         data = json.loads(SUMMARIES_FILE.read_text())
     else:
         data = {"summaries": []}
 
-    # Check if we already have an entry for this week
-    existing = [s for s in data["summaries"] if s["week_start"] == str(week_start)]
-    if existing:
-        # Replace existing entry
-        data["summaries"] = [
-            s for s in data["summaries"] if s["week_start"] != str(week_start)
-        ]
-
+    # Replace existing entry for this week if present
+    data["summaries"] = [
+        s for s in data["summaries"] if s["week_start"] != str(week_start)
+    ]
     data["summaries"].append(entry)
-
-    # Sort by week_start descending
     data["summaries"].sort(key=lambda s: s["week_start"], reverse=True)
 
-    # Write back
     SUMMARIES_FILE.write_text(json.dumps(data, indent=2) + "\n")
     print(f"Summary written to {SUMMARIES_FILE}")
 
-    # Clear notes
     clear_notes()
 
 
