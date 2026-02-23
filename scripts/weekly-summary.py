@@ -89,14 +89,18 @@ def fetch_repo_commits(full_name: str, since: str, until: str) -> list[dict]:
 
 
 def fetch_user_prs(since: str) -> list[dict]:
-    query = f"author:{USERNAME} created:>={since} type:pr"
-    resp = gh_get(
-        "https://api.github.com/search/issues",
-        {"q": query, "per_page": 100, "sort": "created"},
-    )
-    if resp.ok:
-        return resp.json().get("items", [])
-    return []
+    """Fetch all PRs the user authored or was involved in."""
+    seen = {}
+    for query_type in ["author", "involves"]:
+        query = f"{query_type}:{USERNAME} updated:>={since} type:pr"
+        resp = gh_get(
+            "https://api.github.com/search/issues",
+            {"q": query, "per_page": 100, "sort": "updated"},
+        )
+        if resp.ok:
+            for item in resp.json().get("items", []):
+                seen[item["id"]] = item
+    return list(seen.values())
 
 
 def fetch_user_issues(since: str) -> list[dict]:
@@ -144,7 +148,7 @@ def gather_activity(week_start: str, week_end: str) -> dict:
         total_commits += len(commits)
         repo_data[short_name] = {
             "commits": len(commits),
-            "messages": messages[:5],
+            "messages": messages[:10],
             "language": language,
             "full_name": full_name,
         }
@@ -153,10 +157,11 @@ def gather_activity(week_start: str, week_end: str) -> dict:
     prs = fetch_user_prs(week_start)
     issues = fetch_user_issues(week_start)
 
-    # Extract PR details: title, repo, state, merged
+    # Extract PR details and add PR-only repos to repo_data
     pr_details = []
     for p in prs:
         repo_url = p.get("repository_url", "")
+        full_name = "/".join(repo_url.split("/")[-2:]) if repo_url else ""
         pr_repo = repo_url.split("/")[-1] if repo_url else ""
         pr_org = repo_url.split("/")[-2] if repo_url else ""
         merged = bool(p.get("pull_request", {}).get("merged_at"))
@@ -168,6 +173,23 @@ def gather_activity(week_start: str, week_end: str) -> dict:
             "state": state,
             "number": p.get("number", 0),
         })
+
+        # Add repo to repo_data if not already there (PR-only repos)
+        if pr_repo and pr_repo not in repo_data:
+            lang = None
+            # Find language from active_repos list
+            for r in active_repos:
+                if r["name"] == pr_repo:
+                    lang = r.get("language")
+                    break
+            if not lang:
+                lang = fetch_repo_language(full_name) if full_name else None
+            repo_data[pr_repo] = {
+                "commits": 0,
+                "messages": [],
+                "language": lang,
+                "full_name": full_name,
+            }
 
     prs_opened = len([p for p in pr_details if p["state"] == "open"])
     prs_merged = len([p for p in pr_details if p["state"] == "merged"])
@@ -212,8 +234,10 @@ def generate_summary(activity: dict, notes: str, week_start: str, week_end: str)
     repo_lines = []
     for name, rd in activity["repo_details"].items():
         lang = rd["language"] or "unknown"
-        msgs = "; ".join(rd["messages"][:5]) if rd["messages"] else "no notable messages"
-        repo_lines.append(f"  - {name} ({lang}, {rd['commits']} commits): {msgs}")
+        org = rd["full_name"].split("/")[0]
+        org_label = f" (org: {org})" if org != USERNAME else ""
+        msgs = "; ".join(rd["messages"][:8]) if rd["messages"] else "no direct commits"
+        repo_lines.append(f"  - {name}{org_label} ({lang}, {rd['commits']} commits): {msgs}")
 
     pr_lines = []
     for pr in activity.get("pr_details", []):
@@ -234,15 +258,20 @@ Activity for {week_start} to {week_end}:
 {"- Personal notes: " + notes if notes else ""}
 
 Return a JSON object with exactly these fields:
-- "summary": A concise 1-2 sentence summary (max 150 chars) of the week's focus. Be specific about what was built.
-- "highlights": An array of 3-6 short bullet points (each max 100 chars). Each should describe a specific accomplishment — mention the repo name, what was changed, and why. Use PR titles and commit messages as context. Group related commits into a single highlight.
+- "summary": A 2-3 sentence summary (max 280 chars) of the week's work. Mention specific repos, organizations, technologies, and what was accomplished. Example: "Shipped warranty validation fixes across OrderProtection/monolog (TypeScript). Updated personal portfolio with automated weekly summaries. Reviewed cart-widget feature PRs."
+- "highlights": An array of 5-8 bullet points (each max 120 chars). IMPORTANT:
+  - Start each highlight with the repo name followed by a colon (e.g. "monolog: ...")
+  - Be specific: mention actual features, bug fixes, or changes based on commit messages and PR titles
+  - Include work from ALL repos listed above, including repos with PRs but no direct commits (the developer reviewed or contributed to those PRs)
+  - Group related commits/PRs per repo but create multiple highlights if a repo had diverse work
+  - Mention the organization name for org repos (e.g. "cart-widget (OrderProtection): reviewed customizable info modal PR")
 
 Return ONLY valid JSON, no markdown fencing."""
 
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     message = client.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=512,
+        max_tokens=1024,
         messages=[{"role": "user", "content": prompt}],
     )
 

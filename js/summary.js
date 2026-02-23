@@ -49,7 +49,6 @@
       if (!tree[year][month]) tree[year][month] = { num: monthNum, weeks: [] };
       tree[year][month].weeks.push(s);
     });
-    // Sort weeks within each month (newest first)
     Object.keys(tree).forEach(function (y) {
       Object.keys(tree[y]).forEach(function (m) {
         tree[y][m].weeks.sort(function (a, b) {
@@ -68,7 +67,17 @@
     return parts.length ? '<span class="tree-stats">' + parts.join(' \u00b7 ') + '</span>' : '';
   }
 
-  function buildRepoHtml(repoName, languages, highlights, org) {
+  function stripRepoPrefix(text, repoName) {
+    // Remove "repoName: " prefix if Claude added it
+    var lower = text.toLowerCase();
+    var prefix = repoName.toLowerCase() + ': ';
+    if (lower.indexOf(prefix) === 0) {
+      return text.substring(prefix.length);
+    }
+    return text;
+  }
+
+  function buildRepoHtml(repoName, languages, highlights, org, prs) {
     var LANG_COLORS = (window.GELEUS && window.GELEUS.LANG_COLORS) || {};
     var langHtml = '';
     if (languages && languages.length) {
@@ -79,13 +88,31 @@
       langHtml = '<span class="tree-tags">' + langHtml + '</span>';
     }
 
-    var highlightHtml = '';
+    // Combine highlights and PRs into child items
+    var childItems = [];
+
     if (highlights && highlights.length) {
-      highlightHtml = highlights.map(function (h, i) {
-        var connector = (i === highlights.length - 1) ? 'last' : '';
-        return '<div class="tree-highlight ' + connector + '">' +
-          '<span class="tree-connector">' + (connector ? '\u2514\u2500\u2500' : '\u251C\u2500\u2500') + '</span> ' +
-          escapeHtml(h) + '</div>';
+      highlights.forEach(function (h) {
+        childItems.push({ text: stripRepoPrefix(h, repoName), type: 'highlight' });
+      });
+    }
+
+    if (prs && prs.length) {
+      prs.forEach(function (pr) {
+        var stateIcon = pr.state === 'merged' ? '\u2714' : pr.state === 'open' ? '\u25cb' : '\u2716';
+        childItems.push({ text: stateIcon + ' ' + pr.title, type: 'pr' });
+      });
+    }
+
+    var childHtml = '';
+    if (childItems.length) {
+      childHtml = childItems.map(function (item, i) {
+        var isLast = (i === childItems.length - 1);
+        var connector = isLast ? '\u2514\u2500\u2500' : '\u251C\u2500\u2500';
+        var cls = 'tree-highlight' + (item.type === 'pr' ? ' tree-pr' : '') + (isLast ? ' last' : '');
+        return '<div class="' + cls + '">' +
+          '<span class="tree-connector">' + connector + '</span> ' +
+          escapeHtml(item.text) + '</div>';
       }).join('');
     }
 
@@ -96,7 +123,7 @@
       orgHtml +
       '<span class="tree-repo-name">' + escapeHtml(repoName) + '</span> ' +
       langHtml +
-      (highlightHtml ? '<div class="tree-repo-children">' + highlightHtml + '</div>' : '') +
+      (childHtml ? '<div class="tree-repo-children">' + childHtml + '</div>' : '') +
       '</div>';
   }
 
@@ -107,44 +134,51 @@
 
     var statsHtml = summary.stats ? buildStatsHtml(summary.stats) : '';
 
-    // Build repo branches with their highlights
-    var reposHtml = '';
-    if (summary.repos && summary.repos.length) {
-      // Map highlights to repos if possible (best effort — assign sequentially)
-      var repoHighlights = {};
-      summary.repos.forEach(function (r) { repoHighlights[r] = []; });
+    // Map highlights to repos by keyword matching
+    var repoHighlights = {};
+    summary.repos.forEach(function (r) { repoHighlights[r] = []; });
 
-      if (summary.highlights) {
-        // Try to assign highlights to repos by keyword matching
-        summary.highlights.forEach(function (h) {
-          var matched = false;
-          summary.repos.forEach(function (r) {
-            if (!matched && h.toLowerCase().indexOf(r.toLowerCase()) !== -1) {
-              repoHighlights[r].push(h);
-              matched = true;
-            }
-          });
-          // Unmatched highlights go to first repo
-          if (!matched && summary.repos.length) {
-            repoHighlights[summary.repos[0]].push(h);
+    if (summary.highlights) {
+      summary.highlights.forEach(function (h) {
+        var matched = false;
+        summary.repos.forEach(function (r) {
+          if (!matched && h.toLowerCase().indexOf(r.toLowerCase()) !== -1) {
+            repoHighlights[r].push(h);
+            matched = true;
           }
         });
-      }
-
-      var repoLangs = summary.repo_languages || {};
-      var repoOrgs = summary.repo_orgs || {};
-      summary.repos.forEach(function (repoName) {
-        var lang = repoLangs[repoName] ? [repoLangs[repoName]] : null;
-        var org = repoOrgs[repoName] || null;
-        reposHtml += buildRepoHtml(repoName, lang, repoHighlights[repoName], org);
+        if (!matched && summary.repos.length) {
+          repoHighlights[summary.repos[0]].push(h);
+        }
       });
     }
+
+    // Map PRs to repos
+    var repoPrs = {};
+    summary.repos.forEach(function (r) { repoPrs[r] = []; });
+    if (summary.prs) {
+      summary.prs.forEach(function (pr) {
+        if (repoPrs[pr.repo] !== undefined) {
+          repoPrs[pr.repo].push(pr);
+        }
+      });
+    }
+
+    var repoLangs = summary.repo_languages || {};
+    var repoOrgs = summary.repo_orgs || {};
+
+    var reposHtml = '';
+    summary.repos.forEach(function (repoName) {
+      var lang = repoLangs[repoName] ? [repoLangs[repoName]] : null;
+      var org = repoOrgs[repoName] || null;
+      reposHtml += buildRepoHtml(repoName, lang, repoHighlights[repoName], org, repoPrs[repoName]);
+    });
 
     var summaryQuote = summary.summary
       ? '<div class="tree-summary">\u201C' + escapeHtml(summary.summary) + '\u201D</div>'
       : '';
 
-    // Language tags for the week
+    // Language tags for the week header
     var LANG_COLORS = (window.GELEUS && window.GELEUS.LANG_COLORS) || {};
     var weekLangsHtml = '';
     if (summary.languages && summary.languages.length) {
@@ -158,7 +192,7 @@
       '<div class="tree-node" role="button" tabindex="0">' +
         '<span class="tree-chevron"><i class="fas fa-chevron-' + (collapsed ? 'right' : 'down') + '"></i></span>' +
         '<span class="tree-connector">\u251C\u2500\u2500</span> ' +
-        'Week ' + weekNum + ' (' + range + ') ' +
+        '<span class="tree-week-label">Week ' + weekNum + '</span> <span class="tree-week-range">(' + range + ')</span> ' +
         statsHtml +
         weekLangsHtml +
       '</div>' +
@@ -179,7 +213,6 @@
       return;
     }
 
-    // Sort newest first for finding "latest"
     summaries.sort(function (a, b) {
       return new Date(b.week_start) - new Date(a.week_start);
     });
@@ -199,7 +232,6 @@
 
     years.forEach(function (year, yi) {
       var yearConnector = (yi === years.length - 1) ? '\u2514\u2500\u2500' : '\u251C\u2500\u2500';
-      var yearPipe = (yi === years.length - 1) ? '&nbsp;&nbsp;&nbsp;' : '\u2502&nbsp;&nbsp;';
 
       html += '<div class="tree-year">';
       html += '<div class="tree-node tree-year-label">' +
@@ -221,7 +253,7 @@
         html += '<div class="tree-node" role="button" tabindex="0">' +
           '<span class="tree-chevron"><i class="fas fa-chevron-' + (monthCollapsed ? 'right' : 'down') + '"></i></span>' +
           '<span class="tree-connector">' + monthConnector + '</span> ' +
-          month +
+          '<span class="tree-month-name">' + month + '</span>' +
           '</div>';
 
         html += '<div class="tree-children">';

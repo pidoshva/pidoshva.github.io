@@ -290,13 +290,27 @@ nav .external::after {
 }
 
 .tree-year-label strong {
-  color: var(--text);
+  color: #e8bf6a;
   font-size: 0.95rem;
 }
 
 .tree-month,
 .tree-week {
   margin-left: 1.5rem;
+}
+
+.tree-month-name {
+  color: #9876aa;
+  font-weight: 600;
+}
+
+.tree-week-label {
+  color: #6a8759;
+}
+
+.tree-week-range {
+  color: var(--text-dim);
+  font-size: 0.8rem;
 }
 
 .tree-node {
@@ -309,7 +323,7 @@ nav .external::after {
   user-select: none;
 }
 .tree-node:hover {
-  color: var(--green);
+  color: var(--green-hover);
 }
 
 .tree-year-label {
@@ -325,10 +339,12 @@ nav .external::after {
   font-size: 0.7rem;
   color: var(--text-dim);
   flex-shrink: 0;
+  transition: color 0.15s;
 }
+.tree-node:hover .tree-chevron { color: var(--green); }
 
 .tree-connector {
-  color: var(--green);
+  color: var(--border);
   font-family: var(--font);
   white-space: pre;
   flex-shrink: 0;
@@ -343,13 +359,14 @@ nav .external::after {
 }
 
 .tree-stats {
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  font-size: 0.65rem;
+  color: var(--green);
+  background: rgba(43, 188, 138, 0.08);
+  border: 1px solid rgba(43, 188, 138, 0.2);
   border-radius: 3px;
-  padding: 0.1rem 0.4rem;
+  padding: 0.1rem 0.45rem;
   margin-left: 0.5rem;
+  letter-spacing: 0.02em;
 }
 
 .tree-repo {
@@ -359,13 +376,13 @@ nav .external::after {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.1rem 0;
+  padding: 0.15rem 0;
 }
 
 .tree-org {
-  color: var(--text-dim);
-  font-weight: 400;
-  font-size: 0.8rem;
+  color: #cc7832;
+  font-weight: 600;
+  font-size: 0.85rem;
 }
 
 .tree-repo-name {
@@ -379,9 +396,17 @@ nav .external::after {
 }
 
 .tree-highlight {
-  color: var(--text-dim);
+  color: var(--text);
   font-size: 0.8rem;
   padding: 0.05rem 0;
+}
+.tree-highlight .tree-connector {
+  color: var(--border);
+}
+
+.tree-pr {
+  color: var(--pink);
+  font-size: 0.78rem;
 }
 
 .tree-tags {
@@ -390,16 +415,17 @@ nav .external::after {
 }
 
 .tree-lang-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   display: inline-block;
-  margin-right: 0.15rem;
+  margin-right: 0.2rem;
+  box-shadow: 0 0 3px currentColor;
 }
 
 .tree-week-langs {
   display: inline-flex;
-  gap: 0.4rem;
+  gap: 0.5rem;
   margin-left: 0.5rem;
 }
 
@@ -412,10 +438,12 @@ nav .external::after {
 }
 
 .tree-summary {
-  margin: 0.35rem 0 0.75rem 1.5rem;
+  margin: 0.4rem 0 0.75rem 1.5rem;
   font-size: 0.8rem;
   color: var(--text-dim);
   font-style: italic;
+  border-left: 2px solid var(--border);
+  padding-left: 0.75rem;
 }
 
 .tree-meta {
