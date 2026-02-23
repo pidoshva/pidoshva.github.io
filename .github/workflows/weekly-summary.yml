@@ -1,0 +1,40 @@
+name: Weekly Summary
+
+on:
+  schedule:
+    - cron: '0 5 * * 6'  # Every Saturday 5am UTC (Friday ~10pm MST)
+  workflow_dispatch: {}    # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  generate-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install anthropic requests
+
+      - name: Generate weekly summary
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/weekly-summary.py
+
+      - name: Commit summary
+        run: |
+          git config user.name "geleus-bot"
+          git config user.email "bot@geleus.com"
+          git add data/weekly-summaries.json data/notes.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "[bot] weekly summary $(date +%Y-%m-%d)"
+            git push
+          fi

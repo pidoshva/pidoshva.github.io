@@ -275,6 +275,174 @@ nav .external::after {
   padding: 1rem 0;
 }
 
+/* --- Skills Section --- */
+.skills-section {
+  padding: 2rem 0;
+}
+
+.skills-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.65rem;
+}
+
+.skill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* --- Weekly Summary Tree --- */
+.summary-section {
+  padding: 2rem 0;
+}
+
+.timeline-tree {
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.tree-year {
+  margin-bottom: 0.5rem;
+}
+
+.tree-year-label strong {
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.tree-month,
+.tree-week {
+  margin-left: 1.5rem;
+}
+
+.tree-node {
+  cursor: pointer;
+  color: var(--text);
+  padding: 0.15rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  user-select: none;
+}
+.tree-node:hover {
+  color: var(--green);
+}
+
+.tree-year-label {
+  cursor: default;
+}
+.tree-year-label:hover {
+  color: var(--text);
+}
+
+.tree-chevron {
+  width: 1rem;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.tree-connector {
+  color: var(--green);
+  font-family: var(--font);
+  white-space: pre;
+  flex-shrink: 0;
+}
+
+.tree-children {
+  overflow: hidden;
+}
+
+.collapsed > .tree-children {
+  display: none;
+}
+
+.tree-stats {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1rem 0.4rem;
+  margin-left: 0.5rem;
+}
+
+.tree-repo {
+  margin-left: 1.5rem;
+  color: var(--text-dim);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.1rem 0;
+}
+
+.tree-repo-name {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.tree-repo-children {
+  width: 100%;
+  margin-left: 1.5rem;
+}
+
+.tree-highlight {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  padding: 0.05rem 0;
+}
+
+.tree-tags {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.tree-lang-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.15rem;
+}
+
+.tree-summary {
+  margin: 0.35rem 0 0.75rem 1.5rem;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+.tree-meta {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.tree-empty {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  padding: 1rem 0;
+}
+
 /* --- Nav Cards --- */
 .nav-cards {
   padding: 2rem 0 3rem;
@@ -791,6 +959,16 @@ footer a:hover { color: var(--green); }
   .post-content h2 { font-size: 1.1rem; }
   .post-content h3 { font-size: 0.95rem; }
   .post-content pre { padding: 0.75rem; }
+
+  /* Skills */
+  .skill-badge { font-size: 0.75rem; padding: 0.25rem 0.5rem; }
+
+  /* Tree timeline */
+  .tree-month,
+  .tree-week { margin-left: 1rem; }
+  .tree-repo { margin-left: 1rem; }
+  .tree-repo-children { margin-left: 1rem; }
+  .tree-summary { margin-left: 1rem; }
 
   /* Repo cards */
   .clone-url { font-size: 0.7rem; }
