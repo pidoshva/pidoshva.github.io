@@ -4,7 +4,7 @@
   const API_URL = `https://api.github.com/users/${USERNAME}/repos?sort=updated&per_page=30`;
   const CACHE_KEY = 'geleus_repos';
   const CACHE_TTL = 3600000; // 1 hour
-  const EXCLUDE = ['pidoshva.github.io'];
+  const REQUIRED_TOPIC = 'goodie';
 
   // Language colors (subset)
   const LANG_COLORS = {
@@ -54,7 +54,7 @@
     const root = document.getElementById('repo-root');
     if (!root) return;
 
-    const filtered = repos.filter(r => !r.fork && !EXCLUDE.includes(r.name));
+    const filtered = repos.filter(r => (r.topics || []).includes(REQUIRED_TOPIC));
 
     if (filtered.length === 0) {
       root.innerHTML = '<div class="goodies-loading">No repos found.</div>';
