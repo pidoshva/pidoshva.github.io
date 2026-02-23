@@ -18,6 +18,7 @@ SUMMARIES_FILE = DATA_DIR / "weekly-summaries.json"
 NOTES_FILE = DATA_DIR / "notes.md"
 
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+TRIGGER = os.environ.get("TRIGGER", "manual")  # "schedule" or "workflow_dispatch"
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 
 HEADERS = {"Accept": "application/vnd.github.v3+json"}
@@ -171,6 +172,7 @@ Return ONLY valid JSON, no markdown fencing."""
         "week_start": week_start,
         "week_end": week_end,
         "generated": datetime.now(timezone.utc).isoformat(),
+        "trigger": TRIGGER,
         "summary": result.get("summary", ""),
         "highlights": result.get("highlights", []),
         "repos": aggregated["repos"],
@@ -193,6 +195,7 @@ def fallback_summary(aggregated: dict, week_start: str, week_end: str) -> dict:
         "week_start": week_start,
         "week_end": week_end,
         "generated": datetime.now(timezone.utc).isoformat(),
+        "trigger": TRIGGER,
         "summary": summary,
         "highlights": highlights,
         "repos": aggregated["repos"],

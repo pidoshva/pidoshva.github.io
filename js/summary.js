@@ -30,10 +30,10 @@
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
-  function getNextFriday(fromDate) {
+  function getNextSaturday(fromDate) {
     var d = new Date(fromDate);
     var day = d.getDay();
-    var diff = (5 - day + 7) % 7 || 7;
+    var diff = (6 - day + 7) % 7 || 7;
     d.setDate(d.getDate() + diff);
     return d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   }
@@ -169,6 +169,7 @@
 
     var latestStart = summaries[0].week_start;
     var latestGenerated = summaries[0].generated;
+    var latestTrigger = summaries[0].trigger || 'schedule';
 
     var tree = groupByYearMonth(summaries);
     var years = Object.keys(tree).sort(function (a, b) { return b - a; });
@@ -219,7 +220,9 @@
     // Meta footer
     html += '<div class="tree-meta">';
     html += 'Last updated: ' + formatMetaDate(latestGenerated);
-    html += ' \u00b7 Next update: ' + getNextFriday(latestGenerated);
+    if (latestTrigger === 'schedule') {
+      html += ' \u00b7 Next update: ' + getNextSaturday(latestGenerated);
+    }
     html += '</div>';
 
     html += '</div>';

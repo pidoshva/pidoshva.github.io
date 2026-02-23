@@ -25,6 +25,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRIGGER: ${{ github.event_name }}
         run: python scripts/weekly-summary.py
 
       - name: Commit summary
