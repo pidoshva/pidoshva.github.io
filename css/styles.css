@@ -278,6 +278,7 @@ nav .external::after {
 /* --- Weekly Summary Tree --- */
 .summary-section {
   padding: 2rem 0;
+  overflow-x: hidden;
 }
 
 .timeline-tree {
@@ -409,6 +410,7 @@ nav .external::after {
   font-size: 0.8rem;
   padding: 0.1rem 0;
   transition: color 0.15s;
+  word-break: break-word;
 }
 .tree-highlight:hover {
   color: #e0e0e0;
@@ -991,12 +993,37 @@ footer a:hover { color: var(--green); }
   .post-content h3 { font-size: 0.95rem; }
   .post-content pre { padding: 0.75rem; }
 
-  /* Tree timeline */
+  /* Tree timeline — reduce nesting depth */
+  .timeline-tree { font-size: 0.82rem; }
+
   .tree-month,
-  .tree-week { margin-left: 1rem; }
-  .tree-repo { margin-left: 1rem; }
-  .tree-repo-children { margin-left: 1rem; }
-  .tree-summary { margin-left: 1rem; }
+  .tree-week { margin-left: 0.75rem; }
+  .tree-repo { margin-left: 0.75rem; }
+  .tree-repo-children { margin-left: 0.75rem; }
+  .tree-summary { margin-left: 0.75rem; padding-left: 0.5rem; }
+
+  /* Let week header wrap stats + langs to second line */
+  .tree-node { flex-wrap: wrap; }
+
+  /* Stats + lang tags drop below week label on narrow screens */
+  .tree-stats { margin-left: 0; margin-top: 0.15rem; }
+  .tree-week-langs { margin-left: 0; margin-top: 0.15rem; flex-wrap: wrap; }
+
+  /* Hide tree connectors on mobile — indentation alone shows structure */
+  .tree-connector { display: none; }
+
+  /* Give tap targets enough height */
+  .tree-node { min-height: 2.25rem; padding: 0.3rem 0.4rem; }
+
+  /* Prevent highlight text from getting too cramped */
+  .tree-highlight { font-size: 0.78rem; line-height: 1.5; padding-left: 0.5rem; }
+  .tree-pr { font-size: 0.76rem; }
+  .tree-summary { font-size: 0.78rem; }
+  .tree-org { font-size: 0.82rem; }
+
+  /* Reduce section padding on mobile */
+  .summary-section { padding: 1.5rem 0; }
+  .section-heading { margin-bottom: 1rem; }
 
   /* Repo cards */
   .clone-url { font-size: 0.7rem; }
@@ -1007,4 +1034,21 @@ footer a:hover { color: var(--green); }
     gap: 0.5rem;
     text-align: center;
   }
+}
+
+/* Very small screens (iPhone SE, etc.) */
+@media (max-width: 380px) {
+  .container { padding: 0 1rem; }
+
+  .tree-month,
+  .tree-week { margin-left: 0.5rem; }
+  .tree-repo { margin-left: 0.5rem; }
+  .tree-repo-children { margin-left: 0.5rem; }
+  .tree-summary { margin-left: 0.5rem; }
+
+  .tree-year-label strong { font-size: 0.88rem; }
+  .tree-week-label { font-size: 0.78rem; }
+  .tree-week-range { font-size: 0.72rem; }
+  .tree-stats { font-size: 0.6rem; padding: 0.05rem 0.3rem; }
+  .tree-lang-tag { font-size: 0.6rem; }
 }

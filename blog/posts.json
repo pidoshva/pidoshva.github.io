@@ -1,3 +1,12 @@
 {
-  "posts": []
+  "posts": [
+    {
+      "slug": "automating-my-dev-journal",
+      "title": "Automating My Dev Journal with GitHub Actions and Claude",
+      "date": "2026-02-22",
+      "excerpt": "How I built a system that crawls my GitHub activity every week, sends it to Claude for summarization, and renders an interactive tree timeline on my portfolio — with zero maintenance.",
+      "tags": ["automation", "github-actions", "ai", "vanilla-js"],
+      "draft": false
+    }
+  ]
 }
