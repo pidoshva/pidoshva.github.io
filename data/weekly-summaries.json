@@ -1,3 +1,28 @@
 {
-  "summaries": []
+  "summaries": [
+    {
+      "week_start": "2026-02-17",
+      "week_end": "2026-02-23",
+      "generated": "2026-02-23T03:43:52.980880+00:00",
+      "summary": "No commits recorded this week across active repositories.",
+      "highlights": [
+        "Maintained activity in geleus-io and pidoshva.github.io repositories",
+        "Languages tracked: HTML and JavaScript",
+        "Week focused on planning or review rather than code changes"
+      ],
+      "repos": [
+        "geleus-io",
+        "pidoshva.github.io"
+      ],
+      "languages": [
+        "HTML",
+        "JavaScript"
+      ],
+      "stats": {
+        "commits": 0,
+        "prs": 0,
+        "repos_active": 2
+      }
+    }
+  ]
 }
