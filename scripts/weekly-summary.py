@@ -152,8 +152,25 @@ def gather_activity(week_start: str, week_end: str) -> dict:
     # PRs and issues
     prs = fetch_user_prs(week_start)
     issues = fetch_user_issues(week_start)
-    prs_opened = len([p for p in prs if p.get("state") == "open"])
-    prs_merged = len([p for p in prs if p.get("pull_request", {}).get("merged_at")])
+
+    # Extract PR details: title, repo, state, merged
+    pr_details = []
+    for p in prs:
+        repo_url = p.get("repository_url", "")
+        pr_repo = repo_url.split("/")[-1] if repo_url else ""
+        pr_org = repo_url.split("/")[-2] if repo_url else ""
+        merged = bool(p.get("pull_request", {}).get("merged_at"))
+        state = "merged" if merged else p.get("state", "open")
+        pr_details.append({
+            "title": p.get("title", ""),
+            "repo": pr_repo,
+            "org": pr_org if pr_org != USERNAME else "",
+            "state": state,
+            "number": p.get("number", 0),
+        })
+
+    prs_opened = len([p for p in pr_details if p["state"] == "open"])
+    prs_merged = len([p for p in pr_details if p["state"] == "merged"])
 
     languages = set()
     all_messages = []
@@ -167,6 +184,7 @@ def gather_activity(week_start: str, week_end: str) -> dict:
         "repo_details": repo_data,
         "commit_count": total_commits,
         "commit_messages": all_messages[:20],
+        "pr_details": pr_details,
         "prs_opened": prs_opened,
         "prs_merged": prs_merged,
         "issues": len(issues),
@@ -194,8 +212,13 @@ def generate_summary(activity: dict, notes: str, week_start: str, week_end: str)
     repo_lines = []
     for name, rd in activity["repo_details"].items():
         lang = rd["language"] or "unknown"
-        msgs = "; ".join(rd["messages"][:3]) if rd["messages"] else "no notable messages"
+        msgs = "; ".join(rd["messages"][:5]) if rd["messages"] else "no notable messages"
         repo_lines.append(f"  - {name} ({lang}, {rd['commits']} commits): {msgs}")
+
+    pr_lines = []
+    for pr in activity.get("pr_details", []):
+        org_prefix = f"{pr['org']}/" if pr["org"] else ""
+        pr_lines.append(f"  - [{pr['state']}] {org_prefix}{pr['repo']}#{pr['number']}: {pr['title']}")
 
     prompt = f"""You are summarizing a developer's weekly GitHub activity for their portfolio website.
 
@@ -204,14 +227,15 @@ Activity for {week_start} to {week_end}:
 - Repos active: {', '.join(activity['repos']) or 'none'}
 - Per-repo breakdown:
 {chr(10).join(repo_lines) or '  (none)'}
+- Pull requests:
+{chr(10).join(pr_lines) or '  (none)'}
 - Languages: {', '.join(activity['languages']) or 'none'}
-- PRs opened: {activity['prs_opened']}, merged: {activity['prs_merged']}
 - Issues created: {activity['issues']}
 {"- Personal notes: " + notes if notes else ""}
 
 Return a JSON object with exactly these fields:
-- "summary": A single sentence (max 120 chars) summarizing the week's focus areas
-- "highlights": An array of 2-5 short bullet points (each max 80 chars) describing key accomplishments. Be specific about what was built or changed based on commit messages.
+- "summary": A concise 1-2 sentence summary (max 150 chars) of the week's focus. Be specific about what was built.
+- "highlights": An array of 3-6 short bullet points (each max 100 chars). Each should describe a specific accomplishment — mention the repo name, what was changed, and why. Use PR titles and commit messages as context. Group related commits into a single highlight.
 
 Return ONLY valid JSON, no markdown fencing."""
 
@@ -251,6 +275,25 @@ def build_entry(activity: dict, result: dict, week_start: str, week_end: str) ->
         "summary": result.get("summary", ""),
         "highlights": result.get("highlights", []),
         "repos": activity["repos"],
+        "prs": [
+            {
+                "title": pr["title"],
+                "repo": pr["repo"],
+                "org": pr["org"],
+                "state": pr["state"],
+            }
+            for pr in activity.get("pr_details", [])
+        ],
+        "repo_orgs": {
+            name: rd["full_name"].split("/")[0]
+            for name, rd in activity["repo_details"].items()
+            if rd["full_name"].split("/")[0] != USERNAME
+        },
+        "repo_languages": {
+            name: rd["language"]
+            for name, rd in activity["repo_details"].items()
+            if rd["language"]
+        },
         "languages": activity["languages"],
         "stats": {
             "commits": activity["commit_count"],

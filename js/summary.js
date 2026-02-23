@@ -68,7 +68,7 @@
     return parts.length ? '<span class="tree-stats">' + parts.join(' \u00b7 ') + '</span>' : '';
   }
 
-  function buildRepoHtml(repoName, languages, highlights) {
+  function buildRepoHtml(repoName, languages, highlights, org) {
     var LANG_COLORS = (window.GELEUS && window.GELEUS.LANG_COLORS) || {};
     var langHtml = '';
     if (languages && languages.length) {
@@ -89,8 +89,11 @@
       }).join('');
     }
 
+    var orgHtml = org ? '<span class="tree-org">' + escapeHtml(org) + '/</span>' : '';
+
     return '<div class="tree-repo">' +
       '<span class="tree-connector">\u251C\u2500\u2500</span> ' +
+      orgHtml +
       '<span class="tree-repo-name">' + escapeHtml(repoName) + '</span> ' +
       langHtml +
       (highlightHtml ? '<div class="tree-repo-children">' + highlightHtml + '</div>' : '') +
@@ -128,9 +131,12 @@
         });
       }
 
-      // Determine per-repo languages (best effort from summary.languages)
+      var repoLangs = summary.repo_languages || {};
+      var repoOrgs = summary.repo_orgs || {};
       summary.repos.forEach(function (repoName) {
-        reposHtml += buildRepoHtml(repoName, null, repoHighlights[repoName]);
+        var lang = repoLangs[repoName] ? [repoLangs[repoName]] : null;
+        var org = repoOrgs[repoName] || null;
+        reposHtml += buildRepoHtml(repoName, lang, repoHighlights[repoName], org);
       });
     }
 
@@ -138,12 +144,23 @@
       ? '<div class="tree-summary">\u201C' + escapeHtml(summary.summary) + '\u201D</div>'
       : '';
 
+    // Language tags for the week
+    var LANG_COLORS = (window.GELEUS && window.GELEUS.LANG_COLORS) || {};
+    var weekLangsHtml = '';
+    if (summary.languages && summary.languages.length) {
+      weekLangsHtml = '<span class="tree-week-langs">' + summary.languages.map(function (l) {
+        var color = LANG_COLORS[l] || '#8b949e';
+        return '<span class="tree-lang-tag"><span class="tree-lang-dot" style="background:' + color + '"></span>' + escapeHtml(l) + '</span>';
+      }).join('') + '</span>';
+    }
+
     return '<div class="tree-week' + (collapsed ? ' collapsed' : '') + '">' +
       '<div class="tree-node" role="button" tabindex="0">' +
         '<span class="tree-chevron"><i class="fas fa-chevron-' + (collapsed ? 'right' : 'down') + '"></i></span>' +
         '<span class="tree-connector">\u251C\u2500\u2500</span> ' +
         'Week ' + weekNum + ' (' + range + ') ' +
         statsHtml +
+        weekLangsHtml +
       '</div>' +
       '<div class="tree-children">' +
         reposHtml +
