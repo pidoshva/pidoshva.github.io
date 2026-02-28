@@ -1,6 +1,170 @@
 {
   "summaries": [
     {
+      "week_start": "2026-02-22",
+      "week_end": "2026-02-28",
+      "generated": "2026-02-28T05:34:47.964089+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 22 commits to OrderProtection/monolog (TypeScript) fixing warranty handling, tagging behavior, and email confirmations. Enhanced gifify with production-ready logging. Updated personal portfolio with blog posts and automated weekly summary logic.",
+      "highlights": [
+        "monolog (OrderProtection): Fixed warranty expiry date formatting, month duration handling, and tagging behavior across communications and metadata services",
+        "monolog (OrderProtection): Shipped confirmation email feature for extended warranties with maizzle source updates and race condition fixes",
+        "monolog (OrderProtection): Merged 8 PRs including kafka config fixes, valet UI improvements, and MCP service production manifests",
+        "monolog (OrderProtection): Open PR for warranty product exclusion pipeline (ENG-5374) and reviewed cart-widget warranty exclusion support",
+        "gifify: Completed production-ready release with enhanced logging (colors, spinners, progress bars) and merge conflict resolution",
+        "cart-widget (OrderProtection): Reviewed migration of OrderGroove subscriptions from widget to cart-widget repo and customizable modal content PR",
+        "pidoshva.github.io: Added 20 commits including new blog post, journal workflow updates, and automated weekly summary logic refinements"
+      ],
+      "repos": [
+        "cart-widget",
+        "gifify",
+        "monolog",
+        "pidoshva.github.io"
+      ],
+      "prs": [
+        {
+          "title": "fix(metadata-svc): handle month durations in warranty tags",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: confirmation email for extenede warranties",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: adding the policy_created to kafka config",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: tagging behaviour",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Vadim/revert validity tagging",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: warrantyID issues in create-policy",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: ensure tags can be turned off",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: defaulting to 0 duration in cases of small variants",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Add enhanced logging with colors, spinner, and progress bar",
+          "repo": "gifify",
+          "org": "",
+          "state": "merged"
+        },
+        {
+          "title": "Fix badly resolved merge conflicts from PR #4",
+          "repo": "gifify",
+          "org": "",
+          "state": "merged"
+        },
+        {
+          "title": "feat: prod ready",
+          "repo": "gifify",
+          "org": "",
+          "state": "merged"
+        },
+        {
+          "title": "feat: warranty product exclusion pipeline (ENG-5374)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(valet): hide order number on store credit resolution details",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): add tile layout customizer for checkout widgets",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: ENG-2642 migrate subscriptions ordergroove from `widget` to `cart-widget` repo",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: customizable info modal content",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(checkout-widget): warranty exclusion support and selection tracking",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(mcp-svc): add production deployment manifests",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore: add /qa command for QA health check workflow",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(merchant-svc): gate EW functionality on warranties capability",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "gifify": "Shell",
+        "pidoshva.github.io": "JavaScript",
+        "cart-widget": "TypeScript"
+      },
+      "languages": [
+        "JavaScript",
+        "Shell",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 49,
+        "prs": 20,
+        "repos_active": 4
+      }
+    },
+    {
       "week_start": "2026-02-17",
       "week_end": "2026-02-23",
       "generated": "2026-02-23T05:40:20.636759+00:00",
