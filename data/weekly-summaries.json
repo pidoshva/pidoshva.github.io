@@ -1,6 +1,148 @@
 {
   "summaries": [
     {
+      "week_start": "2026-03-01",
+      "week_end": "2026-03-07",
+      "generated": "2026-03-07T05:38:22.280502+00:00",
+      "trigger": "schedule",
+      "summary": "Active week across OrderProtection monolog and cart-widget (TypeScript) plus eyegaze (Go). Shipped warranty exclusion support, customizable info modals, and claim automation optimizations. Merged 14 PRs with focus on code quality and feature refinement.",
+      "highlights": [
+        "monolog (OrderProtection): Implemented warranty product exclusion pipeline and customizer support for info modals",
+        "monolog (OrderProtection): Fixed claim settings, agent decision tracking, and optimized order fetches in claim automation",
+        "monolog (OrderProtection): Resolved merge conflicts, removed any types, and addressed PR feedback with enums and Tailwind",
+        "cart-widget (OrderProtection): Shipped automatic pickup detection and customizable info modal content features",
+        "cart-widget (OrderProtection): Fixed debug logger integration with async widget config and code review findings",
+        "eyegaze: Initial macOS eye-tracking cursor control implementation with improved calibration density and stability"
+      ],
+      "repos": [
+        "cart-widget",
+        "eyegaze",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "fix(merchant-svc): fix EW validity determination and policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix: CE comparison config options",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: automatic pickup detection and hidden methods parsing fix",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Revert \"fix: validity mismatch when calculating the duration\"",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: sync debug logger with async widget config",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: validity mismatch when calculating the duration",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): fix tile layout preview to match Shopify CE rendering",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: customizable info modal content",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): implement customizer support for info modals",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(checkout-widget): warranty exclusion support and selection tracking",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: warranty product exclusion pipeline (ENG-5374)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: claim settings error fix",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: send agent decision for send message resolution",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: track in automation schema if it was denied or not. Also track the trigger event",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: store role entitlements",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: logging in general",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: optimize order fetches in claim automation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "eyegaze": "Go"
+      },
+      "languages": [
+        "Go",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 24,
+        "prs": 17,
+        "repos_active": 3
+      }
+    },
+    {
       "week_start": "2026-02-22",
       "week_end": "2026-02-28",
       "generated": "2026-02-28T05:34:47.964089+00:00",
