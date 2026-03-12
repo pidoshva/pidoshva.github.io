@@ -369,42 +369,81 @@ def build_entry(activity: dict, result: dict, week_start: str, week_end: str) ->
     }
 
 
+def get_missing_weeks(existing_summaries: list[dict]) -> list[tuple[str, str]]:
+    """Find weeks between the latest existing summary and today that are missing."""
+    now = datetime.now(timezone.utc).date()
+    existing_starts = {s["week_start"] for s in existing_summaries}
+
+    # Start from the day after the latest week_end, or 4 weeks ago if no data
+    if existing_summaries:
+        latest_end = max(s["week_end"] for s in existing_summaries)
+        cursor = datetime.strptime(latest_end, "%Y-%m-%d").date() + timedelta(days=1)
+    else:
+        cursor = now - timedelta(days=27)
+
+    weeks = []
+    while cursor <= now:
+        # Align to Monday
+        days_since_monday = cursor.weekday()
+        week_start = cursor - timedelta(days=days_since_monday)
+        week_end = week_start + timedelta(days=6)
+
+        if str(week_start) not in existing_starts and week_end <= now:
+            weeks.append((str(week_start), str(week_end)))
+            existing_starts.add(str(week_start))
+
+        cursor = week_start + timedelta(days=7)
+
+    # Always include the current week
+    days_since_monday = now.weekday()
+    current_start = now - timedelta(days=days_since_monday)
+    current_end = current_start + timedelta(days=6)
+    current_key = str(current_start)
+    if current_key not in existing_starts:
+        weeks.append((current_key, str(min(current_end, now))))
+
+    return weeks
+
+
 def main():
-    now = datetime.now(timezone.utc)
-    week_end = now.date()
-    week_start = week_end - timedelta(days=6)
-
-    print(f"Generating summary for {week_start} to {week_end}")
-
-    activity = gather_activity(str(week_start), str(week_end))
-    print(f"Total repos with commits: {len(activity['repos'])}")
-    print(f"Total commits: {activity['commit_count']}")
-    print(f"Languages: {activity['languages']}")
-
-    notes = read_notes()
-    if notes:
-        print(f"Notes found: {len(notes)} chars")
-
-    if activity["commit_count"] == 0 and not notes and not activity["repos"]:
-        print("No activity this week, skipping summary generation")
-        return
-
-    entry = generate_summary(activity, notes, str(week_start), str(week_end))
-
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     if SUMMARIES_FILE.exists():
         data = json.loads(SUMMARIES_FILE.read_text())
     else:
         data = {"summaries": []}
 
-    data["summaries"] = [
-        s for s in data["summaries"] if s["week_start"] != str(week_start)
-    ]
-    data["summaries"].append(entry)
-    data["summaries"].sort(key=lambda s: s["week_start"], reverse=True)
+    notes = read_notes()
+    if notes:
+        print(f"Notes found: {len(notes)} chars")
 
+    missing = get_missing_weeks(data["summaries"])
+    if not missing:
+        print("No missing weeks to generate")
+        return
+
+    print(f"Weeks to generate: {len(missing)}")
+    for week_start, week_end in missing:
+        print(f"\nGenerating summary for {week_start} to {week_end}")
+
+        activity = gather_activity(week_start, week_end)
+        print(f"  Repos: {len(activity['repos'])}, Commits: {activity['commit_count']}")
+
+        if activity["commit_count"] == 0 and not notes and not activity["repos"]:
+            print("  No activity, skipping")
+            continue
+
+        # Only pass notes for the most recent week
+        week_notes = notes if (week_start, week_end) == missing[-1] else ""
+        entry = generate_summary(activity, week_notes, week_start, week_end)
+
+        data["summaries"] = [
+            s for s in data["summaries"] if s["week_start"] != week_start
+        ]
+        data["summaries"].append(entry)
+
+    data["summaries"].sort(key=lambda s: s["week_start"], reverse=True)
     SUMMARIES_FILE.write_text(json.dumps(data, indent=2) + "\n")
-    print(f"Summary written to {SUMMARIES_FILE}")
+    print(f"\nSummaries written to {SUMMARIES_FILE}")
 
     clear_notes()
 
