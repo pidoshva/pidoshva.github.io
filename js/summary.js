@@ -77,6 +77,38 @@
     return text;
   }
 
+  var HIGHLIGHT_KEYWORDS = {
+    'shipped': 'hl-ship',
+    'implemented': 'hl-ship',
+    'added': 'hl-ship',
+    'built': 'hl-ship',
+    'created': 'hl-ship',
+    'fixed': 'hl-fix',
+    'resolved': 'hl-fix',
+    'restored': 'hl-fix',
+    'patched': 'hl-fix',
+    'merged': 'hl-merge',
+    'reviewed': 'hl-merge',
+    'addressed': 'hl-merge',
+    'updated': 'hl-update',
+    'improved': 'hl-update',
+    'optimized': 'hl-update',
+    'refactored': 'hl-update',
+    'maintained': 'hl-update',
+    'automated': 'hl-auto',
+    'configured': 'hl-auto',
+    'integrated': 'hl-auto',
+  };
+
+  function colorizeHighlight(escaped) {
+    var firstWord = escaped.split(/[\s:,]/)[0].toLowerCase();
+    var cls = HIGHLIGHT_KEYWORDS[firstWord];
+    if (cls) {
+      return '<span class="' + cls + '">' + escaped.substring(0, firstWord.length) + '</span>' + escaped.substring(firstWord.length);
+    }
+    return escaped;
+  }
+
   function buildRepoHtml(repoName, languages, highlights, org) {
     var LANG_COLORS = (window.GELEUS && window.GELEUS.LANG_COLORS) || {};
     var langHtml = '';
@@ -96,7 +128,7 @@
         var cls = 'tree-highlight' + (isLast ? ' last' : '');
         return '<div class="' + cls + '">' +
           '<span class="tree-connector">' + connector + '</span> ' +
-          escapeHtml(stripRepoPrefix(h, repoName)) + '</div>';
+          colorizeHighlight(escapeHtml(stripRepoPrefix(h, repoName))) + '</div>';
       }).join('');
     }
 

@@ -419,6 +419,13 @@ nav .external::after {
   color: var(--border);
 }
 
+/* Highlight keyword colors */
+.hl-ship { color: #2bbc8a; font-weight: 600; }
+.hl-fix { color: #d480aa; font-weight: 600; }
+.hl-merge { color: #a78bfa; font-weight: 600; }
+.hl-update { color: #7eb8da; font-weight: 600; }
+.hl-auto { color: #e5c07b; font-weight: 600; }
+
 .tree-pr {
   color: var(--pink);
   font-size: 0.78rem;
