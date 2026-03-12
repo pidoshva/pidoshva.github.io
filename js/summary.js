@@ -30,8 +30,8 @@
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
-  function getNextSaturday(fromDate) {
-    var d = new Date(fromDate + 'T00:00:00');
+  function getNextSaturday() {
+    var d = new Date();
     var day = d.getDay();
     var diff = (6 - day + 7) % 7 || 7;
     d.setDate(d.getDate() + diff);
@@ -77,7 +77,7 @@
     return text;
   }
 
-  function buildRepoHtml(repoName, languages, highlights, org, prs) {
+  function buildRepoHtml(repoName, languages, highlights, org) {
     var LANG_COLORS = (window.GELEUS && window.GELEUS.LANG_COLORS) || {};
     var langHtml = '';
     if (languages && languages.length) {
@@ -88,31 +88,15 @@
       langHtml = '<span class="tree-tags">' + langHtml + '</span>';
     }
 
-    // Combine highlights and PRs into child items
-    var childItems = [];
-
-    if (highlights && highlights.length) {
-      highlights.forEach(function (h) {
-        childItems.push({ text: stripRepoPrefix(h, repoName), type: 'highlight' });
-      });
-    }
-
-    if (prs && prs.length) {
-      prs.forEach(function (pr) {
-        var stateIcon = pr.state === 'merged' ? '\u2714' : pr.state === 'open' ? '\u25cb' : '\u2716';
-        childItems.push({ text: stateIcon + ' ' + pr.title, type: 'pr' });
-      });
-    }
-
     var childHtml = '';
-    if (childItems.length) {
-      childHtml = childItems.map(function (item, i) {
-        var isLast = (i === childItems.length - 1);
+    if (highlights && highlights.length) {
+      childHtml = highlights.map(function (h, i) {
+        var isLast = (i === highlights.length - 1);
         var connector = isLast ? '\u2514\u2500\u2500' : '\u251C\u2500\u2500';
-        var cls = 'tree-highlight' + (item.type === 'pr' ? ' tree-pr' : '') + (isLast ? ' last' : '');
+        var cls = 'tree-highlight' + (isLast ? ' last' : '');
         return '<div class="' + cls + '">' +
           '<span class="tree-connector">' + connector + '</span> ' +
-          escapeHtml(item.text) + '</div>';
+          escapeHtml(stripRepoPrefix(h, repoName)) + '</div>';
       }).join('');
     }
 
@@ -153,17 +137,6 @@
       });
     }
 
-    // Map PRs to repos
-    var repoPrs = {};
-    summary.repos.forEach(function (r) { repoPrs[r] = []; });
-    if (summary.prs) {
-      summary.prs.forEach(function (pr) {
-        if (repoPrs[pr.repo] !== undefined) {
-          repoPrs[pr.repo].push(pr);
-        }
-      });
-    }
-
     var repoLangs = summary.repo_languages || {};
     var repoOrgs = summary.repo_orgs || {};
 
@@ -171,7 +144,7 @@
     summary.repos.forEach(function (repoName) {
       var lang = repoLangs[repoName] ? [repoLangs[repoName]] : null;
       var org = repoOrgs[repoName] || null;
-      reposHtml += buildRepoHtml(repoName, lang, repoHighlights[repoName], org, repoPrs[repoName]);
+      reposHtml += buildRepoHtml(repoName, lang, repoHighlights[repoName], org);
     });
 
     var summaryQuote = summary.summary
@@ -270,7 +243,7 @@
     html += '<div class="tree-meta">';
     html += 'Last updated: ' + formatMetaDate(latestGenerated);
     if (latestTrigger === 'schedule') {
-      html += ' \u00b7 Next update: ' + getNextSaturday(latestGenerated);
+      html += ' \u00b7 Next update: ' + getNextSaturday();
     }
     html += '</div>';
 
