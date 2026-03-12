@@ -1,40 +1,33 @@
 # Automating My Dev Journal with GitHub Actions and Claude
 
-I wanted my portfolio to feel alive — not a static snapshot that goes stale the week after I push it, but something that reflects what I'm actually working on. So I built a system that writes my weekly developer journal for me.
+My portfolio kept going stale. I'd update it, forget about it for months, and then it'd be lying about what I actually do. So I built a thing that writes my weekly dev journal automatically.
 
-Every Friday night, a GitHub Action wakes up, crawls my activity across every repo I touched that week — personal and org — and hands the raw data to Claude. What comes back is a structured summary: highlights per repo, PRs reviewed, languages used, a short narrative. It gets committed to a JSON file, and the homepage renders it as an interactive tree timeline.
-
-Here's how it works.
+Every Friday night a GitHub Action runs, looks at everything I touched that week across all my repos, sends it to Claude, and gets back a structured summary. That gets committed as JSON and the homepage renders it as a tree timeline.
 
 ---
 
-## The Problem
+## Why
 
-Portfolio sites lie by omission. You build one, it looks great for a month, then six months later it's a time capsule. The "Recent Work" section isn't recent. The tech stack listed doesn't mention the three new languages you picked up. Visitors see a frozen version of you.
+Portfolio sites rot. You build one, it looks great, then three months later your "Recent Work" section is ancient history. I didn't want to maintain it manually — I just wanted it to stay honest.
 
-I wanted the opposite: a site that updates itself. Not with fake activity or vanity metrics, but with a genuine weekly log of what I shipped.
+## How It Works
 
-## Architecture
+Three pieces:
 
-The system has three parts:
+1. **Python script** gathers my GitHub activity
+2. **Claude Haiku** turns raw commit/PR data into readable summaries
+3. **Vanilla JS** renders it as a collapsible tree on the homepage
 
-1. **A Python script** that gathers GitHub activity
-2. **Claude Haiku** that turns raw data into readable summaries
-3. **A vanilla JS renderer** that displays it as a tree timeline
+No database, no server, no build step. A JSON file and some client-side rendering.
 
-No database. No server. No build step. Just a GitHub Action, a JSON file, and some client-side rendering.
+### Collecting the Data
 
-### Data Collection
+The script hits GitHub's REST API with a PAT. It finds repos I pushed to in the last 7 days, grabs commits, and searches for PRs I opened or reviewed.
 
-The script runs authenticated against GitHub's REST API with a personal access token. It does three things:
-
-- **Finds active repos** — queries `/user/repos` sorted by push date, filters to the past 7 days
-- **Fetches commits per repo** — pulls all commits in the date range, then filters by login or commit email
-- **Searches for PRs** — uses the Search API with both `author:` and `involves:` queries to catch PRs I opened *and* PRs I reviewed
+The tricky part: your identity is fragmented across GitHub. Org repos might use a different email than personal ones. The API returns raw commit emails, so you can't just filter by username — you need to match on a set of known emails too.
 
 ```python
-# Match by GitHub login OR commit email
-# Important for org repos where commit identity may differ
+# Match by login OR email — org repos often differ
 author_login = (c.get("author") or {}).get("login", "")
 author_email = (c.get("commit", {}).get("author") or {}).get("email", "")
 
@@ -42,11 +35,11 @@ if author_login == USERNAME or author_email in USER_EMAILS:
     user_commits.append(c)
 ```
 
-This is the part that took the most iteration. GitHub's APIs have subtle gaps — the Events API only returns public activity, the Search Commits API doesn't index private repos, and the `author` filter on the commits endpoint uses email matching that can miss org contributions. The solution was to fetch *all* commits without filtering, then match locally by login and a set of known emails.
+I tried the Events API first. Don't bother — it only returns public events and has a 90-day window. Fetching commits per repo is more work but actually gives you everything.
 
-### AI Summary Generation
+### Getting Claude to Summarize It
 
-The aggregated data — repos, commit messages, PR titles, languages — gets packed into a structured prompt and sent to Claude Haiku:
+All the data — repos, commit messages, PR titles, languages — gets packed into a prompt and sent to Haiku. It returns JSON with a short summary and bullet-point highlights per repo.
 
 ```text
 Activity for the week:
@@ -56,16 +49,13 @@ Activity for the week:
   - portfolio-site (JavaScript, 6 commits): add blog system...
 - Pull requests:
   - [merged] org/project-api#412: Fix edge case in validation
-  - [open] org/cart-widget#89: Customizable info modal
 ```
 
-Claude returns a JSON object with a 2–3 sentence summary and 5–8 bullet-point highlights. The prompt is specific: start each highlight with the repo name, mention organizations, be concrete about what changed.
-
-If Claude returns invalid JSON (it happens), the script falls back to a basic summary built from commit messages. If the API key isn't set, same fallback. The system never fails silently — it always produces *something*.
+Haiku is good at this. It returns valid JSON almost every time. There's a fallback that builds a basic summary from commit messages if anything goes wrong, but it rarely triggers.
 
 ### The Tree Timeline
 
-On the frontend, the renderer fetches the JSON and builds an interactive tree — inspired by the `tree` command:
+The frontend fetches the JSON and renders a collapsible tree — like the `tree` command:
 
 ```text
 2026
@@ -73,20 +63,17 @@ On the frontend, the renderer fetches the JSON and builds an interactive tree �
 │   └── Week 8 (Feb 17–23)              12 commits · 2 repos
 │       ├── portfolio-site               JavaScript
 │       │   ├── Built markdown blog system
-│       │   ├── Added expandable README to goodies cards
 │       │   └── Automated weekly journal with Actions + Claude
 │       └── terminal-resume              HTML
 │           └── Maintained interactive terminal resume
 │
-│       "Focused on site redesign with blog system,
-│        expandable READMEs, and automated weekly summaries."
+│       "Focused on site redesign with blog system
+│        and automated weekly summaries."
 ```
 
-Each level is collapsible. The current month and latest week are expanded by default. Colors follow a syntax-highlight palette — gold for years, purple for months, green for week labels, orange for organization names. PRs show up with state icons under their repo.
+Current month and latest week are expanded by default. Action keywords like "Shipped", "Fixed", "Merged" get color-coded. All vanilla JS and CSS.
 
-The whole thing is vanilla JS, no framework. CSS handles the transitions.
-
-## The GitHub Action
+## The Action
 
 ```yaml
 on:
@@ -95,32 +82,20 @@ on:
   workflow_dispatch: {}
 ```
 
-Saturday 5am UTC is Friday night in Mountain Time — the end of the work week. The action checks out the repo, runs the Python script, and commits the updated JSON. GitHub Pages picks up the change automatically.
+Saturday 5am UTC is Friday night Mountain Time. The action runs the script, commits the JSON, and GitHub Pages deploys it. I can also trigger it manually whenever.
 
-`workflow_dispatch` lets me trigger it manually for testing or when I want an off-cycle update.
-
-The footer on the homepage is trigger-aware: scheduled runs show the next update date, manual triggers just show when it was last updated.
-
-## What I Learned
-
-**Identity is fragmented across GitHub.** Your commits in an org repo might use a different email than your personal repos. The GitHub UI ties them together via your account settings, but the API returns the raw commit email. If you're building anything that aggregates activity across orgs, you need to match on multiple identities.
-
-**The Events API is a trap for this use case.** It only returns public events, has a 90-day window, and paginates in ways that make date filtering unreliable. The Commits API per repo is more work but actually complete.
-
-**Claude is remarkably good at structured output.** With a specific prompt and examples, Haiku returns valid JSON on the first try almost every time. The fallback logic has only triggered once in testing, and that was a network timeout.
-
-**Progressive enhancement makes this bulletproof.** The homepage always has hardcoded HTML that loads instantly. The summary section renders "No summaries yet" if the JSON fetch fails. Profile sync from the GitHub API updates the hero section but falls back to static HTML. Nothing breaks if an API is down.
+The script backfills missing weeks automatically — if a run fails or gets skipped, the next run catches up so nothing gets lost.
 
 ## Cost
 
-Effectively zero. The GitHub Action runs once a week on the free tier. Claude Haiku costs fractions of a cent per call. GitHub Pages is free.
+Basically zero. Free GitHub Actions tier, Haiku costs fractions of a cent, GitHub Pages is free.
 
 ## Source
 
-The full implementation is open source in this site's repo:
+Everything's in the repo:
 
 - [`scripts/weekly-summary.py`](https://github.com/pidoshva/pidoshva.github.io/blob/main/scripts/weekly-summary.py) — data collection + Claude API
 - [`js/summary.js`](https://github.com/pidoshva/pidoshva.github.io/blob/main/js/summary.js) — tree timeline renderer
 - [`.github/workflows/weekly-summary.yml`](https://github.com/pidoshva/pidoshva.github.io/blob/main/.github/workflows/weekly-summary.yml) — the Action
 
-If you want to adapt this for your own site, you'll need an Anthropic API key and a GitHub PAT with repo scope stored as repository secrets. The rest is just a cron job and some vanilla JS.
+To adapt it you need an Anthropic API key and a GitHub PAT with repo scope as repository secrets.
