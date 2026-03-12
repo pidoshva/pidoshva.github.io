@@ -26,12 +26,12 @@
   }
 
   function formatMetaDate(dateStr) {
-    var d = new Date(dateStr);
+    var d = new Date(dateStr + 'T00:00:00');
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
   function getNextSaturday(fromDate) {
-    var d = new Date(fromDate);
+    var d = new Date(fromDate + 'T00:00:00');
     var day = d.getDay();
     var diff = (6 - day + 7) % 7 || 7;
     d.setDate(d.getDate() + diff);
