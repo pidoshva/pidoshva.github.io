@@ -68,11 +68,16 @@
   }
 
   function stripRepoPrefix(text, repoName) {
-    // Remove "repoName: " prefix if Claude added it
+    // Remove "repoName: " or "repoName (org): " prefix if Claude added it
     var lower = text.toLowerCase();
-    var prefix = repoName.toLowerCase() + ': ';
+    var prefix = repoName.toLowerCase();
     if (lower.indexOf(prefix) === 0) {
-      return text.substring(prefix.length);
+      var rest = text.substring(prefix.length);
+      // Strip optional " (OrgName)" after repo name
+      var orgMatch = rest.match(/^\s*\([^)]*\)\s*:\s*/);
+      if (orgMatch) return rest.substring(orgMatch[0].length);
+      // Strip plain ": "
+      if (rest.indexOf(': ') === 0) return rest.substring(2);
     }
     return text;
   }
