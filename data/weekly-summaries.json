@@ -1,6 +1,1021 @@
 {
   "summaries": [
     {
+      "week_start": "2026-03-09",
+      "week_end": "2026-03-12",
+      "generated": "2026-03-12T21:35:18.213070+00:00",
+      "trigger": "workflow_dispatch",
+      "summary": "Shipped 15 commits across OrderProtection/monolog and personal portfolio. Fixed critical valet widget issues, cache invalidation, and warranty tag propagation. Advanced feature work on dynamic strings and variant rounding across monolog and cart-widget.",
+      "highlights": [
+        "monolog (OrderProtection): Fixed valet info modal navigation, settings page UX, and restored checkout widget preview with proper border styling",
+        "monolog (OrderProtection): Merged warranty tag cascade fixes for variant syncing and parent product ID emissions via Kafka",
+        "monolog (OrderProtection): Implemented billing fixes using per-policy premium calculations for SHIPPING policies",
+        "monolog (OrderProtection): Shipped claim automation insights, training features, and engineering permission access controls",
+        "cart-widget (OrderProtection): Advanced feature PRs for dynamic string user preferences and configurable variant rounding",
+        "pidoshva.github.io: Fixed date handling in weekly summary backfill and journal metadata formatting for ISO timestamps",
+        "monolog (OrderProtection): Merged headless mode support for dev TUI with ANSI stripping for AI agent compatibility"
+      ],
+      "repos": [
+        "cart-widget",
+        "monolog",
+        "pidoshva.github.io"
+      ],
+      "prs": [
+        {
+          "title": "feat: dynamic string user preference",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: dynamic string user preference for tile widget",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: add configurable variant rounding",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: add variant rounding to widget settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(valet): fix info modal create and list refresh",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(metadata-svc,orders-svc): apply OP:OtaEligible tag to eligible orders",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(orders-svc): pass preservePremiumPaid from Kafka event to worker",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(merchant-svc): invalidate store cache on update",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): settings page improvements",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): update info modal status locally after publish",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(valet): restore working checkout widget preview with proper borde\u2026",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): restore dynamic border styling in checkout widget preview",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "refactor(customizer): use Monaco editor in advanced config",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "feat: add warranty duration to extended warranty confirmation emails",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix: only setting shipping when overridden",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add team MCP servers, Figma design rules, and headless mode docs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(orders-svc): emit warranty tags Kafka events with parent product IDs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dev-tui): headless mode + ANSI stripping for AI agents",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(communications-svc): send extended warranty email on policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(orders-svc): sync parent warranty status when variant changes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(shopify-svc): add OP:IncludeWarranty tag",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(orders-svc): cascade warranty status to variants",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: backfill order store credits job",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(orders-svc): also preserve premiumCost when preservePremiumPaid is true",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims-svc): preserve order-level premiumPaid during SHIPPING policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(billing-svc): use per-policy premium for SHIPPING bill amount",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: allow engineering permissions to automation training",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(billing-svc): use per-policy premium for bill amount",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore: milestone PR #5000 \ud83c\udf89",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(deploy): switch staging MPA updateMode to Initial",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: EW validity determination and bulk warranty status update",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: claim automation insights and training",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): fix tile layout preview to match Shopify CE rendering",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "pidoshva.github.io": "JavaScript",
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript"
+      },
+      "languages": [
+        "JavaScript",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 15,
+        "prs": 29,
+        "repos_active": 3
+      }
+    },
+    {
+      "week_start": "2026-03-02",
+      "week_end": "2026-03-08",
+      "generated": "2026-03-12T21:35:09.759116+00:00",
+      "trigger": "workflow_dispatch",
+      "summary": "Completed 22 commits across OrderProtection/monolog and cart-widget (TypeScript), focusing on widget customization, code quality improvements, and warranty system fixes. Merged 28 PRs including dynamic user preferences, variant rounding, and claim automation enhancements.",
+      "highlights": [
+        "monolog (OrderProtection): Fixed PR review feedback by implementing enums, Tailwind styling, and proper TypeScript types across widget service",
+        "monolog (OrderProtection): Merged warranty system improvements including variant status cascading, tag emission, and policy creation fixes",
+        "cart-widget (OrderProtection): Added automatic pickup detection, hidden methods parsing fixes, and synced debug logger with async widget config",
+        "monolog (OrderProtection): Implemented claim automation insights and training pipeline with agent decision tracking and role entitlements",
+        "cart-widget (OrderProtection): Shipped customizable info modal support and warranty exclusion pipeline with selection tracking",
+        "monolog (OrderProtection): Resolved merge conflicts in widget service/controller and removed any types for improved type safety",
+        "monolog (OrderProtection): Enhanced developer tooling with headless mode, ANSI stripping for AI agents, and MCP servers documentation"
+      ],
+      "repos": [
+        "cart-widget",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "feat: dynamic string user preference",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: dynamic string user preference for tile widget",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: add configurable variant rounding",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: add variant rounding to widget settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(valet): fix info modal create and list refresh",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(metadata-svc,orders-svc): apply OP:OtaEligible tag to eligible orders",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(orders-svc): pass preservePremiumPaid from Kafka event to worker",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(merchant-svc): invalidate store cache on update",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): settings page improvements",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): update info modal status locally after publish",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(valet): restore working checkout widget preview with proper borde\u2026",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): restore dynamic border styling in checkout widget preview",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "refactor(customizer): use Monaco editor in advanced config",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "feat: add warranty duration to extended warranty confirmation emails",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(merchant-svc): fix EW validity determination and policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix: CE comparison config options",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: automatic pickup detection and hidden methods parsing fix",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Revert \"fix: validity mismatch when calculating the duration\"",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: sync debug logger with async widget config",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: validity mismatch when calculating the duration",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: only setting shipping when overridden",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add team MCP servers, Figma design rules, and headless mode docs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(orders-svc): emit warranty tags Kafka events with parent product IDs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dev-tui): headless mode + ANSI stripping for AI agents",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(communications-svc): send extended warranty email on policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(orders-svc): sync parent warranty status when variant changes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(shopify-svc): add OP:IncludeWarranty tag",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(orders-svc): cascade warranty status to variants",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: backfill order store credits job",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(orders-svc): also preserve premiumCost when preservePremiumPaid is true",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims-svc): preserve order-level premiumPaid during SHIPPING policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(billing-svc): use per-policy premium for SHIPPING bill amount",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: allow engineering permissions to automation training",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(billing-svc): use per-policy premium for bill amount",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore: milestone PR #5000 \ud83c\udf89",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(deploy): switch staging MPA updateMode to Initial",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: EW validity determination and bulk warranty status update",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: claim automation insights and training",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): fix tile layout preview to match Shopify CE rendering",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: customizable info modal content",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): implement customizer support for info modals",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(checkout-widget): warranty exclusion support and selection tracking",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: warranty product exclusion pipeline (ENG-5374)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: claim settings error fix",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: send agent decision for send message resolution",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: track in automation schema if it was denied or not. Also track the trigger event",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: store role entitlements",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: logging in general",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: optimize order fetches in claim automation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 22,
+        "prs": 45,
+        "repos_active": 2
+      }
+    },
+    {
+      "week_start": "2026-02-23",
+      "week_end": "2026-03-01",
+      "generated": "2026-03-12T21:34:58.245405+00:00",
+      "trigger": "workflow_dispatch",
+      "summary": "Shipped 59 commits across 5 repos, primarily fixing warranty validity calculations and dynamic string preferences in OrderProtection/monolog (TypeScript). Advanced eyegaze eye-tracking features and enhanced gifify logging. Updated portfolio with automated weekly summary logic.",
+      "highlights": [
+        "monolog (OrderProtection): Fixed validity mismatch in duration calculations, resolved merge conflicts, and ensured global info modal consistency across Cart Widget and Checkout Experience",
+        "monolog (OrderProtection): Implemented dynamic string user preferences and configurable variant rounding for widget settings across multiple services",
+        "monolog (OrderProtection): Enhanced warranty tagging pipeline with OP:OtaEligible, OP:IncludeWarranty tags and cascading warranty status to variants",
+        "monolog (OrderProtection): Shipped claim automation insights, training features, and improved agent decision tracking with enhanced logging",
+        "cart-widget (OrderProtection): Merged customizable info modal content, warranty exclusion support, and automatic pickup detection features",
+        "eyegaze: Initial implementation of macOS eye-tracking cursor control with improved calibration density and cursor stability",
+        "gifify: Released production-ready version with enhanced colored logging, spinner, progress bar, and resolved merge conflicts",
+        "pidoshva.github.io: Updated portfolio with refined weekly summary logic and added operational email to GitHub user emails"
+      ],
+      "repos": [
+        "cart-widget",
+        "eyegaze",
+        "gifify",
+        "monolog",
+        "pidoshva.github.io"
+      ],
+      "prs": [
+        {
+          "title": "feat: dynamic string user preference",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: dynamic string user preference for tile widget",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: add configurable variant rounding",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: add variant rounding to widget settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(valet): fix info modal create and list refresh",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(metadata-svc,orders-svc): apply OP:OtaEligible tag to eligible orders",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(orders-svc): pass preservePremiumPaid from Kafka event to worker",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(merchant-svc): invalidate store cache on update",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): settings page improvements",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): update info modal status locally after publish",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(valet): restore working checkout widget preview with proper borde\u2026",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): restore dynamic border styling in checkout widget preview",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "refactor(customizer): use Monaco editor in advanced config",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "feat: add warranty duration to extended warranty confirmation emails",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(merchant-svc): fix EW validity determination and policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix: CE comparison config options",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: automatic pickup detection and hidden methods parsing fix",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Revert \"fix: validity mismatch when calculating the duration\"",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: sync debug logger with async widget config",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: validity mismatch when calculating the duration",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(metadata-svc): handle month durations in warranty tags",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: confirmation email for extenede warranties",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: adding the policy_created to kafka config",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: tagging behaviour",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Vadim/revert validity tagging",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: warrantyID issues in create-policy",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: ensure tags can be turned off",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: defaulting to 0 duration in cases of small variants",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Add enhanced logging with colors, spinner, and progress bar",
+          "repo": "gifify",
+          "org": "",
+          "state": "merged"
+        },
+        {
+          "title": "Fix badly resolved merge conflicts from PR #4",
+          "repo": "gifify",
+          "org": "",
+          "state": "merged"
+        },
+        {
+          "title": "feat: prod ready",
+          "repo": "gifify",
+          "org": "",
+          "state": "merged"
+        },
+        {
+          "title": "fix: only setting shipping when overridden",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add team MCP servers, Figma design rules, and headless mode docs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(orders-svc): emit warranty tags Kafka events with parent product IDs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dev-tui): headless mode + ANSI stripping for AI agents",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(communications-svc): send extended warranty email on policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(orders-svc): sync parent warranty status when variant changes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(shopify-svc): add OP:IncludeWarranty tag",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(orders-svc): cascade warranty status to variants",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: backfill order store credits job",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(orders-svc): also preserve premiumCost when preservePremiumPaid is true",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims-svc): preserve order-level premiumPaid during SHIPPING policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(billing-svc): use per-policy premium for SHIPPING bill amount",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: allow engineering permissions to automation training",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(billing-svc): use per-policy premium for bill amount",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore: milestone PR #5000 \ud83c\udf89",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(deploy): switch staging MPA updateMode to Initial",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: EW validity determination and bulk warranty status update",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: claim automation insights and training",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): fix tile layout preview to match Shopify CE rendering",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: customizable info modal content",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): implement customizer support for info modals",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(checkout-widget): warranty exclusion support and selection tracking",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: warranty product exclusion pipeline (ENG-5374)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: claim settings error fix",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: send agent decision for send message resolution",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: track in automation schema if it was denied or not. Also track the trigger event",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: store role entitlements",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: logging in general",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: optimize order fetches in claim automation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): hide order number on store credit resolution details",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): add tile layout customizer for checkout widgets",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: ENG-2642 migrate subscriptions ordergroove from `widget` to `cart-widget` repo",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(mcp-svc): add production deployment manifests",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore: add /qa command for QA health check workflow",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(merchant-svc): gate EW functionality on warranties capability",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "pidoshva.github.io": "JavaScript",
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "eyegaze": "Go",
+        "gifify": "Shell"
+      },
+      "languages": [
+        "Go",
+        "JavaScript",
+        "Shell",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 59,
+        "prs": 62,
+        "repos_active": 5
+      }
+    },
+    {
       "week_start": "2026-02-17",
       "week_end": "2026-02-23",
       "generated": "2026-02-23T03:43:52.980880+00:00",
