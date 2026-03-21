@@ -1,6 +1,151 @@
 {
   "summaries": [
     {
+      "week_start": "2026-03-16",
+      "week_end": "2026-03-21",
+      "generated": "2026-03-21T05:42:26.317444+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped extended warranty features and info modal enhancements across OrderProtection/monolog and cart-widget (TypeScript). Merged 14 commits adding AB test support, copyright toggles, and claim link customization. Fixed persistence issues and improved state management.",
+      "highlights": [
+        "monolog (OrderProtection): Added extended warranty support to AB test UI with improved store change handling and EW price settings",
+        "monolog (OrderProtection): Implemented show/hide copyright toggle and file a claim link customization in info modal",
+        "monolog (OrderProtection): Fixed disclaimer text persistence in widget config and resolved EW fetch staleness on store changes",
+        "cart-widget (OrderProtection): Added customizable file a claim link feature with default to claim.orderprotection.com",
+        "monolog (OrderProtection): Enhanced MCP client with session reconnect logic and added observability tools to internal MCP",
+        "cart-widget (OrderProtection): Reviewed and merged warranty pricing hierarchy fixes and UK IP block removal",
+        "monolog (OrderProtection): Fixed warranty tag updates not firing on status changes across merchant and Shopify services",
+        "documentation (OrderProtection): Updated pixel documentation with configuration improvements"
+      ],
+      "repos": [
+        "cart-widget",
+        "documentation",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "feat(valet): add extended warranty support to AB test UI",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(shopify-svc): lazy-init analytics Shopify client",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "Fix warranty pricing hierarchy and remove UK IP block",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "Info modal: 1:1 logo preview and pixel size display",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "Info modal: 1:1 logo preview and pixel size display",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "Support customizable file a claim link in info modal",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Fix disclaimer text setting not persisting",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Add file a claim link customization to info modal",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: dynamic string user preference for tile widget",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: dynamic string user preference",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(mcp): add session reconnect logic to MCP client",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: update pixel docs",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: duplicate widget style test",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(mcp-svc): add observability tools to internal MCP",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(merchant-svc,shopify-svc): warranty tag updates not firing on status change",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: resolve pre-commit/pre-push hook failures and worktree setup",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(communications-svc): send extended warranty email on policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "documentation": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "documentation": "MDX"
+      },
+      "languages": [
+        "MDX",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 20,
+        "prs": 16,
+        "repos_active": 3
+      }
+    },
+    {
       "week_start": "2026-03-09",
       "week_end": "2026-03-12",
       "generated": "2026-03-12T21:35:18.213070+00:00",
