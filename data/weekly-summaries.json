@@ -1,6 +1,278 @@
 {
   "summaries": [
     {
+      "week_start": "2026-03-23",
+      "week_end": "2026-03-28",
+      "generated": "2026-03-28T05:58:53.526030+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 88 commits across 4 TypeScript repos this week. Delivered major UI redesigns and feature expansions in agent-factory (chat panel, vortex command, spawn animations) and monolog (widget customizer, theme branding, MCP tools). Fixed critical cart-widget persistence and layout issues.",
+      "highlights": [
+        "monolog (OrderProtection): Implemented theme branding API with merchant fonts, Shopify CLI temp file handling, and 13+ new MCP tools for communications and diagnostics",
+        "agent-factory: Redesigned chat UI with unified panel, syntax highlighting, command suggestions dropdown, and /vortex command with epic 15s animation effect",
+        "agent-factory: Fixed zombie slot shifting, subagent resurrection logic, tombstone reservation system, and added randomized spawn animations for new agents",
+        "cart-widget (OrderProtection): Fixed settings merge logic preventing data loss, empty bullet point filtering, modal alignment, and non-blocking preference persistence",
+        "op-theme-cli (OrderProtection): Converted to TypeScript, integrated Claude Code CLI for automated theme analysis, and refactored to use temp directories instead of permanent storage",
+        "monolog (OrderProtection): Added extended warranty line items to payment section, env drift detection tooling, and hard security scoping for store-bound channels",
+        "monolog (OrderProtection): Enhanced widget customizer with missing CE checkout settings and improved valet preview with backgroundColor and hideLogo support"
+      ],
+      "repos": [
+        "agent-factory",
+        "cart-widget",
+        "monolog",
+        "op-theme-cli"
+      ],
+      "prs": [
+        {
+          "title": "feat: add command suggestions to chat input",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add /vortex command",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add spawn animations",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "fix(shopify-cli): use temp files for request bodies to prevent shell escaping",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: apply merchant theme fonts to widget previews",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: zombie slot shifting, zombie subagents, and tombstone reservation",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add missing widget customizer settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: merge CE settings with API config",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: zombie slot shifting, zombie subagents, and tombstone reservation",
+          "repo": "agent-factory",
+          "org": "",
+          "state": "closed"
+        },
+        {
+          "title": "feat: configurable coverage terms URL for extended warranty emails",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix: filter out empty bullet points in widget tiles and modal",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: theme and checkout branding API",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(merchant-svc): include EW revenue in A/B test profit calc",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: tombstone on death with zombie resurrection and flower mourning",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "feat: tombstone on death with zombie resurrection and flower mourning",
+          "repo": "agent-factory",
+          "org": "",
+          "state": "closed"
+        },
+        {
+          "title": "feat: tombstone marker after agent death",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "feat: tombstone marker after agent death",
+          "repo": "agent-factory",
+          "org": "",
+          "state": "closed"
+        },
+        {
+          "title": "feat: opt-in graphic death animation",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "fix: info modal step layout alignment",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(widget): persist cart widget preference to API for CE sync",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(mcp): add storeDomain search to search_stores tool",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5474] feat(shopify-svc): add fully discounted replacement cost option",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "chore: add prune-branches Claude command",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: please",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: include config",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: resolve pre-commit/pre-push hook failures and worktree setup",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(mcp-svc): add observability tools to internal MCP",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(merchant-svc,shopify-svc): warranty tag updates not firing on status change",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dispatch-svc): add hard security scoping for store-bound Rex channels",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(mcp): add 13 new MCP tools for communications, postmark, queue health, and store diagnostics",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add env drift detection and sync tooling",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: net billing model",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-5467] fix(merchant-svc): include EW rev share in AB test profit",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: override shipping fix",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "style(orderlab): redesign UI with sidebar nav and professional theme",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: reference to the global.mcp file",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5468] feat(valet): add extended warranty line item to payment section",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore: add new spinner verbs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "agent-factory": "wolzey",
+        "cart-widget": "OrderProtection",
+        "op-theme-cli": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "agent-factory": "TypeScript",
+        "cart-widget": "TypeScript",
+        "op-theme-cli": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 88,
+        "prs": 35,
+        "repos_active": 4
+      }
+    },
+    {
       "week_start": "2026-03-16",
       "week_end": "2026-03-21",
       "generated": "2026-03-21T05:42:26.317444+00:00",
