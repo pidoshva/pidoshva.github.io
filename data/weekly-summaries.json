@@ -1,6 +1,218 @@
 {
   "summaries": [
     {
+      "week_start": "2026-03-30",
+      "week_end": "2026-04-04",
+      "generated": "2026-04-04T05:58:38.916011+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 59 commits across OrderProtection/monolog and wolzey/agent-factory (TypeScript). Enhanced OP detection, redesigned confirmation UI, added theme management, and integrated deeper Claude features with session management fixes.",
+      "highlights": [
+        "monolog (OrderProtection): Implemented comprehensive non-standard OP detection and redesigned confirmation cards with progress output and final reports",
+        "monolog (OrderProtection): Added theme rename logic with date stamping, 64-char limits, and auto-start for local services",
+        "monolog (OrderProtection): Merged 20+ PRs including widget CLI, audit mode, compliance webhooks, and Redis leader election for Slack",
+        "monolog (OrderProtection): Fixed token leakage in credential resolution, Shopify reinstall issues, and claim automation payload bugs",
+        "agent-factory (wolzey): Added deeper Claude integrations featuring error explosions, commit confetti, PR celebrations, cost coins, and diff heatmaps",
+        "agent-factory (wolzey): Fixed zombie session resurrection on resume and stopped reaping active sessions in Claude registry",
+        "agent-factory (wolzey): Resolved qrterminal/v3 dependency and cabinet alpha animation issues with upstream conflict resolution"
+      ],
+      "repos": [
+        "agent-factory",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "fix(imp): prevent token leakage in credential resolve step",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(widget-impl): derive CDN identifier from brand name",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(widget-impl): add audit mode and rewrite SKILL.md",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(shopify-svc): add widget implementation CLI with multi-env theme access",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[FIX] fix(dispatch-svc): reject placeholder Slack tokens in bot guard",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: configurable coverage terms URL for extended warranty emails",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix: add missing qrterminal/v3 dependency",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "feat: deeper Claude integrations",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "fix: restore zombie resurrection on session resume",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "fix(shopify-svc): validate customerId before account credit creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "chore(shopify-svc): add error handling to discount code creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: stop reaping sessions still alive in Claude",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "fix(dispatch-svc): add Redis leader election for Slack socket-mode listener",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix: shopify reinstall",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(shopify-svc): add compliance webhooks for analytics app",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5474] feat(shopify-svc): add fully discounted replacement cost option",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(concierge): pass products prop to FulfillmentInfo",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims-svc,valet): fix resolve claim payload and NaN amount bugs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "docs: add database access rules to CLAUDE.md",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: concierge build",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5490] Claims staying closed after customer responds",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(mcp-svc): expose mcp-svc externally with OAuth on production",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): require feedback when rejecting claim automation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(mcp-svc): expose mcp-svc externally with OAuth on staging",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(merchant-svc): parse selectedProtection JSON in AB test profit calc",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(identity-svc): forward client IP to Auth0 in shopify login password grant",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dispatch-svc): add role-based entitlement filtering to Rex",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore(claude): add lint/test step to PR skill",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "docs: add debugging protocol and change discipline to CLAUDE.md",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "agent-factory": "wolzey"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "agent-factory": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 59,
+        "prs": 28,
+        "repos_active": 2
+      }
+    },
+    {
       "week_start": "2026-03-23",
       "week_end": "2026-03-28",
       "generated": "2026-03-28T05:58:53.526030+00:00",
