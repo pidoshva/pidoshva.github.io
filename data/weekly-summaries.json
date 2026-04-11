@@ -1,6 +1,325 @@
 {
   "summaries": [
     {
+      "week_start": "2026-04-06",
+      "week_end": "2026-04-11",
+      "generated": "2026-04-11T06:01:55.500438+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 22 commits across OrderProtection/monolog (TypeScript), cart-widget, and woocommerce. Merged features for order metafields, product hierarchy display, Playwright migration, and B2B detection. Resolved Shopify service issues and improved infrastructure.",
+      "highlights": [
+        "monolog (OrderProtection): Fixed Shopify service Kafka topic handling, dedup keys, float precision, and sourceOrderId validation in policy handlers",
+        "monolog (OrderProtection): Added order metafields for shipping vs warranty premium split; implemented parent-child product hierarchy in warranty table",
+        "monolog (OrderProtection): Migrated e2e testing from Cypress to Playwright for valet and concierge; removed all Cypress references",
+        "monolog (OrderProtection): Shipped billing service CSV export for payouts/invoices and Anthropic prompt caching with automation cost tracking",
+        "cart-widget (OrderProtection): Merged B2B customer detection and filtering for Shopify stores; fixed checkout extension B2B detection",
+        "monolog (OrderProtection): Enhanced dispatch service with Redis leader election for Slack socket-mode listener; implemented net billing model",
+        "monolog (OrderProtection): Added configurable coverage terms URL for extended warranty emails; implemented fully discounted replacement cost option",
+        "woocommerce (OrderProtection): Fixed shipping method assignment on reship operations"
+      ],
+      "repos": [
+        "cart-widget",
+        "monolog",
+        "woocommerce"
+      ],
+      "prs": [
+        {
+          "title": "chore(imp): old widget cleanup, diff docs, and push fixes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(merchant-svc): include EW revenue in A/B test profit calc",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: configurable coverage terms URL for extended warranty emails",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(shopify-svc): validate customerId before account credit creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(widget-impl): derive CDN identifier from brand name",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-5450] feat(shopify-svc): add order metafields for premium split",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): add missing useMerchantStore import in ProductsTable",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(orders-svc,valet): product table parent-child hierarchy for warranty settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore(imp): speed up widget implementation and secure token pipeline",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): update info modal status locally after publish",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: add variant rounding to widget settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(merchant-svc): fix EW validity determination and policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(metadata-svc,orders-svc): apply OP:OtaEligible tag to eligible orders",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "Info modal: 1:1 logo preview and pixel size display",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(shopify-svc): lazy-init analytics Shopify client",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "docs(imp): add theme duplication lesson to skill knowledge",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "feat(communications-svc): customizable EW coverage terms URL",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add bigcommerce widget",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "test(valet): add unit tests for usePricingPage composable",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore: remove all remaining Cypress references",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(e2e): replace Cypress with Playwright for valet and concierge",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(mcp): route add_claim_note to metadata-svc instead of claims-svc",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(imp): add B2B data attribute to widget script tag",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: enable B2B detection in checkout extension",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: trying this out",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Briggzly/shopify onboard updates",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: hide widget UI for B2B customers on early return",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-3046] feat(billing-svc, valet): add CSV export for payouts and invoices",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(mcp): add Anthropic prompt caching and automation cost tracking",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: api version",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: set original shipping method on reship",
+          "repo": "woocommerce",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add B2B customer filter for Shopify stores",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore: milestone PR #5000 \ud83c\udf89",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix: going back to what i had",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: please",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: please",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: please",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: trying again",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: ignore scripts",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: add this back",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: trying to speed this up",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: contact email",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: create app action",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(dispatch-svc): add Redis leader election for Slack socket-mode listener",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: net billing model",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5474] feat(shopify-svc): add fully discounted replacement cost option",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "woocommerce": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "woocommerce": "PHP"
+      },
+      "languages": [
+        "PHP",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 22,
+        "prs": 45,
+        "repos_active": 3
+      }
+    },
+    {
       "week_start": "2026-03-30",
       "week_end": "2026-04-04",
       "generated": "2026-04-04T05:58:38.916011+00:00",
