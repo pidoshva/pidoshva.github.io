@@ -1,6 +1,292 @@
 {
   "summaries": [
     {
+      "week_start": "2026-04-13",
+      "week_end": "2026-04-18",
+      "generated": "2026-04-18T06:13:38.806899+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 28 commits across OrderProtection services, focusing on Shopify integration fixes, metadata pipeline reliability, and MCP tool expansions. Stabilized agent respawn logic in agent-factory and advanced OAuth scope inspection features.",
+      "highlights": [
+        "monolog (OrderProtection): Fixed critical Kafka rebalancing bug preventing Shopify tags from dropping with optional chaining guards",
+        "monolog (OrderProtection): Resolved extended warranty premium split calculation returning $0 when shipping quote exceeded premium paid",
+        "monolog (OrderProtection): Shipped /scopes skill for Shopify OAuth scope inspection across OAuth and custom-app stores",
+        "monolog (OrderProtection): Added check_proof_of_delivery and update_claim_type MCP tools with scoped workflow loading for claims-svc",
+        "monolog (OrderProtection): Migrated claims-svc and shopify-svc to database module with access-class pattern, removing stale GraphQL artifacts",
+        "agent-factory (wolzey): Fixed agent respawn logic to prevent sprite flicker and handle stale session resumption reliably",
+        "cart-widget (OrderProtection): Released bigcommerce widget support and maintenance fixes for cross-platform compatibility",
+        "documentation (OrderProtection): Added SOP guide, Education Basecamp restructure, product redirect guide, and customization docs"
+      ],
+      "repos": [
+        "agent-factory",
+        "cart-widget",
+        "documentation",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "fix(state): ensure agent respawns when stale session resumes",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "merged"
+        },
+        {
+          "title": "fix: ensure agent re-spawns when stale session resumes",
+          "repo": "agent-factory",
+          "org": "wolzey",
+          "state": "closed"
+        },
+        {
+          "title": "fix(metadata-svc): prevent dropped Shopify tags from Kafka rebalancing",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(shopify-svc, metadata-svc): stop silent drops in Shopify tag-sync pipeline",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(merchant-svc): fix EW premium split giving $0 to extended warranty",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(skills): inspect Shopify scopes across OAuth + custom-app stores",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(dispatch-svc): surface expected CDN slug in theme-published Slack alert",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(dispatch-svc): derive brand lookup slug from name",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(metadata-svc): ensure EW duration tags always reach Shopify",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(shopify-svc): fix TS2366 missing return in fetchOne retry loop",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(shopify-svc): reduce audit fetch concurrency to avoid Shopify 429s",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore(dispatch-svc): add SLACK_THEME_PUBLISHED_CHANNEL_ID to deploy configs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: notify Slack and audit theme on shopify themes/publish",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(shopify-svc): migrate Prisma calls to access-class database module",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-5539] fix(api-gateway): proxy merchant-svc v2 partner API endpoints",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5539] feat(merchant-svc): add v2 partner API endpoints",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: yofi finally",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(claims-svc): add check_proof_of_delivery MCP tool",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(docs): add SOP guide and restructure Education Basecamp",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(claims-svc): migrate to database module with access-class pattern",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: socket hung up error",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(valet): decompose account page into composable pattern",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(identity-svc): derive OAuth store access from storeRoles array",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor: remove GraphQL from identity-svc and clean stale artifacts from 5 services",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore: milestone PR #5000 \ud83c\udf89",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "refactor(valet): eliminate BillingProfileModel class",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(claims-svc): add update_claim_type tool and scoped workflows",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): fix empty resolution summary in AISuggestionBanner",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(claims-svc): add update_claim_type MCP tool and scoped workflow loading",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "feat(preview): PR preview environments with label-based deployment",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(identity-svc): add OAuth developer platform and marketplace",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(claude): add database module migration skill suite",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): add Save & Draft button to Email Designer",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: yofi isn't sending the correct signature so skipping for now",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5542] fix(dispatch-svc): route Rex events via HTTP Events API",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[PD-3018] feat(docs): add customizations guides, dashboard walkthrough, and fix logos",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Add OP Product Redirect Guide for Shopify",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(mcp): support all media types in analyze_media tool",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: release",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: add bigcommerce widget",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "agent-factory": "wolzey",
+        "documentation": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "agent-factory": "TypeScript",
+        "documentation": "MDX",
+        "cart-widget": "TypeScript"
+      },
+      "languages": [
+        "MDX",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 28,
+        "prs": 35,
+        "repos_active": 4
+      }
+    },
+    {
       "week_start": "2026-04-06",
       "week_end": "2026-04-11",
       "generated": "2026-04-11T06:01:55.500438+00:00",
