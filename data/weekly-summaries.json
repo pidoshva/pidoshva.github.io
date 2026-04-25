@@ -1,6 +1,242 @@
 {
   "summaries": [
     {
+      "week_start": "2026-04-20",
+      "week_end": "2026-04-25",
+      "generated": "2026-04-25T06:20:42.740493+00:00",
+      "trigger": "schedule",
+      "summary": "Completed 35 commits across OrderProtection/monolog and cart-widget (TypeScript), focusing on warranty resolution options, performance improvements, and security fixes. Merged 28 PRs including per-claim-type resolution features and checkout widget optimizations.",
+      "highlights": [
+        "monolog (OrderProtection): Implemented per-claim-type resolution options (ENG-5556) with stale STORE_CREDIT guards and toggleable flag mocks for warranty processing",
+        "monolog (OrderProtection): Fixed warranty valet UI by preventing disabling all resolution options, dismissing popovers on scroll/resize, and invalidating store cache on settings updates",
+        "cart-widget (OrderProtection): Optimized checkout-widget protection toggle performance to feel instant and serialized release workflows with shared concurrency groups",
+        "cart-widget (OrderProtection): Enhanced UI security with sanitizeUrl allowlist, claim-link fallback, noreferrer attributes, and proper modal copy escaping",
+        "monolog (OrderProtection): Expanded test coverage with Playwright e2e tests for claim processing flows and in-store claim filing workflows",
+        "monolog (OrderProtection): Added OAuth security verification for Shopify analytics callbacks and integrated Claude skills for batch automation feedback and Linear GraphQL access",
+        "monolog (OrderProtection): Refactored valet UI to use semantic links for nav tabs/claim rows and decomposed account page into composable pattern"
+      ],
+      "repos": [
+        "cart-widget",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "fix(valet): prevent disabling all warranty resolution options",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(merchant-svc): invalidate store cache on warranty settings update",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(warranty): keep refund disabled for in-store resolution",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Vadim/eng 5556 in store refund disable",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "feat(warranty): per-claim-type resolution options (ENG-5556)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Update settings.json",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(customizer): use Monaco editor in advanced config",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(customizer): use Monaco editor in advanced config",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(shopify-svc): surface orderUpdate userErrors as thrown errors",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "ci: serialize release workflows with concurrency group",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(ui): align cart info modal with CE schema and layout",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "perf(checkout-widget): make protection toggle feel instant",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5540] feat(merchant-svc): v2 quote lineItems + write attribution",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5557] refactor(shopify-svc, imp-skill): move Shopify theme ops behind internal endpoints",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix: auth0 blocking accounts",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "test(concierge-e2e): add in-store claim filing flow e2e coverage",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "En 19 configure local kafka docker environment",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "test(valet-e2e): add Playwright coverage for claim processing flow",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: final ordergroove fixes",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(mcp): return SOP content from get_sops and decouple resolve_claim from workflow defaults",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(claude): add batch-train skill for automation feedback",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): render nav tabs and claim rows as semantic links",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(shopify-svc): verify HMAC and state nonce on analytics OAuth callback",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore(checkout-extensibility): remove shopify CE settings, use config API only",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(claude): add linear skill for GraphQL API access",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(identity-svc): user entitlement overrides not matching in guard",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(claims-svc, valet): add AUDITED feedback status and audit skill",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(preview): PR preview environments with label-based deployment",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "refactor(valet): eliminate ManualClaimItemModel class",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(valet): decompose account page into composable pattern",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(shopify-svc): migrate Prisma calls to access-class database module",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: yofi finally",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims-svc, valet): optimize automation dashboard stats and fix NaN accuracy",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 35,
+        "prs": 31,
+        "repos_active": 2
+      }
+    },
+    {
       "week_start": "2026-04-13",
       "week_end": "2026-04-18",
       "generated": "2026-04-18T06:13:38.806899+00:00",
