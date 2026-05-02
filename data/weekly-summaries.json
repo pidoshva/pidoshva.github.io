@@ -1,6 +1,102 @@
 {
   "summaries": [
     {
+      "week_start": "2026-04-27",
+      "week_end": "2026-05-02",
+      "generated": "2026-05-02T07:01:36.635026+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 8 commits across OrderProtection/monolog (TypeScript), focusing on backorder fulfillment features, permission-based UI gating, and OAuth scope expansions. Merged 9 PRs including billing refactors and Shopify theme operation improvements.",
+      "highlights": [
+        "monolog (OrderProtection): Implemented backorder flag system for out-of-stock reships with per-store allowBackorderReship setting",
+        "monolog (OrderProtection): Fixed valet email logo sizing and duplicate rendering issues per code review feedback",
+        "monolog (OrderProtection): Refactored backorder reship gating to use dedicated allowBackorderReship permission setting",
+        "monolog (OrderProtection): Added write_themes OAuth scope requirement for Shopify service integrations",
+        "monolog (OrderProtection): Replaced TypeScript any types with proper interfaces and enums across codebase",
+        "monolog (OrderProtection): Merged billing-svc NET outer-month handling and late-credit refactor (ENG-5382)",
+        "monolog (OrderProtection): Moved Shopify theme operations behind internal endpoints for security (ENG-5557)",
+        "monolog (OrderProtection): Enhanced Claude skill with LaunchDarkly feature flag CRUD operations"
+      ],
+      "repos": [
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "fix(shopify-svc): tag backorder reships when variant allows overselling",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: flag OOS reships as backorders via per-store allowBackorderReship setting",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): email designer logo size and duplicate rendering",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(shopify-svc): add write_themes to required OAuth scopes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "feat(shopify-svc): add write_themes to required OAuth scopes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5382] feat(billing-svc): NET outer-month handling and late-credit refactor",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: add bigcommerce queues to ui",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims-svc): correctly match manual claim items by sourceItemId",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(claude): add launchdarkly skill for feature flag CRUD",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5557] refactor(shopify-svc, imp-skill): move Shopify theme ops behind internal endpoints",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 8,
+        "prs": 9,
+        "repos_active": 1
+      }
+    },
+    {
       "week_start": "2026-04-20",
       "week_end": "2026-04-25",
       "generated": "2026-04-25T06:20:42.740493+00:00",
