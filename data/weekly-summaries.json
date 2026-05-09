@@ -1,6 +1,80 @@
 {
   "summaries": [
     {
+      "week_start": "2026-05-04",
+      "week_end": "2026-05-09",
+      "generated": "2026-05-09T07:08:35.996409+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 18 commits across OrderProtection/monolog and implementation (TypeScript). Added daily Slack alerts for outdated widget versions, refactored dispatch service with hardcoded channel constants, and improved BigCommerce integration with theme upload support and documentation updates.",
+      "highlights": [
+        "monolog (OrderProtection): Added daily Slack alert feature for outdated widget version notifications",
+        "monolog (OrderProtection): Refactored dispatch service to use hardcoded Slack channel IDs with NODE_ENV gating",
+        "monolog (OrderProtection): Fixed BigCommerce service multipart Content-Type handling and added form-data production dependency",
+        "monolog (OrderProtection): Implemented BigCommerce theme upload support for /imp skill with MCP integration",
+        "monolog (OrderProtection): Addressed multiple rounds of PR review feedback across dispatch and BigCommerce services",
+        "implementation (OrderProtection): Updated BigCommerce implementation guide with current widget flow and deployment steps",
+        "implementation (OrderProtection): Added comprehensive guide for custom test store deployments"
+      ],
+      "repos": [
+        "implementation",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "feat(dispatch-svc): add daily Slack alert for outdated widget versions",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "docs(imp): rewrite BigCommerce execution steps from production audit",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(bigcommerce-svc): add form-data as direct dependency",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(bigcommerce-svc, mcp): add BigCommerce theme support for /imp skill",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Update BigCommerce implementation guide with current widget flow",
+          "repo": "implementation",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5598] fix: OAuth + dashboard polish followups from PR #5499 QA",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "implementation": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "implementation": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 18,
+        "prs": 6,
+        "repos_active": 2
+      }
+    },
+    {
       "week_start": "2026-04-27",
       "week_end": "2026-05-02",
       "generated": "2026-05-02T07:01:36.635026+00:00",
