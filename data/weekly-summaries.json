@@ -1,6 +1,189 @@
 {
   "summaries": [
     {
+      "week_start": "2026-05-11",
+      "week_end": "2026-05-16",
+      "generated": "2026-05-16T07:15:01.817283+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 53 commits across OrderProtection/monolog (TypeScript) focusing on dispatch service improvements, version tag handling, and claims processing. Merged 21 PRs including deployment dropdown fixes, Metabase integration, and Shopify reship functionality.",
+      "highlights": [
+        "monolog (OrderProtection): Consolidated version-tag endpoints and refined getTags GraphQL logic with chronological ordering and defensive SHA extraction",
+        "monolog (OrderProtection): Enhanced dispatch-svc with Metabase integration for priority brand revenue alerts and implementation tab redesign",
+        "monolog (OrderProtection): Improved claims service with live carrier tracking, AI note retrigger, and warranty order item updates",
+        "monolog (OrderProtection): Fixed BigCommerce theme activation fallback logic and default versioning for freshly uploaded themes",
+        "monolog (OrderProtection): Added Slack file upload fallback to threaded messages and created MCP deployment tool for Rex",
+        "monolog (OrderProtection): Expanded Shopify reship functionality to forward original order phone and skip claim-type picker optimization",
+        "documentation (OrderProtection): Surfaced partner v2 endpoints in developer navigation documentation"
+      ],
+      "repos": [
+        "documentation",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "feat(dispatch-svc, valet): Imp Tab redesign; rank priority brands by trailing-30-day revenue",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(dispatch-svc, valet): load distinct subscriptions tags for deployment dropdown",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(shared-nest-github): order getTags chronologically via GraphQL",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(dispatch-svc): map metabaseApiKey secret to METABASE_API_KEY env",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "docs(imp): add custom cart validation install playbook",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dispatch-svc, valet): split priority brands in Implementation tab",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(dispatch-svc): use Metabase for top revenue priority alert",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dispatch-svc): version alert and imp tab updates",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "docs(imp): never publish or activate themes to live",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(bigcommerce-svc): fall back to original activation for freshly uploaded themes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(bigcommerce-svc): default theme activation to last_activated version",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(merchant-svc): fix EW validity determination and policy creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(dispatch-svc): fall back to threaded messages when Slack file upload fails",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dispatch-svc, mcp): add create_deployment MCP tool for Rex",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dispatch-svc, valet): show store status on implementation brands",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims-svc): update warranty order item without sourceVariantId",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(shopify-svc): forward original order phone on reship shipping address",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims): fire updateOrderItem on price-only warranty validation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(concierge): make phone number optional on alternative channel contact-info step",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(claims): allow internal notes during AI run, retrigger on note",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(in-store): skip claim-type picker when only one category is enabled",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(claims): add live carrier tracking on claim view",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "docs(developer): surface partner v2 endpoints in navigation",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(billing-svc,valet): prior-months redesign + rolling baseline",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "documentation": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "documentation": "MDX"
+      },
+      "languages": [
+        "MDX",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 53,
+        "prs": 23,
+        "repos_active": 2
+      }
+    },
+    {
       "week_start": "2026-05-04",
       "week_end": "2026-05-09",
       "generated": "2026-05-09T07:08:35.996409+00:00",
