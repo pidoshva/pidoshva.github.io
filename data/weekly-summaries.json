@@ -1,6 +1,102 @@
 {
   "summaries": [
     {
+      "week_start": "2026-05-18",
+      "week_end": "2026-05-23",
+      "generated": "2026-05-23T07:32:52.046180+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped custom tag rules builder and enum-value dropdown features in OrderProtection/monolog (TypeScript). Merged 10 PRs including mobile dashboard improvements, merchant service APIs, and claims metadata refactoring. Resolved multiple code review rounds.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped custom tag rules builder under Settings > Tagging with enum-value dropdown + Shopify line item ID support",
+        "monolog (OrderProtection): Merged brand theme audit feature adding implementation tab visibility across valet, dispatch-svc, and shopify-svc",
+        "monolog (OrderProtection): Resolved flaky e2e tests by removing custom-tag-rules spec and mocking LD flag to unblock prod release",
+        "monolog (OrderProtection): Implemented partner v2 APIs for pricing, widget, and quote endpoints in merchant-svc",
+        "monolog (OrderProtection): Fixed restart cascade issues in merchant-svc by mitigating probes, rate limits, Kafka, and balloon configurations",
+        "monolog (OrderProtection): Refactored warranty_fee handling to per-item metadata across claims-svc and valet services",
+        "monolog (OrderProtection): Addressed mobile dashboard layout improvements for valet and pulse with pending review",
+        "monolog (OrderProtection): Completed 11 rounds of code review feedback from otto-runner and briggzly on metadata, claims, and valet services"
+      ],
+      "repos": [
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "feat(custom-tags): enum-value dropdown + Shopify line item ID (eng-5607)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "chore(valet-e2e): remove flaky custom-tag-rules spec to unblock prod release",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet-e2e): mock LD flag in custom-tag-rules spec",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5607] feat: custom tag rules builder under Settings > Tagging",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet, pulse): improve mobile dashboard layout",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(valet, dispatch-svc, shopify-svc): add brand theme audit from Implementation tab",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5603] feat(merchant-svc): partner v2 APIs (pricing, widget, quote)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: remove throttling changes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(merchant-svc): mitigate restart cascade \u2014 probes, rate limit, Kafka, balloon",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(claims-svc, valet): warranty_fee on per-item metadata",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 40,
+        "prs": 10,
+        "repos_active": 1
+      }
+    },
+    {
       "week_start": "2026-05-11",
       "week_end": "2026-05-16",
       "generated": "2026-05-16T07:15:01.817283+00:00",
