@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "slug": "automating-store-onboarding",
+      "title": "Turning a 30-Minute Chore into One Command",
+      "date": "2026-05-29",
+      "excerpt": "Manual store onboarding — installing a cart widget into a Shopify or BigCommerce theme — was a careful, error-prone half hour. I turned it into a single Claude Code skill that pulls the theme, finds where the code belongs, edits it, and pushes a draft. Plus the gotchas: content-driven file discovery, an async duplicate-theme race, and cutting theme pulls from hundreds of API calls down to a handful.",
+      "tags": ["automation", "ai", "claude-code", "shopify"],
+      "draft": false
+    },
+    {
       "slug": "automating-my-dev-journal",
       "title": "Automating My Dev Journal with GitHub Actions and Claude",
       "date": "2026-02-22",
