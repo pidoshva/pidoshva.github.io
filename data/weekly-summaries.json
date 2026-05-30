@@ -1,6 +1,153 @@
 {
   "summaries": [
     {
+      "week_start": "2026-05-25",
+      "week_end": "2026-05-30",
+      "generated": "2026-05-30T07:41:57.980413+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 26 commits to OrderProtection/monolog (TypeScript) improving Brands tab performance with progressive scope checks and mobile UX fixes. Merged 10+ PRs addressing dashboard layouts, Shopify scope validation, and service refactoring. Published portfolio post on automation.",
+      "highlights": [
+        "monolog (OrderProtection): Implemented progressive scope checks with single brands table and search functionality for faster performance",
+        "monolog (OrderProtection): Fixed mobile dashboard layout and alignment issues across valet/pulse pages with responsive design improvements",
+        "monolog (OrderProtection): Added Shopify scope health indicator on implementation brands list and improved scope-check accuracy",
+        "monolog (OrderProtection): Refactored dispatch-svc to hardcode theme-published Slack channel and capped validateScopes fan-out to prevent OOM",
+        "monolog (OrderProtection): Fixed claims-svc null coercion and gated reset cleanup on resolution lines for data integrity",
+        "monolog (OrderProtection): Resolved browser back-navigation blank pages and improved TagSelect popover responsiveness on resize",
+        "monolog (OrderProtection): Migrated metadata-svc custom-tags to BullMQ and swapped MPA for HPA with PDB addition",
+        "pidoshva.github.io: Published new blog post on converting a 30-minute manual chore into a single automated command"
+      ],
+      "repos": [
+        "monolog",
+        "pidoshva.github.io"
+      ],
+      "prs": [
+        {
+          "title": "fix(valet): stop blank pages on browser back-navigation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(implementation): faster Brands tab with progressive scope checks, single table + search",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(dispatch-svc): hardcode theme-published Slack channel as a constant",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5605] fix(valet): tighten mobile alignment across pages",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(valet, pulse): improve mobile dashboard layout",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "refactor(valet): surface authMethod on brands page, drop strict-mode plumbing",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(shopify-svc): query Shopify live for granted scopes in strict mode",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(shopify-svc): query Shopify live for granted scopes in strict mode",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(valet): brands page scope-check accuracy + progress loader",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(dispatch-svc): cap validateScopes fan-out to prevent OOM",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): show shopify scope health indicator on imp brands list",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5607] chore(metadata-svc): swap MPA for HPA + add PDB",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5607] fix(shopify-svc): atomic tagsAdd for custom-rule tags",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "[ENG-5607] fix(metadata-svc): move custom-tags to BullMQ",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims-svc): stop coercing null claim-item fields to ''",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: imp brands page",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "[ENG-5615] fix(ci): re-include src/coverage in docker build context",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(claims-svc): gate reset cleanup on resolution lines",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "pidoshva.github.io": "JavaScript"
+      },
+      "languages": [
+        "JavaScript",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 27,
+        "prs": 14,
+        "repos_active": 2
+      }
+    },
+    {
       "week_start": "2026-05-18",
       "week_end": "2026-05-23",
       "generated": "2026-05-23T07:32:52.046180+00:00",
