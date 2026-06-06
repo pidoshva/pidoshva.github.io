@@ -1,6 +1,107 @@
 {
   "summaries": [
     {
+      "week_start": "2026-06-01",
+      "week_end": "2026-06-06",
+      "generated": "2026-06-06T07:46:13.788990+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 11 merged PRs across OrderProtection/monolog (TypeScript), focusing on dispatch-svc and valet improvements. Key work included theme-automation dashboard UI fixes, runtime asset bundling, AI theme automation features, and drag-and-drop widget builder implementation.",
+      "highlights": [
+        "monolog (OrderProtection): Merged theme-automation dashboard UI fixes and addressed 8 rounds of PR review feedback on AI automation feature",
+        "monolog (OrderProtection): Fixed dispatch-svc asset bundling and runtime image configuration for improved deployment",
+        "monolog (OrderProtection): Implemented visual drag-and-drop widget builder for valet with enhanced user experience",
+        "monolog (OrderProtection): Added Yofi/Wyllo v2 inbound prediction webhook integration to dispatch-svc",
+        "monolog (OrderProtection): Fixed valet blank page issue on browser back-navigation and AB test race condition",
+        "monolog (OrderProtection): Made order number optional toggle for offline claims and added React cart drawer install playbook",
+        "monolog (OrderProtection): Completed 21 commits across single repository with consistent TypeScript codebase improvements"
+      ],
+      "repos": [
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "feat(dispatch-svc, valet): theme-automation dashboard UI fixes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(dispatch-svc): copy built assets into the runtime image",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(dispatch-svc): bundle imp playbook into the service image",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(migrate): grant runtime role access to migrated tables",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "docs(imp): React cart drawer install playbook for /imp skill",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dispatch-svc, mcp, valet): add AI theme automation runs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: make order number optional toggle for offline claims",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): stop blank pages on browser back-navigation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: ab test race condition",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5628] feat(valet): add visual drag-and-drop widget builder",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(dispatch-svc): add Yofi/Wyllo v2 inbound prediction webhook",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 21,
+        "prs": 10,
+        "repos_active": 1
+      }
+    },
+    {
       "week_start": "2026-05-25",
       "week_end": "2026-05-30",
       "generated": "2026-05-30T07:41:57.980413+00:00",
