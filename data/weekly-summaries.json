@@ -1,6 +1,225 @@
 {
   "summaries": [
     {
+      "week_start": "2026-06-08",
+      "week_end": "2026-06-13",
+      "generated": "2026-06-13T08:21:15.165281+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped exchange-rate endpoint and widget customizer fixes across OrderProtection/monolog and cart-widget (TypeScript). Enhanced geleus-io with iOS countdown widget and Maui photo integration. Advanced Global-E integration groundwork and valet UI improvements.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped public exchange-rate endpoint and addressed PR reviews on cache key/rate guard logic",
+        "monolog (OrderProtection): Fixed widget customizer preview fidelity (border, store font, auto-save, disclaimer toggle)",
+        "cart-widget (OrderProtection): Migrated exchange-rate endpoint to api.production with fallback for outages",
+        "geleus-io: Built live countdown timer with HH:MM:SS display, iOS home-screen widget, and 398 verified Maui photos",
+        "pi-pr-browser: Organized pull request reviews and diff viewer UI components",
+        "monolog (OrderProtection): Advanced Global-E integration with store market country schema and reship routing",
+        "monolog (OrderProtection): Merged valet warranty receipt PDF rendering and order address field updates for Yofi claims"
+      ],
+      "repos": [
+        "cart-widget",
+        "geleus-io",
+        "monolog",
+        "pi-git-diff-panel",
+        "pi-pr-browser"
+      ],
+      "prs": [
+        {
+          "title": "[ENG-4126] feat(shopify-svc): route international reships via Global-E",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-5652] fix(utils): migrate exchange-rate to api.production endpoint",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5652] feat(merchant-svc): add public exchange-rate endpoint",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5605] fix(valet): tighten mobile alignment across pages",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "Info modal: 1:1 logo preview and pixel size display",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(metadata-svc,orders-svc): apply OP:OtaEligible tag to eligible orders",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat: add variant rounding to widget settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(shopify-svc): lazy-init analytics Shopify client",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(shopify-svc): fix TS2366 missing return in fetchOne retry loop",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(metadata-svc): ensure EW duration tags always reach Shopify",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(dispatch-svc): surface expected CDN slug in theme-published Slack alert",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(dispatch-svc, valet): Imp Tab redesign; rank priority brands by trailing-30-day revenue",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(shopify-svc): tag backorder reships when variant allows overselling",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-4126] feat(merchant-svc): add store primary market country",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-4126] feat(dispatch-svc): add Global-E integration schema",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-4126] feat(claims-svc): persist external reship order id",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "fix(valet): widget customizer fixes (preview fidelity, border, store font, no auto-save)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): stop auto-saving the widget customizer on every change",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(valet): default checkout disclaimer off and make the customizer toggle work",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5609] feat(valet): add reviews summary metrics row",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-5653] feat(orders-svc,claims-svc): AfterShip tracking integration",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-5649] fix(valet): render pdf warranty receipts as document links",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Use DB_PORT for merchant staging database URL",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "docs(imp): document shopify_audit_theme false-negatives",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(preview): PR preview environments with label-based deployment",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed"
+        },
+        {
+          "title": "fix(dispatch-svc): send order addresses in dedicated Yofi claim fields",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: refund op only orders",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat: shopify function to prevent only op checkouts",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): add View History button to automation feedback modal",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "pi-pr-browser": "TypeScript",
+        "pi-git-diff-panel": "TypeScript",
+        "monolog": "TypeScript",
+        "geleus-io": "HTML",
+        "cart-widget": "TypeScript"
+      },
+      "languages": [
+        "HTML",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 20,
+        "prs": 27,
+        "repos_active": 5
+      }
+    },
+    {
       "week_start": "2026-06-01",
       "week_end": "2026-06-06",
       "generated": "2026-06-06T07:46:13.788990+00:00",
