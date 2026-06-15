@@ -703,6 +703,8 @@ footer a:hover { color: var(--moss); }
   .cards-grid { grid-template-columns: 1fr; }
 
   .contrib-grid { gap: 2px; } /* cells stay responsive (1fr) — full year fits, no side scroll */
+  /* stack summary above legend so the wrapped text can't collide with "Less" */
+  .contrib-footer { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
 
   .post-header h1 { font-size: 1.5rem; }
   .post-content { font-size: 0.95rem; }
