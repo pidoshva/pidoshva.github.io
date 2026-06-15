@@ -26,9 +26,15 @@
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  function render(contributions) {
+  function render(allContributions) {
     const root = document.getElementById('contrib-root');
     if (!root) return;
+
+    // Show only the last ~month of activity (last 30 days inclusive)
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 29);
+    const cutoffStr = cutoff.toISOString().slice(0, 10);
+    const contributions = allContributions.filter(d => d.date >= cutoffStr);
 
     // Build grid
     const graph = document.createElement('div');
@@ -56,7 +62,7 @@
 
     const summary = document.createElement('div');
     summary.className = 'contrib-summary';
-    summary.textContent = `${totalCount.toLocaleString()} contributions in the last year`;
+    summary.textContent = `${totalCount.toLocaleString()} contributions in the last 30 days`;
 
     const legend = document.createElement('div');
     legend.className = 'contrib-legend';

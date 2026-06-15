@@ -12,7 +12,7 @@
   <link rel="icon" type="image/png" href="/images/favicon.ico">
   <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css?v=5">
 </head>
 <body>
 
@@ -37,9 +37,9 @@
     <!-- Hero -->
     <section class="hero">
       <div class="container">
-        <div class="hero-heading"><span class="prompt">$</span> whoami</div>
         <h1>Vadim Pidoshva</h1>
-        <p class="bio">Software Engineer in Utah. Building things, sharing what I learn.</p>
+        <p class="role">Software Engineer · Utah</p>
+        <p class="bio">Building things, and sharing what I learn along the way.</p>
         <div class="social-links">
           <a href="https://github.com/pidoshva" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
           <a href="mailto:pidoshva.vadim@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
@@ -51,7 +51,7 @@
     <!-- Weekly Summary -->
     <section class="summary-section">
       <div class="container">
-        <div class="section-heading"><span class="prompt">$</span> tree ~/journal</div>
+        <div class="section-heading">Journal</div>
         <div id="summary-root"></div>
       </div>
     </section>
@@ -59,7 +59,7 @@
     <!-- Contribution Graph -->
     <section class="contrib-section">
       <div class="container">
-        <div class="section-heading"><span class="prompt">$</span> git log --graph</div>
+        <div class="section-heading">Contributions</div>
         <div id="contrib-root">
           <div class="contrib-loading">Loading contributions...</div>
         </div>
@@ -69,21 +69,21 @@
     <!-- Nav Cards -->
     <section class="nav-cards">
       <div class="container">
-        <div class="section-heading"><span class="prompt">$</span> ls ~/</div>
+        <div class="section-heading">Explore</div>
         <div class="cards-grid">
           <a href="/goodies/" class="nav-card">
             <div class="card-icon"><i class="fas fa-box-open"></i></div>
-            <h3>goodies/</h3>
+            <h3>Goodies</h3>
             <p>Open source repos, tools, and experiments.</p>
           </a>
           <a href="/blog/" class="nav-card">
-            <div class="card-icon"><i class="fas fa-terminal"></i></div>
-            <h3>blog/</h3>
+            <div class="card-icon"><i class="fas fa-pen-nib"></i></div>
+            <h3>Blog</h3>
             <p>Notes, writeups, and things I've learned.</p>
           </a>
           <a href="https://geleus.io/" target="_blank" rel="noopener" class="nav-card">
             <div class="card-icon"><i class="fas fa-file-alt"></i></div>
-            <h3>resume <span style="font-size:0.75rem">&nearr;</span></h3>
+            <h3>Resume <span style="font-size:0.75rem">&nearr;</span></h3>
             <p>Interactive terminal resume at geleus.io.</p>
           </a>
         </div>
@@ -102,8 +102,9 @@
 
   <div class="contrib-tooltip" id="contrib-tooltip"></div>
 
+  <script src="/js/topo.js?v=5"></script>
   <script src="/js/nav.js"></script>
-  <script src="/js/contributions.js"></script>
+  <script src="/js/contributions.js?v=5"></script>
   <script src="/js/lang-colors.js"></script>
   <script src="/js/summary.js"></script>
   <script src="/js/profile.js"></script>
