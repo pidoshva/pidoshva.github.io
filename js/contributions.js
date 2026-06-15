@@ -30,9 +30,9 @@
     const root = document.getElementById('contrib-root');
     if (!root) return;
 
-    // Show only the last ~6 months of activity
+    // Show the last 12 months of activity
     const cutoff = new Date();
-    cutoff.setMonth(cutoff.getMonth() - 6);
+    cutoff.setMonth(cutoff.getMonth() - 12);
     const cutoffStr = cutoff.toISOString().slice(0, 10);
     const contributions = allContributions.filter(d => d.date >= cutoffStr);
 
@@ -62,7 +62,7 @@
 
     const summary = document.createElement('div');
     summary.className = 'contrib-summary';
-    summary.textContent = `${totalCount.toLocaleString()} contributions in the last 6 months`;
+    summary.textContent = `${totalCount.toLocaleString()} contributions in the last 12 months`;
 
     const legend = document.createElement('div');
     legend.className = 'contrib-legend';
