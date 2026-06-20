@@ -1,6 +1,166 @@
 {
   "summaries": [
     {
+      "week_start": "2026-06-15",
+      "week_end": "2026-06-20",
+      "generated": "2026-06-20T08:21:58.983893+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 182 commits across 6 repos this week. Major work on vacaish (155 commits) including game lobby controls, satellite maps, and live \"guess the spot\" UI. OrderProtection services (monolog, cart-widget) shipped Global-E reship integration, onboarding auto-seed, and claims-service fixes. Updated portfolio site with responsive contribution graphs.",
+      "highlights": [
+        "vacaish: Shipped live \"guess the spot\" game UI with entry rules and foundation library; added satellite/map toggle for base view",
+        "vacaish: Enabled game hosts to stop/cancel lobbies and end mid-game; implemented on-brand OG preview cards with theme-color",
+        "vacaish: Enhanced gallery with video metadata preloading and earlier buffer; fixed menu drawer viewport tracking with inset-y-0",
+        "monolog (OrderProtection): Merged Global-E international reship integration across merchant, dispatch, and claims services with persistent order IDs",
+        "monolog (OrderProtection): Shipped onboarding auto-seed for CE + Cart configs with deploy prompt; added AfterShip tracking integration",
+        "monolog (OrderProtection): Fixed claims-service conditional anchor writes, whitespace validation, and escalation auto-execute blocking",
+        "cart-widget (OrderProtection): Merged SPA navigation widget re-attach fix; open PR for responsive OP toggle without blink on slow carts",
+        "pidoshva.github.io: Redesigned portfolio with minimalist charcoal/grey/moss theme; added 12-month contribution graph with responsive mobile layout",
+        "run-it-back (cambrannelly): Open PR implementing live workout ring UI around user avatars"
+      ],
+      "repos": [
+        "cart-widget",
+        "monolog",
+        "ops",
+        "pidoshva.github.io",
+        "run-it-back",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "fix(checkout-widget): keep OP toggle responsive and blink-free on slow carts",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "Live workout ring around user avatars",
+          "repo": "run-it-back",
+          "org": "cambrannelly",
+          "state": "open"
+        },
+        {
+          "title": "fix(subscriptions): re-attach Skio portal widget on SPA navigation",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(onboarding): auto-seed CE + Cart widget configs + deploy prompt",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-4126] feat(shopify-svc): route international reships via Global-E",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "feat(valet): published-widget coverage badge on brand details",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open"
+        },
+        {
+          "title": "[ENG-4126] feat(claims-svc): persist external reship order id",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-4126] feat(dispatch-svc): add Global-E integration schema",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-4126] feat(merchant-svc): add store primary market country",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5667] fix(claims-svc): unblock auto-execute on WAIT/escalations",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(valet): add Private apps marketplace tab + hide org/collab nav for store owners",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "feat(identity-svc): per-app team developer access (collaborators)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(valet): keep backend NestJS server code out of the browser bundle",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5653] feat(orders-svc,claims-svc): AfterShip tracking integration",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "Merge pull request #1388 from OrderProtection/briggzly/reshipments-fix",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix: remove hidden shipping method",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "[ENG-5609] feat(valet): add reviews summary metrics row",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged"
+        },
+        {
+          "title": "fix(ci): serialize terraform apply and grant prod plan access",
+          "repo": "ops",
+          "org": "OrderProtection",
+          "state": "merged"
+        }
+      ],
+      "repo_orgs": {
+        "cart-widget": "OrderProtection",
+        "monolog": "OrderProtection",
+        "run-it-back": "cambrannelly",
+        "ops": "OrderProtection"
+      },
+      "repo_languages": {
+        "vacaish": "JavaScript",
+        "cart-widget": "TypeScript",
+        "monolog": "TypeScript",
+        "pidoshva.github.io": "JavaScript",
+        "run-it-back": "TypeScript",
+        "ops": "HCL"
+      },
+      "languages": [
+        "HCL",
+        "JavaScript",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 182,
+        "prs": 18,
+        "repos_active": 6
+      }
+    },
+    {
       "week_start": "2026-06-08",
       "week_end": "2026-06-13",
       "generated": "2026-06-13T08:21:15.165281+00:00",
