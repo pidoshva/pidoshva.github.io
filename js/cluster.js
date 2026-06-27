@@ -158,7 +158,7 @@
   // bold at the top, fades as you scroll so content stays readable
   function applyFade() {
     var y = window.scrollY || window.pageYOffset || 0;
-    var top = isHome ? 1.0 : 0.22, min = isHome ? 0.12 : 0.08, dist = isHome ? 560 : 260;
+    var top = isHome ? 1.0 : 0.42, min = isHome ? 0.12 : 0.16, dist = isHome ? 560 : 260;
     canvas.style.opacity = (top - (top - min) * Math.min(1, y / dist)).toFixed(3);
   }
 
@@ -168,80 +168,94 @@
   var toPos = SHAPES[page].pos, edges = SHAPES[page].edges, morphT = isHome ? 1 : 0;
   var yaw = 0.6, pitch = -0.3;
 
-  // --- Short-circuit arcs between unconnected nodes that drift close ---
+  // --- Lightning bolts between unconnected things that drift close ---
+  // Fires within the background dot-field, across a dot and the rotating cluster,
+  // and between cluster nodes. Endpoints freeze where the strike happened and the
+  // bolt flashes out over SPARK_DUR.
   var edgeSet = {};
   for (var ei = 0; ei < edges.length; ei++) edgeSet[edges[ei][0] + '_' + edges[ei][1]] = 1;
-  var SPARK_DUR = 0.36;                  // lifetime of one arc (s)
-  // independent arc state per layer: the foreground cluster and the drifting
-  // background dot-field both spark between their own unconnected-but-close nodes
-  var clusterSpk = { sparks: [], cd: 0.8, max: isHome ? 3 : 2 };
-  var fieldSpk = { sparks: [], cd: 1.1, max: 3 };
+  var SPARK_DUR = 0.42;
+  var fieldSpk = { sparks: [], cd: 0.5, max: 4 };    // dot <-> dot
+  var crossSpk = { sparks: [], cd: 0.5, max: 4 };    // dot <-> cluster node
+  var clusterSpk = { sparks: [], cd: 0.8, max: 2 };  // cluster node <-> node
 
   function avgEdgeLen(pts, edgesArr) {
     if (!edgesArr.length) return 0;
     var s = 0;
     for (var i = 0; i < edgesArr.length; i++) {
-      var A = pts[edgesArr[i][0]], B = pts[edgesArr[i][1]];
+      var A = pts[edgesArr[i][0]], B = pts[edgesArr[i][1]]; if (!A || !B) continue;
       s += Math.sqrt((A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y));
     }
     return s / edgesArr.length;
   }
 
-  function drawSpark(A, B, spk) {
-    var p = spk.life / SPARK_DUR;                 // 0..1 through its life
-    var fseed = spk.seed + Math.floor(spk.life * 90);
-    var env = Math.sin(Math.PI * p) * (0.55 + 0.45 * rand(fseed + 11.0)); // flash + crackle
-    var dx = B.x - A.x, dy = B.y - A.y, len = Math.sqrt(dx * dx + dy * dy) || 1;
-    var nx = -dy / len, ny = dx / len, segs = 6;
-    ctx.lineCap = 'round';
-    // pass 0: wide electric-blue glow · pass 1: thin white-hot core
-    for (var pass = 0; pass < 2; pass++) {
-      ctx.beginPath();
-      ctx.moveTo(A.x, A.y);
-      for (var s = 1; s < segs; s++) {
-        var t = s / segs;
-        var jit = (rand(fseed + s * 4.7 + pass * 0.5) - 0.5) * len * 0.5 * (1 - Math.abs(2 * t - 1));
-        ctx.lineTo(A.x + dx * t + nx * jit, A.y + dy * t + ny * jit);
+  function onScreen(P) { var m = 48; return P && P.x >= -m && P.x <= W + m && P.y >= -m && P.y <= H + m; }
+
+  function closestUnlinked(pts, eSet, lim) {
+    var bestD = lim * lim, ba = -1, bb = -1, n = pts.length;
+    for (var a = 0; a < n; a++) {
+      if (!onScreen(pts[a])) continue;
+      for (var b = a + 1; b < n; b++) {
+        if (eSet && eSet[a + '_' + b]) continue;
+        if (!onScreen(pts[b])) continue;
+        var qx = pts[a].x - pts[b].x, qy = pts[a].y - pts[b].y, qd = qx * qx + qy * qy;
+        if (qd < bestD) { bestD = qd; ba = a; bb = b; }
       }
-      ctx.lineTo(B.x, B.y);
-      if (pass === 0) { ctx.lineWidth = 3.4; ctx.strokeStyle = 'rgba(86,166,255,' + (0.22 * env).toFixed(3) + ')'; }
-      else { ctx.lineWidth = 1.1; ctx.strokeStyle = 'rgba(225,242,255,' + (0.9 * env).toFixed(3) + ')'; }
-      ctx.stroke();
     }
-    ctx.lineCap = 'butt';
-    // bright blue-white flash at both endpoints
-    var fr = 2.2 + 2.4 * env;
-    ctx.fillStyle = 'rgba(150,205,255,' + (0.75 * env).toFixed(3) + ')';
-    ctx.beginPath(); ctx.arc(A.x, A.y, fr, 0, 7); ctx.fill();
-    ctx.beginPath(); ctx.arc(B.x, B.y, fr, 0, 7); ctx.fill();
+    return ba >= 0 ? { A: pts[ba], B: pts[bb] } : null;
   }
 
-  // Spark engine for one layer: fire an arc between the closest pair of on-screen,
-  // UNCONNECTED nodes that have drifted within `lim` pixels of each other.
-  // `pts` are projected {x,y}, `eSet` flags existing links, `st` holds this layer's
-  // { sparks, cd, max }. Runs every frame; spawns are throttled by st.cd.
-  function stepSparks(pts, eSet, st, lim) {
+  function closestCross(ptsA, ptsB, lim) {
+    var bestD = lim * lim, ba = -1, bb = -1;
+    for (var a = 0; a < ptsA.length; a++) {
+      if (!onScreen(ptsA[a])) continue;
+      for (var b = 0; b < ptsB.length; b++) {
+        if (!onScreen(ptsB[b])) continue;
+        var qx = ptsA[a].x - ptsB[b].x, qy = ptsA[a].y - ptsB[b].y, qd = qx * qx + qy * qy;
+        if (qd < bestD) { bestD = qd; ba = a; bb = b; }
+      }
+    }
+    return ba >= 0 ? { A: ptsA[ba], B: ptsB[bb] } : null;
+  }
+
+  function drawBolt(spk) {
+    var p = spk.life / SPARK_DUR, fseed = spk.seed + Math.floor(spk.life * 90);
+    var env = Math.sin(Math.PI * p) * (0.6 + 0.4 * rand(fseed + 11.0));
+    var ax = spk.ax, ay = spk.ay, bx = spk.bx, by = spk.by;
+    var dx = bx - ax, dy = by - ay, len = Math.sqrt(dx * dx + dy * dy) || 1, nx = -dy / len, ny = dx / len, segs = 9;
+    var P = [[5.5, '86,166,255', 0.5], [2.4, '150,205,255', 0.75], [1.1, '235,245,255', 1.0]];
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (var pp = 0; pp < 3; pp++) {
+      ctx.beginPath(); ctx.moveTo(ax, ay);
+      for (var s = 1; s < segs; s++) {
+        var t = s / segs;
+        var jit = (rand(fseed + s * 4.7 + pp * 0.5) - 0.5) * len * 0.55 * (1 - Math.abs(2 * t - 1));
+        ctx.lineTo(ax + dx * t + nx * jit, ay + dy * t + ny * jit);
+      }
+      ctx.lineTo(bx, by);
+      ctx.lineWidth = P[pp][0]; ctx.strokeStyle = 'rgba(' + P[pp][1] + ',' + (P[pp][2] * env).toFixed(3) + ')';
+      ctx.stroke();
+    }
+    ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
+    var fr = 3 + 3 * env;
+    ctx.fillStyle = 'rgba(200,228,255,' + (0.95 * env).toFixed(3) + ')';
+    ctx.beginPath(); ctx.arc(ax, ay, fr, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc(bx, by, fr, 0, 7); ctx.fill();
+  }
+
+  function stepBolts(st, finder) {
     st.cd -= 0.016;
     if (st.cd <= 0 && st.sparks.length < st.max) {
-      var bestD = lim * lim, ba = -1, bb = -1, n = pts.length, m = 48;
-      for (var a = 0; a < n; a++) {
-        var PA = pts[a];
-        if (PA.x < -m || PA.x > W + m || PA.y < -m || PA.y > H + m) continue;   // visible only
-        for (var b = a + 1; b < n; b++) {
-          if (eSet[a + '_' + b]) continue;                                       // skip linked pairs
-          var PB = pts[b];
-          if (PB.x < -m || PB.x > W + m || PB.y < -m || PB.y > H + m) continue;
-          var qx = PA.x - PB.x, qy = PA.y - PB.y, qd = qx * qx + qy * qy;
-          if (qd < bestD) { bestD = qd; ba = a; bb = b; }
-        }
-      }
-      if (ba >= 0) { st.sparks.push({ a: ba, b: bb, life: 0, seed: rand(T + ba * 1.3 + bb * 2.1) * 1000 }); st.cd = 0.45 + rand(T * 3.1) * 1.3; }
-      else st.cd = 0.2;                          // nothing close — retry soon
+      var pr = finder();
+      if (pr) {
+        st.sparks.push({ ax: pr.A.x, ay: pr.A.y, bx: pr.B.x, by: pr.B.y, life: 0, seed: rand(T * 1.7 + pr.A.x * 0.013 + pr.B.y * 0.017) * 1000 });
+        st.cd = 0.22 + rand(T * 3.1) * 0.5;
+      } else { st.cd = 0.06; }
     }
     for (var si = st.sparks.length - 1; si >= 0; si--) {
       st.sparks[si].life += 0.016;
       if (st.sparks[si].life >= SPARK_DUR) { st.sparks.splice(si, 1); continue; }
-      drawSpark(pts[st.sparks[si].a], pts[st.sparks[si].b], st.sparks[si]);
+      drawBolt(st.sparks[si]);
     }
   }
 
@@ -282,9 +296,6 @@
       ctx.beginPath(); ctx.arc(fsp[i].x, fsp[i].y, 0.8 + fn * 1.3, 0, 7); ctx.fill();
     }
 
-    // short-circuit arcs between drifting background dots that fly close
-    if (!prefersReduced) stepSparks(fsp, bgEdgeSet, fieldSpk, Math.min(W, H) * 0.22);
-
     // project the cluster
     var sp = new Array(N);
     for (var i = 0; i < N; i++) {
@@ -324,8 +335,13 @@
       ctx.beginPath(); ctx.arc(P.x, P.y, r, 0, 7); ctx.fill();
     }
 
-    // short-circuit arcs between unconnected cluster nodes that drift close
-    if (!prefersReduced) stepSparks(sp, edgeSet, clusterSpk, Math.max(avgEdgeLen(sp, edges) * 1.5, scale * 0.18));
+    // lightning bolts — dots zap each other, cross the rotating cluster, or arc between cluster nodes
+    if (!prefersReduced) {
+      var minWH = Math.min(W, H);
+      stepBolts(fieldSpk, function () { return closestUnlinked(fsp, bgEdgeSet, minWH * 0.18); });
+      stepBolts(crossSpk, function () { return closestCross(fsp, sp, minWH * 0.13); });
+      stepBolts(clusterSpk, function () { return closestUnlinked(sp, edgeSet, Math.max(avgEdgeLen(sp, edges) * 1.4, scale * 0.16)); });
+    }
   }
 
   function frame() {

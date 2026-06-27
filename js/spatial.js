@@ -98,11 +98,106 @@
     return p;
   })();
   var BGEDGES = knn(BGFIELD, 1);
+  var bgEdgeSet = {};
+  for (var bei = 0; bei < BGEDGES.length; bei++) bgEdgeSet[BGEDGES[bei][0] + '_' + BGEDGES[bei][1]] = 1;
 
   function rotP(p, yaw, pitch) {
     var c = Math.cos(yaw), s = Math.sin(yaw), x1 = p.x * c - p.z * s, z1 = p.x * s + p.z * c;
     var cp = Math.cos(pitch), sp = Math.sin(pitch);
     return { x: x1, y: p.y * cp - z1 * sp, z: p.y * sp + z1 * cp };
+  }
+
+  // --- Lightning bolts: an explicit jagged blue arc fires whenever two
+  // unconnected things drift close on screen — background dots to each other,
+  // a dot crossing the main rotating cluster, or two cluster nodes. The bolt's
+  // endpoints freeze where the strike happened and it flashes out over SPARK_DUR.
+  var SPARK_DUR = 0.42;
+  var fieldSpk = { sparks: [], cd: 0.5, max: 4 };    // dot <-> dot
+  var crossSpk = { sparks: [], cd: 0.5, max: 4 };    // dot <-> cluster node
+  var clusterSpk = { sparks: [], cd: 0.8, max: 2 };  // cluster node <-> node
+
+  function avgEdgeLen(pts, edgesArr) {
+    if (!edgesArr.length) return 0;
+    var s = 0;
+    for (var i = 0; i < edgesArr.length; i++) {
+      var A = pts[edgesArr[i][0]], B = pts[edgesArr[i][1]]; if (!A || !B) continue;
+      s += Math.sqrt((A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y));
+    }
+    return s / edgesArr.length;
+  }
+
+  function onScreen(P) { var m = 48; return P && P.x >= -m && P.x <= W + m && P.y >= -m && P.y <= H + m; }
+
+  // closest unconnected pair within one projected set (eSet flags existing links)
+  function closestUnlinked(pts, eSet, lim) {
+    var bestD = lim * lim, ba = -1, bb = -1, n = pts.length;
+    for (var a = 0; a < n; a++) {
+      if (!onScreen(pts[a])) continue;
+      for (var b = a + 1; b < n; b++) {
+        if (eSet && eSet[a + '_' + b]) continue;
+        if (!onScreen(pts[b])) continue;
+        var qx = pts[a].x - pts[b].x, qy = pts[a].y - pts[b].y, qd = qx * qx + qy * qy;
+        if (qd < bestD) { bestD = qd; ba = a; bb = b; }
+      }
+    }
+    return ba >= 0 ? { A: pts[ba], B: pts[bb] } : null;
+  }
+
+  // closest pair across two projected sets (e.g. a drifting dot crossing the cluster)
+  function closestCross(ptsA, ptsB, lim) {
+    var bestD = lim * lim, ba = -1, bb = -1;
+    for (var a = 0; a < ptsA.length; a++) {
+      if (!onScreen(ptsA[a])) continue;
+      for (var b = 0; b < ptsB.length; b++) {
+        if (!onScreen(ptsB[b])) continue;
+        var qx = ptsA[a].x - ptsB[b].x, qy = ptsA[a].y - ptsB[b].y, qd = qx * qx + qy * qy;
+        if (qd < bestD) { bestD = qd; ba = a; bb = b; }
+      }
+    }
+    return ba >= 0 ? { A: ptsA[ba], B: ptsB[bb] } : null;
+  }
+
+  function drawBolt(spk) {
+    var p = spk.life / SPARK_DUR, fseed = spk.seed + Math.floor(spk.life * 90);
+    var env = Math.sin(Math.PI * p) * (0.6 + 0.4 * rand(fseed + 11.0));
+    var ax = spk.ax, ay = spk.ay, bx = spk.bx, by = spk.by;
+    var dx = bx - ax, dy = by - ay, len = Math.sqrt(dx * dx + dy * dy) || 1, nx = -dy / len, ny = dx / len, segs = 9;
+    // three passes: wide blue glow -> mid -> white-hot core
+    var P = [[5.5, '86,166,255', 0.5], [2.4, '150,205,255', 0.75], [1.1, '235,245,255', 1.0]];
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (var pp = 0; pp < 3; pp++) {
+      ctx.beginPath(); ctx.moveTo(ax, ay);
+      for (var s = 1; s < segs; s++) {
+        var t = s / segs;
+        var jit = (rand(fseed + s * 4.7 + pp * 0.5) - 0.5) * len * 0.55 * (1 - Math.abs(2 * t - 1));
+        ctx.lineTo(ax + dx * t + nx * jit, ay + dy * t + ny * jit);
+      }
+      ctx.lineTo(bx, by);
+      ctx.lineWidth = P[pp][0]; ctx.strokeStyle = 'rgba(' + P[pp][1] + ',' + (P[pp][2] * env).toFixed(3) + ')';
+      ctx.stroke();
+    }
+    ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
+    var fr = 3 + 3 * env;   // bright flash at both ends
+    ctx.fillStyle = 'rgba(200,228,255,' + (0.95 * env).toFixed(3) + ')';
+    ctx.beginPath(); ctx.arc(ax, ay, fr, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc(bx, by, fr, 0, 7); ctx.fill();
+  }
+
+  // throttled spawn + per-frame flash for one bolt layer; `finder` returns a pair or null
+  function stepBolts(st, finder) {
+    st.cd -= 0.016;
+    if (st.cd <= 0 && st.sparks.length < st.max) {
+      var pr = finder();
+      if (pr) {
+        st.sparks.push({ ax: pr.A.x, ay: pr.A.y, bx: pr.B.x, by: pr.B.y, life: 0, seed: rand(T * 1.7 + pr.A.x * 0.013 + pr.B.y * 0.017) * 1000 });
+        st.cd = 0.22 + rand(T * 3.1) * 0.5;     // brief breath between strikes
+      } else { st.cd = 0.06; }
+    }
+    for (var si = st.sparks.length - 1; si >= 0; si--) {
+      st.sparks[si].life += 0.016;
+      if (st.sparks[si].life >= SPARK_DUR) { st.sparks.splice(si, 1); continue; }
+      drawBolt(st.sparks[si]);
+    }
   }
 
   // --- DOM ---
@@ -352,6 +447,15 @@
       }
       ctx.fillStyle = 'rgba(168,200,145,' + (0.42 + nr * 0.55).toFixed(3) + ')';
       ctx.beginPath(); ctx.arc(P.x, P.y, r, 0, 7); ctx.fill();
+    }
+
+    // lightning bolts — drift dots zap each other, cross the rotating cluster, or arc between cluster nodes
+    if (!reduced) {
+      var minWH = Math.min(W, H);
+      var ckeys = {}; for (var ce = 0; ce < toEdges.length; ce++) ckeys[toEdges[ce][0] + '_' + toEdges[ce][1]] = 1;
+      stepBolts(fieldSpk, function () { return closestUnlinked(fsp, bgEdgeSet, minWH * 0.18); });
+      stepBolts(crossSpk, function () { return closestCross(fsp, sp, minWH * 0.13); });
+      stepBolts(clusterSpk, function () { return closestUnlinked(sp, ckeys, Math.max(avgEdgeLen(sp, toEdges) * 1.4, scale * 0.16)); });
     }
 
     // labeled page-nodes (clickable)
