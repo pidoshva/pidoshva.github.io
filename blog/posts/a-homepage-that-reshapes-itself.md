@@ -1,35 +1,31 @@
-So I rebuilt this site.
+So I rebuilt the homepage.
 
-The homepage isn't a page now. It's a cloud of dots in the dark that reshuffles based on where you're going.
+It's not a normal page anymore. It's a small cluster of points on a dark canvas, and it rearranges itself depending on which section you open.
 
-Go to goodies, they lock into a grid. Go to the blog, they sag into a wave. Open the journal and they back off and go quiet while the words take over.
+Goodies forms a grid. The blog forms a wave. The journal pushes everything back and fades it out so you can read.
 
-Same dots every time. They just keep finding new arrangements.
-
----
+Same points every time. They just move into different shapes.
 
 ## The idea
 
-One cluster. It never grows or shrinks. It rearranges.
+One cluster, and each section of the site is one of its points. You click a point, the view shifts toward it, the points settle into that section's shape, and the content opens. Nothing reloads; it stays one scene the whole time.
 
-About, goodies, the blog, the journal — each is a dot in the same small universe. Tap one, the camera leans in, the dots pour into a new formation, the content shows up. No reloads, no cuts. You move the furniture around instead of leaving the room.
+The idea came from bgstaal's [multipleWindow3dScene](https://github.com/bgstaal/multipleWindow3dScene). Mine works differently, but that's the starting point.
 
-The itch came from bgstaal's [multipleWindow3dScene](https://github.com/bgstaal/multipleWindow3dScene) — a site as a space you walk through, not a pile of links. Mine walks somewhere else, but that's where it started.
+## How it's built
 
-## The tech
+No framework, no build step. Just HTML, CSS, and JavaScript on GitHub Pages.
 
-One rule I wouldn't break: no framework, no build step. Hand-written HTML, CSS, and JS, dropped on GitHub Pages and left alone.
+A few notes:
 
-The parts worth saying out loud:
+- It isn't real 3D. It's a 2D canvas with simple projection math, a few dozen points redrawn every frame.
+- There's one set of points and a list of target positions per section. Switching sections animates the points to the new positions, so it looks like one object moving rather than a swap.
+- The extras: lines between points, highlights that travel along them, and a dimmer layer further back for depth.
+- The content is plain HTML over the canvas. Posts and the journal open in a large blurred panel — normal text and links, fully indexable.
+- The old static pages still exist underneath as a fallback.
 
-- The 3D is a lie. Flat canvas, a pinch of trig, no engine. A few dozen dots faking depth.
-- One shape system, not seven scenes. The dots are fixed. A "shape" is just a list of where each one belongs, so a morph reads as one object folding itself instead of a swap.
-- Sparks run along the wires and a fainter swarm drifts far behind. Two cheap tricks, but they're the gap between "org chart" and "oh."
-- The reading is plain HTML under the spectacle. Posts and the journal swing open in a big blurred panel. Real text, real links, nothing a crawler has to squint at.
-- The dull old pages still sit underneath. If the clever layer trips, nothing you'd bookmark falls with it.
+## What I'm skipping
 
-## What stays mine
+The projection math, the label positioning, the timing, and a multi-window version I haven't finished. Not here.
 
-The projection math. How a label clings to its dot through a morph. The easing curves. The multi-window trick that's still half-built on my laptop.
-
-It's all client-side anyway. You know where view source is.
+It all runs in the browser if you want to dig in.

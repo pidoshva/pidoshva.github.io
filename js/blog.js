@@ -62,7 +62,7 @@
   }
 
   function initListing() {
-    fetch(POSTS_URL)
+    fetch(POSTS_URL, { cache: 'no-cache' })
       .then(function (r) {
         if (!r.ok) throw new Error(r.status);
         return r.json();
@@ -106,8 +106,8 @@
   function renderPost(slug, root, opts) {
     opts = opts || {};
     return Promise.all([
-      fetch(POSTS_URL).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
-      fetch('/blog/posts/' + slug + '.md').then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+      fetch(POSTS_URL, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+      fetch('/blog/posts/' + slug + '.md', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
     ]).then(function (results) {
       var data = results[0], markdown = results[1], posts = data.posts || [], meta = null;
       for (var i = 0; i < posts.length; i++) { if (posts[i].slug === slug) { meta = posts[i]; break; } }
