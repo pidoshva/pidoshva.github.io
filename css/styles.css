@@ -1,6 +1,8 @@
 /* ============================================
    geleus.com — Minimalist · Charcoal / Grey / Moss
-   Dynamic topographic background (see js/topo.js)
+   Animated node-cluster background (see js/cluster.js) — a chaotic
+   linked-node field that takes a different shape per page.
+   (js/topo.js, the previous contour background, is kept as a fallback.)
    ============================================ */
 
 /* --- Fonts --- */
@@ -79,7 +81,7 @@ ul { list-style: none; }
 
 code, pre, kbd, samp { font-family: var(--font-mono); }
 
-/* --- Topographic background canvas --- */
+/* --- Fixed background canvas (node cluster via js/cluster.js; was topo.js) --- */
 .topo-bg {
   position: fixed;
   inset: 0;
@@ -290,6 +292,19 @@ nav .external::after { content: ' \2197'; font-size: 0.7rem; }
 
 /* --- Weekly Summary Tree --- */
 .summary-section { padding: 2rem 0; overflow-x: hidden; }
+
+/* Journal floats in a panel so the dense timeline stays readable over the
+   animated cluster background; subtle blur lets the art whisper through. */
+.journal-panel {
+  background: rgba(35, 38, 36, 0.82);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.5rem 1.75rem;
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+}
+.journal-panel .section-heading { margin-bottom: 1.25rem; }
+@media (max-width: 640px) { .journal-panel { padding: 1.15rem 1rem 1.35rem; } }
 
 .timeline-tree { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7; }
 
