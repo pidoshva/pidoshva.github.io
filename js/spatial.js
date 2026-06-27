@@ -152,33 +152,33 @@
   }
 
   // --- blog: expand a post in-place inside the drawer (keeps the spatial design) ---
-  var blogListRoot = document.getElementById('blog-list-root');
-  var blogPostView = document.getElementById('blog-post-view');
-  function showBlogList() {
-    if (blogPostView) { blogPostView.hidden = true; blogPostView.innerHTML = ''; }
-    if (blogListRoot) blogListRoot.hidden = false;
-  }
-  function showBlogPost(slug) {
-    if (!blogPostView || !window.GELEUS || !window.GELEUS.loadPost) return false;
-    if (blogListRoot) blogListRoot.hidden = true;
-    blogPostView.hidden = false;
-    blogPostView.innerHTML = '<button class="drawer-back-posts" type="button">← all posts</button><div id="drawer-post"></div>';
-    blogPostView.querySelector('.drawer-back-posts').addEventListener('click', showBlogList);
-    var el = document.getElementById('drawer-post');
-    window.GELEUS.loadPost(slug, el).catch(function () {
-      el.innerHTML = '<p class="blog-error">Could not load this post. <a href="/blog/post.html?slug=' + encodeURIComponent(slug) + '">Open it on the full page →</a></p>';
+  // --- blog post: opens in a full-screen overlay (same large window as the journal) ---
+  var postOverlay = document.getElementById('postOverlay');
+  var postContent = document.getElementById('post-overlay-content');
+  var postClose = document.getElementById('postClose');
+  function openPost(slug) {
+    if (!postOverlay || !postContent || !window.GELEUS || !window.GELEUS.loadPost) return false;
+    postContent.innerHTML = '';
+    postOverlay.classList.add('open'); postOverlay.setAttribute('aria-hidden', 'false'); postOverlay.scrollTop = 0;
+    window.GELEUS.loadPost(slug, postContent).catch(function () {
+      postContent.innerHTML = '<p class="blog-error">Could not load this post. <a href="/blog/post.html?slug=' + encodeURIComponent(slug) + '">Open it on the full page →</a></p>';
     });
-    panel.scrollTop = 0;
     return true;
   }
-  // intercept blog-card clicks so posts expand in the drawer instead of navigating away
+  function closePost() {
+    if (!postOverlay) return;
+    postOverlay.classList.remove('open'); postOverlay.setAttribute('aria-hidden', 'true');
+  }
+  if (postClose) postClose.addEventListener('click', closePost);
+  if (postOverlay) postOverlay.addEventListener('click', function (e) { if (e.target === postOverlay) closePost(); });
+  // intercept blog-card clicks so posts open in the full-screen overlay instead of navigating away
   panel.addEventListener('click', function (e) {
     var card = e.target.closest('.blog-card');
     if (!card) return;
     var href = card.getAttribute('href') || '';
     var m = href.match(/slug=([^&]+)/);
     var slug = m ? decodeURIComponent(m[1]) : null;
-    if (slug && showBlogPost(slug)) e.preventDefault(); // else fall back to /blog/post.html
+    if (slug && openPost(slug)) e.preventDefault(); // else fall back to /blog/post.html
   });
 
   function applyState(key) {
@@ -188,7 +188,6 @@
       panel.classList.remove('open'); tgtShiftX = 0; tgtZoom = 1;
     } else {
       showDrawerPage(key); panel.classList.add('open');
-      if (key === 'blog') showBlogList(); // reset to the listing each time blog opens
       tgtShiftX = (W > 760 ? -W * 0.18 : 0); tgtZoom = 1.1;
     }
   }
@@ -231,6 +230,7 @@
 
   window.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
+    if (postOverlay && postOverlay.classList.contains('open')) { closePost(); return; }
     if (journalOverlay && journalOverlay.classList.contains('open')) { closeJournal(); return; }
     if (curKey !== 'home') goPage('home');
   });
