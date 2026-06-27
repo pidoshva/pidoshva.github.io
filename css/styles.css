@@ -911,9 +911,9 @@ body.spatial .summary-section { padding: 0; }
 
 /* Full-screen journal overlay (half-blurred backdrop, readable tree + contributions) */
 .journal-overlay {
-  position: fixed; inset: 0; z-index: 40; overflow-y: auto;
-  background: rgba(13, 15, 14, 0.62);
-  backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px) saturate(120%);
+  position: fixed; inset: 0; z-index: 40; overflow-y: auto; overflow-x: hidden;
+  background: rgba(12, 14, 13, 0.95);
+  backdrop-filter: blur(22px) saturate(120%); -webkit-backdrop-filter: blur(22px) saturate(120%);
   opacity: 0; transform: translateY(-14px); pointer-events: none;
   transition: opacity 0.4s ease, transform 0.45s cubic-bezier(.22,1,.36,1);
 }
@@ -949,7 +949,8 @@ body.spatial .summary-section { padding: 0; }
   .hud-nav button::before { display: none; } /* drop dots to save width */
   body.spatial .hero-id { padding: 1.25rem 1rem; max-width: 100%; }
   body.spatial .hero-id .role-line { max-width: 100%; }
-  body.spatial .panel { padding: 1.2rem 1.15rem 2rem; }
+  /* mobile: drawer opens full-width but more translucent so the cluster shows through */
+  body.spatial .panel { padding: 1.2rem 1.15rem 2rem; width: 100%; background: rgba(16, 18, 17, 0.58); }
 }
 @media (max-width: 360px) {
   .hud-nav { gap: 0.4rem 0.85rem; }

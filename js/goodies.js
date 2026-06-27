@@ -182,6 +182,19 @@
     });
   }
 
+  // Exposed so the spatial home app can open a repo's README in its full-screen overlay
+  window.GELEUS = window.GELEUS || {};
+  window.GELEUS.loadReadme = function (repo, branch, root) {
+    return fetchReadme(repo, branch).then(function (md) {
+      root.innerHTML =
+        '<div class="journal-head"><div class="ptag">readme</div><h2>' + escapeHtml(repo) + '</h2></div>' +
+        '<div class="post-content">' + marked.parse(md) + '</div>';
+      if (window.hljs) {
+        root.querySelectorAll('pre code').forEach(function (block) { hljs.highlightElement(block); });
+      }
+    });
+  };
+
   function init() {
     const cached = getCached();
     if (cached) render(cached);

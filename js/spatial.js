@@ -171,7 +171,21 @@
   }
   if (postClose) postClose.addEventListener('click', closePost);
   if (postOverlay) postOverlay.addEventListener('click', function (e) { if (e.target === postOverlay) closePost(); });
-  // intercept blog-card clicks so posts open in the full-screen overlay instead of navigating away
+  function openReadme(repo, branch) {
+    if (!postOverlay || !postContent || !window.GELEUS || !window.GELEUS.loadReadme) return false;
+    postContent.innerHTML = '';
+    postOverlay.classList.add('open'); postOverlay.setAttribute('aria-hidden', 'false'); postOverlay.scrollTop = 0;
+    window.GELEUS.loadReadme(repo, branch, postContent).catch(function () {
+      postContent.innerHTML = '<p class="blog-error">Could not load the README.</p>';
+    });
+    return true;
+  }
+  // intercept blog-card clicks (posts) and repo README buttons → full-screen overlay.
+  // README uses capture so the inline goodies.js handler doesn't also fire.
+  panel.addEventListener('click', function (e) {
+    var rbtn = e.target.closest('.repo-expand-btn');
+    if (rbtn && openReadme(rbtn.getAttribute('data-repo'), rbtn.getAttribute('data-branch'))) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
   panel.addEventListener('click', function (e) {
     var card = e.target.closest('.blog-card');
     if (!card) return;
