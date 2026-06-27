@@ -283,15 +283,25 @@
     if (!prefersReduced) {
       sparkCD -= 0.016;
       if (sparkCD <= 0 && sparks.length < SPARK_MAX) {
-        var a = Math.floor(rand(T * 7.3 + 1.7) * N), best = -1, bestD = (scale * 0.40) * (scale * 0.40);
-        for (var b = 0; b < N; b++) {
-          if (b === a) continue;
-          if (edgeSet[Math.min(a, b) + '_' + Math.max(a, b)]) continue;   // skip linked pairs
-          var qx = sp[a].x - sp[b].x, qy = sp[a].y - sp[b].y, qd = qx * qx + qy * qy;
-          if (qd < bestD) { bestD = qd; best = b; }
+        // proximity threshold adapts to the shape: ~1.5x a typical drawn link, so
+        // "passing close" works whether the cluster is dense (home) or sparse
+        // (lattice/wave/knot), at any viewport scale.
+        var avg = 0;
+        for (var le = 0; le < edges.length; le++) {
+          var LA = sp[edges[le][0]], LB = sp[edges[le][1]];
+          avg += Math.sqrt((LA.x - LB.x) * (LA.x - LB.x) + (LA.y - LB.y) * (LA.y - LB.y));
         }
-        if (best >= 0) {
-          sparks.push({ a: a, b: best, life: 0, seed: rand(T + a * 1.3 + best * 2.1) * 1000 });
+        avg = edges.length ? avg / edges.length : scale * 0.3;
+        var bestD = (avg * 1.5) * (avg * 1.5), ba = -1, bb = -1;
+        for (var a = 0; a < N; a++) {
+          for (var b = a + 1; b < N; b++) {
+            if (edgeSet[a + '_' + b]) continue;                            // skip linked pairs
+            var qx = sp[a].x - sp[b].x, qy = sp[a].y - sp[b].y, qd = qx * qx + qy * qy;
+            if (qd < bestD) { bestD = qd; ba = a; bb = b; }
+          }
+        }
+        if (ba >= 0) {
+          sparks.push({ a: ba, b: bb, life: 0, seed: rand(T + ba * 1.3 + bb * 2.1) * 1000 });
           sparkCD = 0.45 + rand(T * 3.1) * 1.3;   // breathe between arcs
         } else {
           sparkCD = 0.2;                           // nothing close — retry soon
