@@ -1,49 +1,45 @@
 so i rebuilt this site.
 
-the homepage isn't really a page anymore. it's a bunch of glowing dots floating in space, and they rearrange themselves depending on where you go.
+the homepage isn't a page now. it's a cloud of dots in the dark that reshuffles based on where you're going.
 
-open goodies, they snap into a grid. open the blog, they melt into a wave. pull up the journal and everything softens out behind it.
+go to goodies, they lock into a grid. go to the blog, they sag into a wave. open the journal and they back off and go quiet while the words take over.
 
-one little world that keeps changing shape.
+same dots every time. they just keep finding new arrangements.
 
 ---
 
 ## why
 
-my old homepage was fine. clean, dark, easy to read. also kind of boring.
+the old homepage was tasteful and dead. dark, tidy, said the right things, did nothing.
 
-it's supposed to show that i build things. instead it just sat there.
+odd look for a page whose entire job is "this person builds stuff."
 
-so i flipped it. make the homepage the thing. the first bit you touch should feel like something i'd actually make.
+so i quit describing the work and let the page be the work. you land, grab a dot, and you're already inside the kind of thing i make.
 
 ## the idea
 
-one cluster. lots of shapes.
+one cluster. it never grows or shrinks. it rearranges.
 
-every part of the site — about, goodies, the blog, the journal — is a dot in the same space. you tap one, the camera drifts over, the dots flow into a new shape, and the content slides in.
+about, goodies, the blog, the journal — each is a dot in the same small universe. tap one, the camera leans in, the dots pour into a new formation, the content shows up. no reloads, no cuts. you don't leave a page, you just move the furniture around.
 
-nothing reloads. it's all one place that quietly rearranges as you move around.
-
-the spark was [bgstaal's multipleWindow3dScene](https://github.com/bgstaal/multipleWindow3dScene). the idea that a site can be a space you move through, not a stack of pages you click. i took that feeling somewhere a little different.
+the itch came from bgstaal's [multipleWindow3dScene](https://github.com/bgstaal/multipleWindow3dScene) — a site as a space you walk through, not a pile of links. mine walks somewhere else, but that's where it started.
 
 ## the tech
 
-i gave myself one rule: no framework, no build step. just plain html, css, and javascript, served straight off github pages. same as the rest of this site.
+one rule i wouldn't break: no framework, no build step. hand-written html, css, and js, dropped on github pages and left alone. same as everything here.
 
-a few things that made it click:
+the parts worth saying out loud:
 
-- the 3d is faked. it's a flat canvas with a little math, not a real 3d engine. way lighter than it looks.
-- it's one shape system, not seven scenes. the dots never change. each section is just a new set of spots for them to slide into. that's why it feels like the same thing rearranging, not a hard cut.
-- tiny lights travel along the lines, and a dimmer field drifts behind everything. small touches, but they're what make it feel alive.
-- the words are still just html. posts and the journal open in a big, soft-blurred reader. easy to read, easy to link, friendly to search engines.
-- the plain old pages still live underneath. so links and bookmarks never lean on the fancy part.
+- the 3d is a lie. flat canvas, a pinch of trig, no engine. a few dozen dots faking depth.
+- one shape system, not seven scenes. the dots are fixed. a "shape" is just a list of where each one belongs, so a morph reads as one object folding itself instead of a swap.
+- sparks run along the wires and a fainter swarm drifts far behind. two cheap tricks, but they're the gap between "org chart" and "oh."
+- the reading is plain html under the spectacle. posts and the journal swing open in a big blurred panel. real text, real links, nothing a crawler has to squint at.
+- the dull old pages still sit underneath all of it. if the clever layer ever trips, nothing you'd bookmark falls with it.
 
-## what i'm leaving out
+## what stays mine
 
-the math, how the labels ride along, the timing, the multi-window thing that isn't ready yet. those stay in the garage.
+the projection math. how a label clings to its dot through a morph. the easing curves. the multi-window trick that's still half-built on my laptop. none of that makes the cut here.
 
-it all runs in your browser though. view source is right there.
+it's all client-side anyway. you know where view source is.
 
-the point was never the trick.
-
-it's that a personal site can be a small thing you actually enjoy making. and the limits — no build, no libraries, just the browser — made it better, not worse.
+mostly i wanted proof that a personal site can be a toy you keep poking at, not a chore you renew once a year. the limits — no build, no libraries, one browser — weren't in the way. they were the point.
