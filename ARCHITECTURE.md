@@ -121,7 +121,7 @@ RESUME_URL = 'https://geleus.io/'   // resume is an EXTERNAL link, not a shape/d
 **Render loop** (`draw()`, via `requestAnimationFrame`):
 1. auto-rotate yaw (home only, when not dragging/hovering) and ease `yaw/pitch/camShiftX/zoom` toward targets;
 2. if mid-morph, lerp `posCur` from `fromPos`→`toPos` with `easeIO`; blog re-derives `wavePos(T)` each frame once settled;
-3. draw pre-rendered backdrop (`buildBg`), then the dim parallax **BGFIELD** (78 nodes), then cluster edges (cross-faded during a morph), then **pulses** travelling along edges, then depth-sorted nodes, then the 5 labeled page-nodes (glow + text);
+3. draw pre-rendered backdrop (`buildBg`), then the dim parallax **BGFIELD** (78 nodes), then cluster edges (cross-faded during a morph), then **pulses** travelling along edges, then depth-sorted nodes, then **lightning bolts** (three layers, see below), then the 5 labeled page-nodes (glow + text);
 4. update the `#readout`.
 
 **Projection** is hand-rolled: rotate by yaw/pitch, perspective-divide by `CAM`, scale by
@@ -141,6 +141,32 @@ RESUME_URL = 'https://geleus.io/'   // resume is an EXTERNAL link, not a shape/d
 | pulse | `T*0.55 + e*0.1973` phase; alpha `0.3+nr*0.55` | energy dots brightness/speed |
 | drawer shift | `tgtShiftX = -W*0.18` (desktop), `tgtZoom = 1.1` | how far the cluster slides when a drawer opens |
 | hover pick | squared-dist `< 460` | click target radius for page-nodes |
+
+**Lightning bolts** (`spatial.js` and `cluster.js`, identical code). Occasional minimal,
+desaturated electric spikes fire between *unconnected* things that have drifted close on
+screen. **Three independent layers**, each with its own `{ sparks, cd, max }` state:
+
+| Layer | Pair | Excludes | Proximity threshold |
+|---|---|---|---|
+| `fieldSpk` | background dot ↔ background dot | `bgEdgeSet` (BGEDGES links) | `min(W,H)·0.18` |
+| `crossSpk` | background dot ↔ cluster node ("crossing the rotating object") | — | `min(W,H)·0.13` |
+| `clusterSpk` | cluster node ↔ cluster node | current edge set | `max(avgEdgeLen·1.4, scale·0.16)` |
+
+Pipeline: `stepBolts(state, finder)` decrements `cd`; when `cd ≤ 0` and under `max`, `finder()`
+returns the **closest on-screen unconnected pair** within the threshold (`closestUnlinked` for one
+set, `closestCross` across two). On a hit it **freezes** the two endpoints into a spark
+`{ax,ay,bx,by,life,seed}` and sets `cd = 0.22 + rand·0.5`; on a miss `cd = 0.06`. Each spark lives
+`SPARK_DUR = 0.42s`. `drawBolt` draws a **5-segment** jagged spike (perpendicular jitter
+`len·0.3·(1−|2t−1|)` — max mid, zero at the nodes), two passes: desaturated steel-blue glow
+`120,146,170` (w2.6) then muted core `198,212,226` (w0.9), plus small endpoint flashes
+`180,198,214`. Envelope is a **quick strike then linear fade** (`rise = 0.16`) ×`(0.85+0.15·rand)`
+flicker. Disabled under reduced motion.
+
+> **Tuning knobs** (to refine later): per-layer `cd`/`max` = frequency; the three thresholds =
+> how close triggers a strike; `SPARK_DUR` = fade length; `segs` + jitter factor `0.3` = spikiness;
+> the pass colors/widths/alphas = brightness + saturation; `rise` = strike-vs-fade balance.
+> History of this feature: started vivid 3-pass electric blue (9 segs), then minimised to the
+> current 2-pass desaturated 5-seg spike. Bump `?v=` on both files when retuning.
 
 ### 3.3 Navigation, routing, overlays
 
@@ -219,8 +245,10 @@ and the fallback pages. Shared hooks live on `window.GELEUS`.
 pages. They set `<body data-shape="…">` and load `js/cluster.js`, which injects a fixed
 full-viewport background canvas (class `.topo-bg`, `z-index:-1`, `pointer-events:none`) that:
 renders the per-page shape (`goodies`→lattice, `blog`→field, post→`lab` knot), flows pulses,
-has a deep field, and **fades on scroll** so text stays readable. `cluster.js` is a slimmed,
-non-interactive cousin of `spatial.js` (it has its own copy of the shape builders + `knn`).
+has a deep field, fires the same **lightning bolts** (§3.2), and **fades on scroll** so text
+stays readable. `cluster.js` is a slimmed, non-interactive cousin of `spatial.js` (it has its
+own copy of the shape builders + `knn`). The fallback scroll-fade was raised so the bolts are
+visible behind content (`top 0.22→0.42`, `min 0.08→0.16`).
 `topo.js` is the previous contour background — **kept but no longer referenced** anywhere.
 
 ---
@@ -236,13 +264,25 @@ Slugs must match `^[a-z0-9][a-z0-9-]*$`.
 
 **Weekly journal** — `data/weekly-summaries.json` (`{ "summaries": [ … ] }`) is generated, not
 hand-edited. Each entry has `week_start/week_end`, `summary`, `highlights[]`, `repos[]`,
-`prs[]` (with `org`/`state`), `repo_orgs`, `repo_languages`, `languages[]`, and `stats
+`prs[]` (with `org`/`state`/**`role`**), `repo_orgs`, `repo_languages`, `languages[]`, and `stats
 {commits,prs,repos_active}`. Rendered by `summary.js`.
 
+**Authored vs reviewed (important).** Each PR carries a `role`: `author` (the user wrote it) or
+`reviewer` (they only commented/approved someone else's PR). It's resolved from the PR author
+login, because the GitHub `involves:` search query mixes both in with no flag. The Haiku prompt
+feeds **two separate PR lists** ("authored" vs "only reviewed") with strict verb rules — authorship
+verbs (Shipped/Implemented/Built/Fixed) for commits + authored PRs, "Reviewed" for reviewer-only
+PRs, never blended into one bullet. `summary.js`'s `HIGHLIGHT_KEYWORDS` already colour-codes these
+verbs (ship vs merge), so no JS change was needed. `stats.prs` counts **only authored** PRs (a
+separate `prs_reviewed` count is tracked). If the journal text ever blurs the two again, the fix
+lives in this prompt, not the front-end.
+
 `scripts/weekly-summary.py`: pulls the week's commits + PRs from the GitHub API (matching by
-login **or** known emails in `USER_EMAILS`), sends them to **Claude Haiku** for a short
-summary + highlights, backfills any missing weeks, folds in `data/notes.md` (then clears it),
-and writes the JSON. Env: `ANTHROPIC_API_KEY` (required), `GH_PAT` (higher rate limits / SSO
+login **or** known emails in `USER_EMAILS`), tags each PR's `role`, sends them to **Claude Haiku**
+for a short summary + highlights, backfills any missing weeks, folds in `data/notes.md` (then
+clears it), and writes the JSON. Note: regenerating *old* weeks would need a `..week_end` upper
+bound on the PR query (the live run has none) — not yet added; existing entries predate the
+authored/reviewed split. Env: `ANTHROPIC_API_KEY` (required), `GH_PAT` (higher rate limits / SSO
 for org repos), `TRIGGER`. `.github/workflows/weekly-summary.yml` runs it **Saturday ~5am UTC**
 and on manual dispatch, committing as `geleus-bot`. Pushing code does **not** refresh the
 journal — run `gh workflow run weekly-summary.yml` or wait for the cron.
@@ -255,8 +295,8 @@ journal — run `gh workflow run weekly-summary.yml` or wait for the cron.
   with `?v=N` in the HTML. **Bump `N` whenever you edit that file**, or stale assets get
   served (this caused repeated "still broken" reports). Bump across every HTML file that
   references the asset. Current snapshot (will drift — treat the *rule* as the source of truth):
-  `styles.css?v=23`, `spatial.js?v=6`, `goodies.js?v=2`, `blog.js?v=3`, `contributions.js?v=8`,
-  `cluster.js?v=9` (fallback pages). `summary.js`, `profile.js`, `lang-colors.js`, `nav.js`,
+  `styles.css?v=24`, `spatial.js?v=9`, `goodies.js?v=2`, `blog.js?v=3`, `contributions.js?v=8`,
+  `cluster.js?v=14` (fallback pages). `summary.js`, `profile.js`, `lang-colors.js`, `nav.js`,
   and `lib/*` are currently unversioned. Blog **content** (`.md`/`.json`) is handled by the
   `cache:'no-cache'` fetch instead of a version query.
 - **localStorage keys** (clear to force a refresh): `geleus_repos`, `geleus_contrib`, `geleus_profile`.
@@ -483,7 +523,7 @@ drawEdges(toEdges,   alpha*me);
 ```
 
 ### 11.8 Render pipeline (exact draw math, per frame)
-Order: clear → backdrop image → background field → cluster edges → pulses → nodes → (app) labels.
+Order: clear → backdrop image → background field → cluster edges → pulses → nodes → lightning bolts (§11.12) → (app) labels.
 
 - **Backdrop** `buildBg()` (pre-rendered once per resize): vertical linear gradient
   `#0f1110 → #0a0b0a`; radial vignette from `(0.5W, 0.42H, r=min(W,H)·0.18)` to
@@ -532,7 +572,8 @@ drawer open:    tgtShiftX = (W > 760 ? -W*0.18 : 0);  tgtZoom = 1.1   (else 0 / 
 | Pulse alpha | `×me` (morph-aware) | no `me` factor |
 | Field colors | `rgba(133,148,133,…)`/brighter | `rgba(124,132,124,…)`/dimmer |
 | Visibility | full-screen `<canvas id=spatialCanvas>` | injected fixed `.topo-bg`, `z-index:-1`, **scroll-fade** |
-| Scroll fade | n/a | `opacity = top - (top-min)·min(1, scrollY/dist)`; home `top1.0,min0.12,dist560`; others `top0.22,min0.08,dist260` |
+| Scroll fade | n/a | `opacity = top - (top-min)·min(1, scrollY/dist)`; home `top1.0,min0.12,dist560`; others `top0.42,min0.16,dist260` |
+| Lightning bolts | all three layers (field/cross/cluster), §3.2 + §11.12 | same code, same three layers |
 
 ### 11.11 Per-page mapping (the tech behind each page's nodes)
 | Page | Engine | shape key / `data-shape` | Builder | k | Motion |
@@ -549,3 +590,37 @@ drawer open:    tgtShiftX = (W > 760 ? -W*0.18 : 0);  tgtZoom = 1.1   (else 0 / 
 > dropping these functions into a fresh `<canvas>` with the projection (§11.6) and render
 > (§11.8) reproduces the exact look. The only non-deterministic inputs are viewport size
 > (`W,H,dpr`), time `T`, and user drag.
+
+### 11.12 Lightning bolts (exact math, verbatim)
+Identical in `spatial.js` and `cluster.js`. State (module scope):
+```
+SPARK_DUR = 0.42
+fieldSpk   = { sparks:[], cd:0.5, max:4 }   // dot ↔ dot
+crossSpk   = { sparks:[], cd:0.5, max:4 }   // dot ↔ cluster node
+clusterSpk = { sparks:[], cd:0.8, max:2 }   // cluster node ↔ node
+```
+Per frame, after nodes (skipped under reduced motion), with `minWH = min(W,H)` and
+`ckeys`/`edgeSet` = the current cluster edge-key set:
+```
+stepBolts(fieldSpk,   () => closestUnlinked(fsp, bgEdgeSet, minWH*0.18))
+stepBolts(crossSpk,   () => closestCross(fsp, sp,           minWH*0.13))
+stepBolts(clusterSpk, () => closestUnlinked(sp, ckeys, max(avgEdgeLen(sp,edges)*1.4, scale*0.16)))
+```
+- **onScreen(P)** = P within `[-48, W+48] × [-48, H+48]`.
+- **closestUnlinked(pts, eSet, lim)**: min squared screen distance over on-screen pairs
+  `a<b` with `eSet[a+'_'+b]` unset; returns `{A,B}` (the points) if `< lim²`, else null.
+- **closestCross(ptsA, ptsB, lim)**: same, across the two arrays (no edge filter).
+- **stepBolts(st, finder)**: `st.cd -= 0.016`; if `cd ≤ 0` and `sparks.length < max`, run
+  `finder()`; on hit push `{ax,ay,bx,by, life:0, seed:rand(T·1.7 + A.x·0.013 + B.y·0.017)·1000}`
+  and `cd = 0.22 + rand(T·3.1)·0.5`; on miss `cd = 0.06`. Then advance each spark
+  `life += 0.016`, cull at `≥ SPARK_DUR`, else `drawBolt`.
+- **drawBolt(spk)**: `p = life/SPARK_DUR`; `fseed = seed + floor(life·90)`;
+  envelope `env = (p < 0.16 ? p/0.16 : 1 − (p−0.16)/0.84)` clamped ≥0, then ×`(0.85+0.15·rand(fseed+11))`.
+  Direction unit `(dx,dy)/len`, normal `(−dy,dx)/len`, `segs = 5`. Two passes
+  `[[2.6,'120,146,170',0.26],[0.9,'198,212,226',0.6]]`: polyline `A→…→B` with per-vertex
+  offset `jit = (rand(fseed + s·4.7 + pass·0.5) − 0.5)·len·0.3·(1 − |2t−1|)` along the normal;
+  `lineWidth = pass[0]`, stroke `rgba(pass[1], pass[2]·env)`, round caps/joins. Endpoint flash
+  radius `1.5 + 1.5·env`, fill `rgba(180,198,214, 0.45·env)` at both ends.
+
+> Non-deterministic inputs: `W,H`, `T`, and which pairs happen to drift within `lim`. Endpoints
+> are frozen at strike time, so a bolt does not track the nodes during its 0.42 s life.

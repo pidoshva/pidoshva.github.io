@@ -17,7 +17,9 @@ no build step. Interactive terminal résumé lives separately at geleus.io.
 The **homepage (`/`) is an interactive app**, not a normal page: a full-viewport `<canvas>`
 rendering one cluster of 48 nodes that **morphs into a different shape per section**, with
 content in a right **drawer** (about/goodies/blog) or a **full-screen overlay** (journal,
-blog posts, repo READMEs). All driven by `js/spatial.js`.
+blog posts, repo READMEs). All driven by `js/spatial.js`. Occasional minimal, desaturated
+**lightning bolts** arc between unconnected nodes/dots that drift close (three layers:
+dot↔dot, dot↔cluster, node↔node) — see [`ARCHITECTURE.md §3.2 + §11.12`](ARCHITECTURE.md).
 
 `/goodies/`, `/blog/`, `/blog/post.html` are **fallback pages** (normal scrolling HTML for
 deep links + SEO) that use `js/cluster.js` as an animated *background*.
@@ -71,6 +73,9 @@ HUD/code/labels. The canvas palette is duplicated as `rgba()` literals in the JS
 - **localStorage keys** (clear to force refresh): `geleus_repos`, `geleus_contrib`, `geleus_profile`.
 - **Deploy:** edit → bump `?v=` → commit → push `main`. GitHub Pages auto-deploys (~1–2 min).
 - Pushing code does **not** refresh the journal — run `gh workflow run weekly-summary.yml` or wait for Saturday's cron.
+- **Journal authorship:** the journal distinguishes PRs you *authored* (Shipped/Implemented/…) from
+  PRs you *only reviewed* (Reviewed). Each PR has a `role`; `stats.prs` counts authored only. If the
+  wording ever blurs the two, fix the prompt in `scripts/weekly-summary.py` (see ARCHITECTURE.md §7).
 
 ## Common edits → see ARCHITECTURE.md §9 cookbook
 
