@@ -85,42 +85,34 @@
     return slug;
   }
 
-  function initPost() {
-    var slug = getSlug();
-    if (!slug) {
-      window.location.replace('/blog/');
-      return;
+  function postHtml(meta, markdown, withFooter) {
+    var tagsHtml = '';
+    if (meta.tags && meta.tags.length) {
+      tagsHtml = '<div class="blog-tags">' +
+        meta.tags.map(function (t) { return '<span class="blog-tag">' + escapeHtml(t) + '</span>'; }).join('') +
+        '</div>';
     }
+    return '<article class="post-article">' +
+        '<header class="post-header">' +
+          '<h1>' + escapeHtml(meta.title) + '</h1>' +
+          '<div class="post-meta"><time>' + escapeHtml(formatDate(meta.date)) + '</time>' + tagsHtml + '</div>' +
+        '</header>' +
+        '<div class="post-content">' + marked.parse(markdown) + '</div>' +
+        (withFooter ? '<footer class="post-footer"><a href="/blog/" class="back-link"><i class="fas fa-arrow-left"></i> back to blog</a></footer>' : '') +
+      '</article>';
+  }
 
-    var root = document.getElementById('post-root');
-    if (!root) return;
-
-    Promise.all([
-      fetch(POSTS_URL).then(function (r) {
-        if (!r.ok) throw new Error(r.status);
-        return r.json();
-      }),
-      fetch('/blog/posts/' + slug + '.md').then(function (r) {
-        if (!r.ok) throw new Error(r.status);
-        return r.text();
-      })
-    ])
-      .then(function (results) {
-        var data = results[0];
-        var markdown = results[1];
-
-        var posts = data.posts || [];
-        var meta = null;
-        for (var i = 0; i < posts.length; i++) {
-          if (posts[i].slug === slug) { meta = posts[i]; break; }
-        }
-
-        if (!meta) {
-          window.location.replace('/blog/');
-          return;
-        }
-
-        // Update page title and meta
+  // Render a post by slug into `root`. opts.updateMeta updates <title>/og; opts.footer adds a back link.
+  function renderPost(slug, root, opts) {
+    opts = opts || {};
+    return Promise.all([
+      fetch(POSTS_URL).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }),
+      fetch('/blog/posts/' + slug + '.md').then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+    ]).then(function (results) {
+      var data = results[0], markdown = results[1], posts = data.posts || [], meta = null;
+      for (var i = 0; i < posts.length; i++) { if (posts[i].slug === slug) { meta = posts[i]; break; } }
+      if (!meta) throw new Error('not found');
+      if (opts.updateMeta) {
         document.title = meta.title + ' — geleus';
         var ogTitle = document.querySelector('meta[property="og:title"]');
         var ogDesc = document.querySelector('meta[property="og:description"]');
@@ -128,42 +120,26 @@
         if (ogTitle) ogTitle.setAttribute('content', meta.title + ' — geleus');
         if (ogDesc) ogDesc.setAttribute('content', meta.excerpt);
         if (metaDesc) metaDesc.setAttribute('content', meta.excerpt);
-
-        // Build tags HTML
-        var tagsHtml = '';
-        if (meta.tags && meta.tags.length) {
-          tagsHtml = '<div class="blog-tags">' +
-            meta.tags.map(function (t) { return '<span class="blog-tag">' + escapeHtml(t) + '</span>'; }).join('') +
-            '</div>';
-        }
-
-        // Render
-        root.innerHTML =
-          '<article class="post-article">' +
-            '<header class="post-header">' +
-              '<h1>' + escapeHtml(meta.title) + '</h1>' +
-              '<div class="post-meta">' +
-                '<time>' + escapeHtml(formatDate(meta.date)) + '</time>' +
-                tagsHtml +
-              '</div>' +
-            '</header>' +
-            '<div class="post-content">' + marked.parse(markdown) + '</div>' +
-            '<footer class="post-footer">' +
-              '<a href="/blog/" class="back-link"><i class="fas fa-arrow-left"></i> back to blog</a>' +
-            '</footer>' +
-          '</article>';
-
-        // Syntax highlighting
-        if (window.hljs) {
-          root.querySelectorAll('pre code').forEach(function (block) {
-            hljs.highlightElement(block);
-          });
-        }
-      })
-      .catch(function () {
-        window.location.replace('/blog/');
-      });
+      }
+      root.innerHTML = postHtml(meta, markdown, !!opts.footer);
+      if (window.hljs) {
+        root.querySelectorAll('pre code').forEach(function (block) { hljs.highlightElement(block); });
+      }
+      return meta;
+    });
   }
+
+  function initPost() {
+    var slug = getSlug();
+    if (!slug) { window.location.replace('/blog/'); return; }
+    var root = document.getElementById('post-root');
+    if (!root) return;
+    renderPost(slug, root, { updateMeta: true, footer: true }).catch(function () { window.location.replace('/blog/'); });
+  }
+
+  // Exposed so the spatial home app can expand a post inside its drawer
+  window.GELEUS = window.GELEUS || {};
+  window.GELEUS.loadPost = function (slug, root) { return renderPost(slug, root, { updateMeta: false, footer: false }); };
 
   // --- Init ---
 

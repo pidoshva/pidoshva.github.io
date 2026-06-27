@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>geleus — Vadim Pidoshva</title>
-  <meta name="description" content="Software Engineer in Utah. Open source projects, blog, and resources — one cluster that reshapes itself for every page.">
+  <meta name="description" content="Full Stack Engineer in Utah. Open source projects, blog, and resources.">
   <meta property="og:title" content="geleus — Vadim Pidoshva">
-  <meta property="og:description" content="Software Engineer in Utah. Open source projects, blog, and resources.">
+  <meta property="og:description" content="Full Stack Engineer in Utah. Open source projects, blog, and resources.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://geleus.com/">
   <link rel="icon" type="image/png" href="/images/favicon.ico">
   <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css?v=17">
+  <link rel="stylesheet" href="/css/styles.css?v=18">
   <link rel="stylesheet" href="/lib/hljs/atom-one-dark.min.css">
 </head>
 <body class="spatial">
@@ -23,7 +23,7 @@
   <div class="hud-top">
     <a href="/" class="brand">geleus</a>
     <nav class="hud-nav" aria-label="Primary">
-      <button data-node="home">home</button><button data-node="about">about</button><button data-node="goodies">goodies</button><button data-node="blog">blog</button><button data-node="lab">lab</button>
+      <button data-node="home">home</button><button data-node="about">about</button><button data-node="goodies">goodies</button><button data-node="blog">blog</button><button data-node="resume">resume ↗</button>
     </nav>
   </div>
 
@@ -37,7 +37,7 @@
   <div class="hero-id hero">
     <div class="ident">geleus.com · spatial build</div>
     <h1>Vadim Pidoshva</h1>
-    <p class="role-line">Software Engineer · Utah — one cluster that reshapes itself for every page.</p>
+    <p class="role-line">Full Stack Engineer · Utah</p>
   </div>
 
   <!-- Content drawer; each page holds the real content roots the modules populate -->
@@ -74,6 +74,7 @@
         <p class="drawer-sub">Notes, writeups, and things I've learned. <a href="/blog/">full page ↗</a></p>
       </div>
       <div id="blog-list-root"><div class="blog-loading">Loading posts...</div></div>
+      <div id="blog-post-view" hidden></div>
     </section>
 
     <section class="drawer-page" data-page="journal" hidden>
@@ -93,24 +94,16 @@
       <div id="contrib-root"><div class="contrib-loading">Loading contributions...</div></div>
     </section>
 
-    <section class="drawer-page" data-page="lab" hidden>
-      <div class="drawer-head">
-        <div class="ptag">experiments</div>
-        <h2>Lab</h2>
-      </div>
-      <p>Where this spatial build itself lives — a single 48-node cluster, wired with nearest-neighbour links, that morphs into a different shape for every page. Drag to rotate it; click a labeled node to dive in.</p>
-      <p>Concept after <a href="https://github.com/bgstaal/multipleWindow3dScene" target="_blank" rel="noopener">bgstaal/multipleWindow3dScene</a>.</p>
-    </section>
   </aside>
 
   <div class="contrib-tooltip" id="contrib-tooltip"></div>
 
-  <script src="/js/spatial.js?v=1"></script>
+  <script src="/js/spatial.js?v=2"></script>
   <script src="/js/lang-colors.js"></script>
   <script src="/lib/marked/marked.min.js"></script>
   <script src="/lib/hljs/highlight.min.js"></script>
   <script src="/js/goodies.js"></script>
-  <script src="/js/blog.js"></script>
+  <script src="/js/blog.js?v=2"></script>
   <script src="/js/summary.js"></script>
   <script src="/js/contributions.js?v=8"></script>
   <script src="/js/profile.js"></script>

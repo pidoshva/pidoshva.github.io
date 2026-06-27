@@ -42,14 +42,6 @@
       p.push({ x: (x / (nx - 1) - 0.5) * 1.55, y: (y / (ny - 1) - 0.5) * 1.55, z: (z / (nz - 1) - 0.5) * 1.25 });
     return p;
   }
-  function knotPos() { // torus knot (lab)
-    var p = [], pp = 2, qq = 3;
-    for (var i = 0; i < N; i++) {
-      var u = i / N * Math.PI * 2, r = 0.5 * (2 + Math.cos(qq * u));
-      p.push({ x: r * Math.cos(pp * u) * 0.6, y: r * Math.sin(pp * u) * 0.6, z: 0.58 * Math.sin(qq * u) });
-    }
-    return p;
-  }
   function towerPos() { // single-strand helix tower (journal / timeline)
     var p = [];
     for (var i = 0; i < N; i++) {
@@ -97,16 +89,17 @@
     var h = helixPos(); SHAPES.about = { pos: h, edges: knn(h, 2), desc: 'helix' };
     var g = latticePos(); SHAPES.goodies = { pos: g, edges: knn(g, 3), desc: 'lattice' };
     var w = wavePos(0); SHAPES.blog = { pos: w, edges: knn(w, 3), desc: 'field', dynamic: true };
-    var k = knotPos(); SHAPES.lab = { pos: k, edges: knn(k, 2), desc: 'knot' };
     var j = towerPos(); SHAPES.journal = { pos: j, edges: knn(j, 2), desc: 'timeline' };
     var p = gridPlanePos(); SHAPES.contributions = { pos: p, edges: knn(p, 3), desc: 'grid' };
   })();
 
   // five nav + two node-only pages; each label rides a fixed node index through morphs
+  // 'resume' is an external link (geleus.io), not a drawer — handled in goPage()
   var PAGE_LIST = [
     ['home', 3], ['about', 9], ['goodies', 16], ['blog', 23],
-    ['lab', 30], ['journal', 37], ['contributions', 44]
+    ['resume', 30], ['journal', 37], ['contributions', 44]
   ];
+  var RESUME_URL = 'https://geleus.io/';
 
   // deep, dim node-field behind the art
   var BGFIELD = (function () {
@@ -173,6 +166,37 @@
   function showDrawerPage(key) {
     Array.prototype.forEach.call(drawerPages, function (s) { s.hidden = (s.getAttribute('data-page') !== key); });
   }
+
+  // --- blog: expand a post in-place inside the drawer (keeps the spatial design) ---
+  var blogListRoot = document.getElementById('blog-list-root');
+  var blogPostView = document.getElementById('blog-post-view');
+  function showBlogList() {
+    if (blogPostView) { blogPostView.hidden = true; blogPostView.innerHTML = ''; }
+    if (blogListRoot) blogListRoot.hidden = false;
+  }
+  function showBlogPost(slug) {
+    if (!blogPostView || !window.GELEUS || !window.GELEUS.loadPost) return false;
+    if (blogListRoot) blogListRoot.hidden = true;
+    blogPostView.hidden = false;
+    blogPostView.innerHTML = '<button class="drawer-back-posts" type="button">← all posts</button><div id="drawer-post"></div>';
+    blogPostView.querySelector('.drawer-back-posts').addEventListener('click', showBlogList);
+    var el = document.getElementById('drawer-post');
+    window.GELEUS.loadPost(slug, el).catch(function () {
+      el.innerHTML = '<p class="blog-error">Could not load this post. <a href="/blog/post.html?slug=' + encodeURIComponent(slug) + '">Open it on the full page →</a></p>';
+    });
+    panel.scrollTop = 0;
+    return true;
+  }
+  // intercept blog-card clicks so posts expand in the drawer instead of navigating away
+  panel.addEventListener('click', function (e) {
+    var card = e.target.closest('.blog-card');
+    if (!card) return;
+    var href = card.getAttribute('href') || '';
+    var m = href.match(/slug=([^&]+)/);
+    var slug = m ? decodeURIComponent(m[1]) : null;
+    if (slug && showBlogPost(slug)) e.preventDefault(); // else fall back to /blog/post.html
+  });
+
   function applyState(key) {
     if (!SHAPES[key]) key = 'home';
     setShape(key); setActiveNav(key);
@@ -180,10 +204,12 @@
       panel.classList.remove('open'); tgtShiftX = 0; tgtZoom = 1;
     } else {
       showDrawerPage(key); panel.classList.add('open');
+      if (key === 'blog') showBlogList(); // reset to the listing each time blog opens
       tgtShiftX = (W > 760 ? -W * 0.18 : 0); tgtZoom = 1.1;
     }
   }
   function goPage(key) {
+    if (key === 'resume') { window.open(RESUME_URL, '_blank', 'noopener'); return; }
     applyState(key);
     var url = key === 'home' ? (location.pathname + location.search) : '#' + key;
     if (location.hash.slice(1) !== key && !(key === 'home' && !location.hash)) {

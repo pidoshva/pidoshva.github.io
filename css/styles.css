@@ -888,6 +888,13 @@ body.spatial .panel.open { transform: none; opacity: 1; }
 body.spatial .repo-grid, body.spatial .blog-grid { grid-template-columns: minmax(0, 1fr); gap: 0.9rem; }
 body.spatial .summary-section { padding: 0; }
 
+/* blog post expanded inside the drawer (keeps the spatial design) */
+.drawer-back-posts { align-self: flex-start; margin-bottom: 1rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--moss); background: none; border: 1px solid var(--border-2); border-radius: 999px; padding: 0.35rem 0.8rem; cursor: pointer; transition: 0.2s; }
+.drawer-back-posts:hover, .drawer-back-posts:focus-visible { color: var(--moss-bright); border-color: var(--moss); outline: none; }
+#blog-post-view .post-article { max-width: 100%; padding-top: 0; }
+#blog-post-view .post-header h1 { font-size: 1.35rem; }
+#blog-post-view .post-content { font-size: 0.95rem; line-height: 1.75; }
+
 /* Spatial app — on small screens drop the nav onto its own full-width line
    under the brand so all items fit without clipping */
 @media (max-width: 560px) {
