@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>geleus — Vadim Pidoshva</title>
-  <meta name="description" content="Software Engineer in Utah. Open source projects, blog, and resources.">
+  <meta name="description" content="Software Engineer in Utah. Open source projects, blog, and resources — one cluster that reshapes itself for every page.">
   <meta property="og:title" content="geleus — Vadim Pidoshva">
   <meta property="og:description" content="Software Engineer in Utah. Open source projects, blog, and resources.">
   <meta property="og:type" content="website">
@@ -12,103 +12,107 @@
   <link rel="icon" type="image/png" href="/images/favicon.ico">
   <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css?v=10">
+  <link rel="stylesheet" href="/css/styles.css?v=17">
+  <link rel="stylesheet" href="/lib/hljs/atom-one-dark.min.css">
 </head>
-<body data-shape="home">
+<body class="spatial">
 
-  <header>
-    <div class="container">
-      <a href="/" class="logo">geleus</a>
-      <button class="hamburger" aria-label="Menu" aria-expanded="false">
-        <i class="fas fa-bars"></i>
-      </button>
-      <nav>
-        <ul>
-          <li><a href="/">home</a></li>
-          <li><a href="/goodies/">goodies</a></li>
-          <li><a href="/blog/">blog</a></li>
-          <li><a href="https://geleus.io/" target="_blank" rel="noopener" class="external">resume</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <canvas id="spatialCanvas" aria-label="Interactive node cluster — click a labeled node to open a section"></canvas>
 
-  <main>
-    <!-- Hero -->
-    <section class="hero">
-      <div class="container">
-        <h1>Vadim Pidoshva</h1>
-        <p class="role">Software Engineer · Utah</p>
-        <p class="bio">Building things, and sharing what I learn along the way.</p>
-        <div class="social-links">
-          <a href="https://github.com/pidoshva" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="mailto:pidoshva.vadim@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
-          <a href="https://instagram.com/vp.id/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-        </div>
+  <!-- HUD: brand + nav -->
+  <div class="hud-top">
+    <a href="/" class="brand">geleus</a>
+    <nav class="hud-nav" aria-label="Primary">
+      <button data-node="home">home</button><button data-node="about">about</button><button data-node="goodies">goodies</button><button data-node="blog">blog</button><button data-node="lab">lab</button>
+    </nav>
+  </div>
+
+  <div class="hud-corner" id="readout" aria-hidden="true">
+    cluster&nbsp; <b id="rNodes">—</b> nodes · <b id="rEdges">—</b> links<br>
+    rotation&nbsp; yaw <b id="rYaw">0°</b> · pit <b id="rPit">0°</b><br>
+    page&nbsp;&nbsp;&nbsp;&nbsp; <b id="rEffect">home</b> · <span id="rEffectD">cluster</span>
+  </div>
+
+  <!-- Identity (kept as .hero so js/profile.js can sync the name) -->
+  <div class="hero-id hero">
+    <div class="ident">geleus.com · spatial build</div>
+    <h1>Vadim Pidoshva</h1>
+    <p class="role-line">Software Engineer · Utah — one cluster that reshapes itself for every page.</p>
+  </div>
+
+  <!-- Content drawer; each page holds the real content roots the modules populate -->
+  <aside class="panel" id="panel" aria-live="polite">
+    <button class="panel-back" id="panelBack">← back to home</button>
+
+    <section class="drawer-page" data-page="about" hidden>
+      <div class="drawer-head">
+        <div class="ptag">$ whoami</div>
+        <h2>About</h2>
       </div>
+      <p>Software Engineer based in Utah. I build things and share what I learn along the way — open source, automation, and the occasional over-engineered personal site. This one is a single cluster of nodes that reshapes itself for every section.</p>
+      <p class="drawer-links">
+        <a href="https://github.com/pidoshva" target="_blank" rel="noopener"><i class="fab fa-github"></i> github</a>
+        <a href="mailto:pidoshva.vadim@gmail.com"><i class="fas fa-envelope"></i> email</a>
+        <a href="https://instagram.com/vp.id/" target="_blank" rel="noopener"><i class="fab fa-instagram"></i> instagram</a>
+        <a href="https://geleus.io/" target="_blank" rel="noopener"><i class="fas fa-file-alt"></i> résumé ↗</a>
+      </p>
     </section>
 
-    <!-- Weekly Summary -->
-    <section class="summary-section">
-      <div class="container">
-        <div class="journal-panel">
-          <div class="section-heading">Journal</div>
-          <div id="summary-root"></div>
-        </div>
+    <section class="drawer-page" data-page="goodies" hidden>
+      <div class="drawer-head">
+        <div class="ptag">$ ls ~/projects</div>
+        <h2>Goodies</h2>
+        <p class="drawer-sub">Open-source repos, tools, and experiments. <a href="/goodies/">full page ↗</a></p>
       </div>
+      <div id="repo-root"><div class="goodies-loading">Fetching repos...</div></div>
     </section>
 
-    <!-- Contribution Graph -->
-    <section class="contrib-section">
-      <div class="container">
-        <div class="section-heading">Contributions</div>
-        <div id="contrib-root">
-          <div class="contrib-loading">Loading contributions...</div>
-        </div>
+    <section class="drawer-page" data-page="blog" hidden>
+      <div class="drawer-head">
+        <div class="ptag">$ cat ~/blog</div>
+        <h2>Blog</h2>
+        <p class="drawer-sub">Notes, writeups, and things I've learned. <a href="/blog/">full page ↗</a></p>
       </div>
+      <div id="blog-list-root"><div class="blog-loading">Loading posts...</div></div>
     </section>
 
-    <!-- Nav Cards -->
-    <section class="nav-cards">
-      <div class="container">
-        <div class="section-heading">Explore</div>
-        <div class="cards-grid">
-          <a href="/goodies/" class="nav-card">
-            <div class="card-icon"><i class="fas fa-box-open"></i></div>
-            <h3>Goodies</h3>
-            <p>Open source repos, tools, and experiments.</p>
-          </a>
-          <a href="/blog/" class="nav-card">
-            <div class="card-icon"><i class="fas fa-pen-nib"></i></div>
-            <h3>Blog</h3>
-            <p>Notes, writeups, and things I've learned.</p>
-          </a>
-          <a href="https://geleus.io/" target="_blank" rel="noopener" class="nav-card">
-            <div class="card-icon"><i class="fas fa-file-alt"></i></div>
-            <h3>Resume <span style="font-size:0.75rem">&nearr;</span></h3>
-            <p>Interactive terminal resume at geleus.io.</p>
-          </a>
-        </div>
+    <section class="drawer-page" data-page="journal" hidden>
+      <div class="drawer-head">
+        <div class="ptag">weekly summary</div>
+        <h2>Journal</h2>
+        <p class="drawer-sub">An auto-generated timeline of the week's work.</p>
       </div>
+      <div id="summary-root"></div>
     </section>
-  </main>
 
-  <footer>
-    <div class="container">
-      <span>&copy; 2026 geleus</span>
-      <span>
-        <a href="https://github.com/pidoshva" target="_blank" rel="noopener">github</a>
-      </span>
-    </div>
-  </footer>
+    <section class="drawer-page" data-page="contributions" hidden>
+      <div class="drawer-head">
+        <div class="ptag">last 12 months</div>
+        <h2>Contributions</h2>
+      </div>
+      <div id="contrib-root"><div class="contrib-loading">Loading contributions...</div></div>
+    </section>
+
+    <section class="drawer-page" data-page="lab" hidden>
+      <div class="drawer-head">
+        <div class="ptag">experiments</div>
+        <h2>Lab</h2>
+      </div>
+      <p>Where this spatial build itself lives — a single 48-node cluster, wired with nearest-neighbour links, that morphs into a different shape for every page. Drag to rotate it; click a labeled node to dive in.</p>
+      <p>Concept after <a href="https://github.com/bgstaal/multipleWindow3dScene" target="_blank" rel="noopener">bgstaal/multipleWindow3dScene</a>.</p>
+    </section>
+  </aside>
 
   <div class="contrib-tooltip" id="contrib-tooltip"></div>
 
-  <script src="/js/cluster.js?v=9"></script>
-  <script src="/js/nav.js"></script>
-  <script src="/js/contributions.js?v=8"></script>
+  <script src="/js/spatial.js?v=1"></script>
   <script src="/js/lang-colors.js"></script>
+  <script src="/lib/marked/marked.min.js"></script>
+  <script src="/lib/hljs/highlight.min.js"></script>
+  <script src="/js/goodies.js"></script>
+  <script src="/js/blog.js"></script>
   <script src="/js/summary.js"></script>
+  <script src="/js/contributions.js?v=8"></script>
   <script src="/js/profile.js"></script>
 </body>
 </html>
