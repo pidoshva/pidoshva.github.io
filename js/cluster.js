@@ -3,6 +3,11 @@
 // post = knot), with energy pulses flowing along the links and a deep parallax
 // node-field behind. Replaces js/topo.js.
 //
+// Short-circuit arcs: as the cluster rotates/morphs, when two *unconnected* nodes
+// (no edge between them) drift close on screen, a jagged electric arc cracks across
+// the gap, flashes, and dies — like current jumping a gap. Occasional (cooldown +
+// capped), palette-cohesive, and disabled under prefers-reduced-motion.
+//
 // Renders to a fixed full-viewport canvas (z-index:-1, pointer-events:none, reusing
 // the .topo-bg class) so every existing page section, script and feature is untouched.
 // Bold at the top of the homepage, fades as you scroll so text stays readable.
@@ -161,6 +166,43 @@
   var toPos = SHAPES[page].pos, edges = SHAPES[page].edges, morphT = isHome ? 1 : 0;
   var yaw = 0.6, pitch = -0.3;
 
+  // --- Short-circuit arcs between unconnected nodes that drift close ---
+  var edgeSet = {};
+  for (var ei = 0; ei < edges.length; ei++) edgeSet[edges[ei][0] + '_' + edges[ei][1]] = 1;
+  var sparks = [];                       // active arcs: { a, b, life, seed }
+  var sparkCD = 0.8;                     // seconds until the next arc may fire
+  var SPARK_MAX = isHome ? 3 : 2;        // how many can crackle at once
+  var SPARK_DUR = 0.36;                  // lifetime of one arc (s)
+
+  function drawSpark(A, B, spk) {
+    var p = spk.life / SPARK_DUR;                 // 0..1 through its life
+    var fseed = spk.seed + Math.floor(spk.life * 90);
+    var env = Math.sin(Math.PI * p) * (0.55 + 0.45 * rand(fseed + 11.0)); // flash + crackle
+    var dx = B.x - A.x, dy = B.y - A.y, len = Math.sqrt(dx * dx + dy * dy) || 1;
+    var nx = -dy / len, ny = dx / len, segs = 6;
+    ctx.lineCap = 'round';
+    // pass 0: wide electric-blue glow · pass 1: thin white-hot core
+    for (var pass = 0; pass < 2; pass++) {
+      ctx.beginPath();
+      ctx.moveTo(A.x, A.y);
+      for (var s = 1; s < segs; s++) {
+        var t = s / segs;
+        var jit = (rand(fseed + s * 4.7 + pass * 0.5) - 0.5) * len * 0.5 * (1 - Math.abs(2 * t - 1));
+        ctx.lineTo(A.x + dx * t + nx * jit, A.y + dy * t + ny * jit);
+      }
+      ctx.lineTo(B.x, B.y);
+      if (pass === 0) { ctx.lineWidth = 3.4; ctx.strokeStyle = 'rgba(86,166,255,' + (0.22 * env).toFixed(3) + ')'; }
+      else { ctx.lineWidth = 1.1; ctx.strokeStyle = 'rgba(225,242,255,' + (0.9 * env).toFixed(3) + ')'; }
+      ctx.stroke();
+    }
+    ctx.lineCap = 'butt';
+    // bright blue-white flash at both endpoints
+    var fr = 2.2 + 2.4 * env;
+    ctx.fillStyle = 'rgba(150,205,255,' + (0.75 * env).toFixed(3) + ')';
+    ctx.beginPath(); ctx.arc(A.x, A.y, fr, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc(B.x, B.y, fr, 0, 7); ctx.fill();
+  }
+
   function draw() {
     var sf = W < 700 ? 0.46 : 0.33;
     var cx = W / 2, cy = H / 2, scale = Math.min(W, H) * sf;
@@ -235,6 +277,31 @@
       }
       ctx.fillStyle = 'rgba(168,200,145,' + (0.42 + nr * 0.55).toFixed(3) + ')';
       ctx.beginPath(); ctx.arc(P.x, P.y, r, 0, 7); ctx.fill();
+    }
+
+    // short-circuit arcs: fire between unconnected nodes that drift close on screen
+    if (!prefersReduced) {
+      sparkCD -= 0.016;
+      if (sparkCD <= 0 && sparks.length < SPARK_MAX) {
+        var a = Math.floor(rand(T * 7.3 + 1.7) * N), best = -1, bestD = (scale * 0.40) * (scale * 0.40);
+        for (var b = 0; b < N; b++) {
+          if (b === a) continue;
+          if (edgeSet[Math.min(a, b) + '_' + Math.max(a, b)]) continue;   // skip linked pairs
+          var qx = sp[a].x - sp[b].x, qy = sp[a].y - sp[b].y, qd = qx * qx + qy * qy;
+          if (qd < bestD) { bestD = qd; best = b; }
+        }
+        if (best >= 0) {
+          sparks.push({ a: a, b: best, life: 0, seed: rand(T + a * 1.3 + best * 2.1) * 1000 });
+          sparkCD = 0.45 + rand(T * 3.1) * 1.3;   // breathe between arcs
+        } else {
+          sparkCD = 0.2;                           // nothing close — retry soon
+        }
+      }
+      for (var si = sparks.length - 1; si >= 0; si--) {
+        sparks[si].life += 0.016;
+        if (sparks[si].life >= SPARK_DUR) { sparks.splice(si, 1); continue; }
+        drawSpark(sp[sparks[si].a], sp[sparks[si].b], sparks[si]);
+      }
     }
   }
 
