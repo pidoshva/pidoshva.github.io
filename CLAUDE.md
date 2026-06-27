@@ -1,99 +1,82 @@
-# geleus.com - Resource Center for Engineers
+# geleus.com — project guide
 
-Personal resource center and open source hub for Vadim Pidoshva, a Software Engineer based in Utah. Hosted on GitHub Pages at geleus.com. Interactive terminal resume at geleus.io.
+Personal site / open-source hub for Vadim Pidoshva (Full Stack Engineer, Utah).
+Static site on **GitHub Pages** at **geleus.com**, deployed from `main`. No framework,
+no build step. Interactive terminal résumé lives separately at geleus.io.
 
-## Tech Stack
+> **Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full deep dive** (engine internals,
+> CSS, data/automation, and a "how to edit common things" cookbook). This file is the
+> orientation; ARCHITECTURE.md is the reference.
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Frontend | HTML, CSS, vanilla JS | Static pages, no build step, no framework |
-| Icons | Font Awesome 5.x | UI icons throughout the site |
-| Font | JetBrains Mono | Monospace font used site-wide |
-| Hosting | GitHub Pages | Static hosting from `main` branch |
-| Domain | geleus.com | Custom domain via CNAME |
-| APIs | GitHub API, jogruber contributions API | Repo cards and contribution graph |
+## What this site is now (post June-2026 rebuild)
+
+The **homepage (`/`) is an interactive app**, not a normal page: a full-viewport `<canvas>`
+rendering one cluster of 48 nodes that **morphs into a different shape per section**, with
+content in a right **drawer** (about/goodies/blog) or a **full-screen overlay** (journal,
+blog posts, repo READMEs). All driven by `js/spatial.js`.
+
+`/goodies/`, `/blog/`, `/blog/post.html` are **fallback pages** (normal scrolling HTML for
+deep links + SEO) that use `js/cluster.js` as an animated *background*.
+
+## Tech stack
+
+| Layer | Tech |
+|---|---|
+| Frontend | hand-written HTML/CSS/vanilla JS, no framework/build |
+| Rendering | hand-rolled 3D on a 2D `<canvas>` (no WebGL/Three.js) |
+| Fonts/icons | JetBrains Mono, Font Awesome 5.15 (vendored in `lib/`) |
+| Markdown/code | `marked` + `highlight.js` (vendored in `lib/`) |
+| APIs | GitHub REST (repos/profile), jogruber contributions API |
+| Automation | `scripts/weekly-summary.py` + GitHub Actions + Claude Haiku |
+| Hosting | GitHub Pages (`main`), custom domain via `CNAME` |
 
 ## Design
 
-- **Dark terminal aesthetic**: `#1d1f21` background, `#2bbc8a` green accent, `#d480aa` pink accent
-- **JetBrains Mono** monospace font everywhere
-- **Terminal-style headings**: `$ whoami`, `$ ls ~/projects`, `$ cat ~/blog`
-- **No jQuery** — all vanilla JS
+Minimalist **charcoal / grey / moss** (tokens in `css/styles.css` `:root`: `--bg #1a1c1b`,
+`--surface #232624`, `--text #e6e8e4`, `--moss #8faf78`). Sans for UI, JetBrains Mono for
+HUD/code/labels. The canvas palette is duplicated as `rgba()` literals in the JS — keep in sync.
 
-## Project Structure
-
-```
-pidoshva.github.io/
-├── index.html              # Homepage: bio, contribution graph, nav cards
-├── goodies/index.html      # Repo cards from GitHub API
-├── blog/index.html         # Blog (empty state for now)
-├── css/styles.css          # Hand-written CSS with CSS variables
-├── js/
-│   ├── nav.js              # Hamburger menu + active nav link
-│   ├── contributions.js    # GitHub contribution heatmap
-│   └── goodies.js          # Repo cards + clipboard copy
-├── images/
-│   ├── favicon.ico
-│   └── logo.png
-├── lib/
-│   ├── font-awesome/       # Icons (CSS + webfonts)
-│   └── JetBrainsMono/      # Font files (woff2, woff, ttf, eot)
-├── CNAME                   # Custom domain: geleus.com
-├── sitemap.xml             # Sitemap (3 pages)
-└── README.md
-```
-
-## Pages
-
-| Page | URL | Description |
-|------|-----|-------------|
-| Home | `/` | Hero with `$ whoami`, GitHub contribution graph, nav cards |
-| Goodies | `/goodies/` | Open source repo cards with git clone copy-to-clipboard |
-| Blog | `/blog/` | Empty state with blinking cursor, ready for future posts |
-| Resume | nav link | External link to `https://geleus.io/` (interactive terminal resume) |
-
-## Key JavaScript Modules
+## Key files
 
 | File | Purpose |
-|------|---------|
-| `js/nav.js` | Hamburger toggle + active nav link highlighting (~15 lines) |
-| `js/contributions.js` | Fetches GitHub contributions, renders CSS Grid heatmap, localStorage caching (1hr TTL) |
-| `js/goodies.js` | Fetches GitHub repos, renders cards with language/stars/forks, clipboard copy for clone URLs |
+|---|---|
+| `index.html` | the spatial app (canvas, HUD nav, drawer, overlays) |
+| `js/spatial.js` | ★ homepage engine: shapes, morph, nav, hash routing, overlays |
+| `js/cluster.js` | animated background for fallback pages (`<body data-shape>`) |
+| `js/goodies.js` | repo cards (`#repo-root`); `window.GELEUS.loadReadme` |
+| `js/blog.js` | post list/reader (`#blog-list-root`/`#post-root`); `window.GELEUS.loadPost` |
+| `js/summary.js` | weekly-summary tree (`#summary-root`) |
+| `js/contributions.js` | contribution heatmap (`#contrib-root` + `#contrib-tooltip`) |
+| `js/profile.js` | syncs hero name/bio from GitHub (`.hero h1` / `.hero .bio`) |
+| `js/lang-colors.js` | `window.GELEUS.LANG_COLORS` (load before `goodies.js`) |
+| `js/nav.js` | hamburger + active link — **fallback pages only** |
+| `js/topo.js` | LEGACY background, kept but unreferenced |
+| `css/styles.css` | all styles; spatial app scoped under `body.spatial` |
+| `blog/posts.json` + `blog/posts/*.md` | blog content |
+| `data/weekly-summaries.json` | generated journal data (bot-committed) |
+| `scripts/weekly-summary.py` · `.github/workflows/weekly-summary.yml` | weekly journal automation |
 
-## GitHub API Integration
+## Conventions (do not break)
 
-### Contribution Graph (Homepage)
-- **API**: `https://github-contributions-api.jogruber.de/v4/pidoshva?y=last`
-- **Rendering**: CSS Grid, 7 rows x auto columns, 10px squares
-- **Colors**: custom green scale (`#161b22` → `#0a3d1f` → `#147a3e` → `#2bbc8a` → `#5ae0b0`)
-- **Caching**: localStorage key `geleus_contrib`, 1hr TTL
+- **Cache-busting:** JS/CSS are linked with `?v=N`. **Bump `N` in every HTML file that
+  references a file whenever you edit it** — otherwise browsers serve stale assets. (Blog
+  `.md`/`.json` instead use `cache:'no-cache'` fetches, so content edits need no bump.)
+- **All JS in IIFEs**; shared state only via `window.GELEUS`. `camelCase`. HTML-escape API content.
+- **DOM contracts:** modules find fixed ids (`#repo-root`, `#blog-list-root`, `#summary-root`,
+  `#contrib-root`, etc.) — renaming an id means updating the module too.
+- **localStorage keys** (clear to force refresh): `geleus_repos`, `geleus_contrib`, `geleus_profile`.
+- **Deploy:** edit → bump `?v=` → commit → push `main`. GitHub Pages auto-deploys (~1–2 min).
+- Pushing code does **not** refresh the journal — run `gh workflow run weekly-summary.yml` or wait for Saturday's cron.
 
-### Repo Cards (Goodies)
-- **API**: `https://api.github.com/users/pidoshva/repos?sort=updated&per_page=30` (60 req/hr unauthenticated)
-- **Filters**: excludes forks and `pidoshva.github.io`
-- **Features**: language badge, stars, forks, "updated X ago", `git clone` URL copy button
-- **Caching**: localStorage key `geleus_repos`, 1hr TTL
-- **Security**: HTML escaping on all user-generated content (repo descriptions)
+## Common edits → see ARCHITECTURE.md §9 cookbook
 
-## Code Naming (JavaScript)
-- Functions: `camelCase` (`escapeHtml`, `timeAgo`, `formatDate`, `getCached`, `setCache`)
-- Variables: `camelCase` (`CACHE_KEY`, `CACHE_TTL`, `LANG_COLORS`)
-- All JS in IIFEs to avoid global scope pollution
-- DOM queries: `document.getElementById`, `document.querySelector`
+Add a blog post, add/rename a nav section + shape, retune the cluster, change colors, refresh
+the journal — all have step-by-step recipes in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
-## Deployment
+## Verify
 
-Push to `main` branch → GitHub Pages auto-deploys at geleus.com.
-
-## CSS Architecture
-
-Single file `css/styles.css` using CSS custom properties (variables) defined in `:root`. No build step, no preprocessor. Mobile breakpoint at 640px with hamburger nav.
-
-## Notes for Development
-
-- **No build step**: edit HTML/CSS/JS directly, commit, push
-- **Shared layout**: all 3 pages share the same header/footer HTML (duplicated, not templated)
-- **Font Awesome** is loaded in `<head>` on every page
-- **JetBrains Mono** is preloaded via `<link rel="preload">`
-- The `lib/` directory contains vendored assets — update by replacing with newer upstream versions
-- All API data is cached in localStorage; clear `geleus_contrib` and `geleus_repos` keys to force refresh
+`python3 -m http.server` → `localhost:8000` (try `/#goodies`, `/#blog`, `/#journal`). Smoke
+check: cluster spins/drags, each nav node morphs + opens live content, the journal arrow opens
+the tree + heatmap overlay, a blog card and a repo "readme" each open the full-screen reader,
+`Esc`/back work, fallback pages still load. (Headless Chrome misrenders narrow viewports —
+check mobile on a real device.)

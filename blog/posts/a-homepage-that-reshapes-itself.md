@@ -10,8 +10,6 @@ Same points every time. They just move into different shapes.
 
 One cluster, and each section of the site is one of its points. You click a point, the view shifts toward it, the points settle into that section's shape, and the content opens. Nothing reloads; it stays one scene the whole time.
 
-The idea came from bgstaal's [multipleWindow3dScene](https://github.com/bgstaal/multipleWindow3dScene). Mine works differently, but that's the starting point.
-
 ## How it's built
 
 No framework, no build step. Just HTML, CSS, and JavaScript on GitHub Pages.
