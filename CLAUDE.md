@@ -7,6 +7,10 @@ no build step. Interactive terminal résumé lives separately at geleus.io.
 > **Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full deep dive** (engine internals,
 > CSS, data/automation, and a "how to edit common things" cookbook). This file is the
 > orientation; ARCHITECTURE.md is the reference.
+>
+> The **exact node-animation math** — every shape builder formula, the `rand`/`knn`/projection/
+> morph/pulse/field equations, and a per-page mapping, transcribed verbatim and 100% replicable
+> — is in **[ARCHITECTURE.md §11](ARCHITECTURE.md#11-appendix--exact-geometry--math-replication-spec)**.
 
 ## What this site is now (post June-2026 rebuild)
 

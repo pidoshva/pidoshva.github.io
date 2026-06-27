@@ -1,11 +1,13 @@
 // Spatial home app — the interactive node-cluster that IS the homepage.
 // A chaotic field of 48 linked nodes with energy pulses + a deep parallax field;
-// 7 labeled page-nodes (home/about/goodies/blog/lab/journal/contributions) you can
-// click to fly the camera, morph the cluster into that page's shape, and slide its
-// content drawer in from the right. Drag to rotate (mouse + touch). Esc / "back to
-// home" returns. Deep-linkable via #hash; back/forward work. The drawers hold the
-// site's real content roots, populated by the existing modules — no feature lost.
+// 5 labeled page-nodes (home/about/goodies/blog/resume) you can click to fly the
+// camera, morph the cluster into that page's shape, and slide its content drawer in
+// from the right. The journal lives in a full-screen overlay (top-centre arrow);
+// blog posts + repo READMEs open in a shared full-screen overlay. Drag to rotate
+// (mouse + touch). Esc / "back to home" returns. Deep-linkable via #hash; back/forward
+// work. Drawers hold the site's real content roots, populated by the existing modules.
 // Pure vanilla JS, no deps. Respects prefers-reduced-motion.
+// Full math/replication spec: ARCHITECTURE.md §11.
 (function () {
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);

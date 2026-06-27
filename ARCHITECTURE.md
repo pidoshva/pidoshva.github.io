@@ -316,3 +316,236 @@ in that page; shapes are defined in `cluster.js`.
 - **Smoke check after changes:** home cluster spins + drags; each nav node morphs + opens its
   drawer with live content; the journal arrow opens the overlay (tree + heatmap); a blog card
   and a repo "readme" each open the full-screen reader; `Esc`/back work; fallback pages still load.
+
+---
+
+## 11. Appendix — exact geometry & math (replication spec)
+
+Everything needed to reproduce the node animation **100%**, transcribed verbatim from
+`js/spatial.js` (homepage app) and `js/cluster.js` (fallback-page background). The two files
+share identical primitives, shape builders, `knn`, projection, and render math; they differ
+only in interaction (app) vs. scroll-fade (background) and a couple of constants (noted in
+§11.10). All canvas coordinates are in **CSS pixels** (the context is pre-scaled by `dpr` via
+`ctx.setTransform(dpr,0,0,dpr,0,0)`); `dpr = min(devicePixelRatio, 2)`.
+
+### 11.1 Global constants
+```js
+CAM = 3.2          // camera distance (perspective)
+N   = 48           // node count — every shape MUST return exactly 48 points
+T   = 0            // global time; T += 0.016 per frame (frozen under prefers-reduced-motion)
+```
+
+### 11.2 Primitives (shared, verbatim)
+```js
+// deterministic hash → pseudo-random in [0,1); same seed ⇒ same value (stable layouts)
+function rand(s){ var x = Math.sin(s*127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+// cubic ease in/out, used for both morph progress and edge crossfade
+function easeIO(t){ return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+
+function lerp(a,b,t){ return a + (b-a)*t; }
+
+// rotated-z (depth) → near-camera brightness factor in [0,1]
+function nearOf(z){ var n = 1 - (z+1)/2.4; return n < 0 ? 0 : (n > 1 ? 1 : n); }
+```
+
+### 11.3 Shape builders (verbatim — each returns N=48 `{x,y,z}`)
+The point set is **deterministic** (seeded `rand`), so the layout is identical every load.
+```js
+// home — chaotic ball: cube-root radius ≈ uniform volume density, anisotropic scale + jitter
+function clusterPos(){
+  var p=[];
+  for(var i=0;i<N;i++){
+    var r=Math.cbrt(rand(i*5+1))*1.0,
+        a=rand(i*5+2)*6.2832,            // azimuth 0..2π
+        b=Math.acos(2*rand(i*5+3)-1);    // inclination (uniform on sphere)
+    var x=r*Math.sin(b)*Math.cos(a)*1.3, // x stretched ×1.3
+        y=r*Math.cos(b)*0.85,            // y squashed ×0.85
+        z=r*Math.sin(b)*Math.sin(a)*1.1; // z ×1.1
+    x+=(rand(i*5+4)-0.5)*0.3; y+=(rand(i*5+5)-0.5)*0.3;  // ±0.15 jitter
+    p.push({x:x,y:y,z:z});
+  }
+  return p;
+}
+
+// about — double helix: 24 pairs, 2.3 turns, height 1.95, radius 0.52, strands π apart
+function helixPos(){
+  var p=[], pairs=N/2;                    // 24
+  for(var k=0;k<pairs;k++){
+    var tt=k/(pairs-1), a=tt*Math.PI*2*2.3, y=(tt-0.5)*1.95, r=0.52;
+    p.push({x:r*Math.cos(a),         y:y, z:r*Math.sin(a)});
+    p.push({x:r*Math.cos(a+Math.PI), y:y, z:r*Math.sin(a+Math.PI)});
+  }
+  return p;
+}
+
+// goodies — 4×4×3 cube lattice, spans x,y = 1.55, z = 1.25, centered at origin
+function latticePos(){
+  var p=[], nx=4, ny=4, nz=3;
+  for(var x=0;x<nx;x++) for(var y=0;y<ny;y++) for(var z=0;z<nz;z++)
+    p.push({ x:(x/(nx-1)-0.5)*1.55, y:(y/(ny-1)-0.5)*1.55, z:(z/(nz-1)-0.5)*1.25 });
+  return p;
+}
+
+// blog — 8×6 undulating field; y animates with time t (call with t=T each frame)
+function wavePos(t){
+  var p=[], nx=8, nz=6;
+  for(var i=0;i<nx;i++) for(var j=0;j<nz;j++){
+    var x=(i/(nx-1)-0.5)*1.95, z=(j/(nz-1)-0.5)*1.5;
+    p.push({ x:x, y:Math.sin(x*3+t*1.6)*0.24 + Math.cos(z*3+t*1.2)*0.24, z:z });
+  }
+  return p;
+}
+
+// fallback /blog/post.html only (cluster.js) — (p,q)=(2,3) torus knot
+function knotPos(){
+  var p=[], pp=2, qq=3;
+  for(var i=0;i<N;i++){
+    var u=i/N*Math.PI*2, r=0.5*(2+Math.cos(qq*u));
+    p.push({ x:r*Math.cos(pp*u)*0.6, y:r*Math.sin(pp*u)*0.6, z:0.58*Math.sin(qq*u) });
+  }
+  return p;
+}
+```
+
+### 11.4 Edge graph — `knn` (verbatim)
+For each node, connect to its `k` nearest neighbours by squared distance; undirected edges are
+de-duplicated by a `lo_hi` key. Returns `[[lo,hi], …]`.
+```js
+function knn(pos,k){
+  var edges=[], seen={};
+  for(var a=0;a<pos.length;a++){
+    var d=[];
+    for(var b=0;b<pos.length;b++){ if(a===b) continue;
+      var dx=pos[a].x-pos[b].x, dy=pos[a].y-pos[b].y, dz=pos[a].z-pos[b].z;
+      d.push({b:b, dd:dx*dx+dy*dy+dz*dz});
+    }
+    d.sort(function(p,q){return p.dd-q.dd;});
+    for(var e=0;e<k;e++){ var bi=d[e].b, lo=Math.min(a,bi), hi=Math.max(a,bi), key=lo+'_'+hi;
+      if(!seen[key]){ seen[key]=1; edges.push([lo,hi]); } }
+  }
+  return edges;
+}
+```
+**`k` per shape:** home `knn(c,3)`, about `knn(h,2)`, goodies `knn(g,3)`, blog `knn(w,3)`,
+lab/knot `knn(k,2)` (cluster.js), background field `knn(BGFIELD,1)`.
+
+### 11.5 Background parallax field (verbatim)
+78 points on a spherical shell (radius `1.5 + 1.7·cbrt(u)`), wired with `k=1`:
+```js
+BGFIELD = (function(){
+  var p=[];
+  for(var i=0;i<78;i++){
+    var u=rand(i+7), v=rand(i+77), w=rand(i+777);
+    var r=1.5+1.7*Math.cbrt(u), a=v*6.2832, b=Math.acos(2*w-1);
+    p.push({ x:r*Math.sin(b)*Math.cos(a), y:r*Math.cos(b), z:r*Math.sin(b)*Math.sin(a) });
+  }
+  return p;
+})();
+BGEDGES = knn(BGFIELD, 1);
+```
+It is rotated on its own slow camera and rendered dim, **behind** the cluster (see §11.8).
+
+### 11.6 Rotation + perspective projection (verbatim)
+```js
+// yaw about the Y axis, then pitch about the X axis
+function rotP(p, yaw, pitch){
+  var c=Math.cos(yaw), s=Math.sin(yaw), x1=p.x*c - p.z*s, z1=p.x*s + p.z*c;
+  var cp=Math.cos(pitch), sp=Math.sin(pitch);
+  return { x:x1, y:p.y*cp - z1*sp, z:p.y*sp + z1*cp };
+}
+```
+Screen mapping for a rotated point `r`:
+```
+f      = CAM / (CAM + r.z)                 // perspective divide
+scale  = min(W,H) * sf * zoom              // sf = (W < 700 ? 0.46 : 0.33)
+screenX = cx + r.x * f * scale             // cx = W/2 + camShiftX   (camShiftX = 0 in cluster.js)
+screenY = cy + r.y * f * scale             // cy = H/2
+```
+Background field uses a separate, pushed-back camera: `fcamF = 5`, `ff = fcamF/(fcamF + r.z)`,
+`fbs = min(W,H)*0.52`, rotated by `fby = T*0.03` (yaw) and `fbp = -0.18` (pitch).
+
+### 11.7 Morph + dynamic blog (verbatim logic)
+On `setShape(key)`: `fromPos = clone(posCur)`, `toPos = SHAPES[key].pos`, `morphT = 0`.
+Each frame:
+```js
+if (morphT < 1){
+  morphT = Math.min(1, morphT + 0.024);     // 0.022 in cluster.js
+  var e = easeIO(morphT);
+  for (i) posCur[i] = lerp(fromPos[i], toPos[i], e);  // per-axis
+} else if (curKey === 'blog' && !reduced){
+  posCur = wavePos(T);                       // live field once settled
+}
+// edge crossfade during a morph:
+var me = morphT < 1 ? easeIO(morphT) : 1;
+drawEdges(fromEdges, alpha*(1-me));          // only while morphT < 1
+drawEdges(toEdges,   alpha*me);
+```
+
+### 11.8 Render pipeline (exact draw math, per frame)
+Order: clear → backdrop image → background field → cluster edges → pulses → nodes → (app) labels.
+
+- **Backdrop** `buildBg()` (pre-rendered once per resize): vertical linear gradient
+  `#0f1110 → #0a0b0a`; radial vignette from `(0.5W, 0.42H, r=min(W,H)·0.18)` to
+  `(0.5W, 0.5H, r=max(W,H)·0.78)`, `rgba(0,0,0,0) → rgba(0,0,0,0.5)`.
+- **Background field** per node depth `fn = 1 - (z+3.2)/6.4` (clamped ≥0):
+  edges `rgba(133,148,133, 0.05+fn·0.09)` (cluster.js: `rgba(124,132,124, 0.02+fn·0.04)`),
+  nodes radius `0.9+fn·1.5` `rgba(143,175,120, 0.08+fn·0.2)` (cluster.js: `0.8+fn·1.3`, `0.04+fn·0.13`).
+- **Cluster edges** per edge `nr = nearOf((zA+zB)/2)`:
+  `lineWidth = 0.7 + nr·1.4`, stroke `rgba(143,175,120, (0.1 + nr·0.5)·aMul)`.
+- **Pulses** (skipped under reduced motion) per edge index `e`:
+  `ph = (T·0.55 + e·0.1973) mod 1`; point `= lerp(A, B, ph)`;
+  `nr = nearOf(zA + (zB-zA)·ph)`; radius `1.1 + nr·1.7`;
+  fill `rgba(224,236,210, (0.3 + nr·0.55)·me)` (cluster.js omits the `·me`).
+- **Nodes** drawn far→near (sort by `z` descending): `nr = nearOf(z)`, `r = 1.7 + nr·2.6`;
+  if `nr > 0.62` a radial glow of radius `r·3` `rgba(168,200,145, 0.22·nr → 0)`;
+  core `rgba(168,200,145, 0.42 + nr·0.55)`.
+- **Labeled page-nodes** (app only): for each `PAGE_LIST` node, `rr = 3 + nr·2.4`;
+  glow radius `rr·3.4` `rgba(168,200,145, 0.32+0.3·nr → 0)`; white core `rgba(224,236,210,1)` radius `rr`;
+  if active, ring stroke at `rr+5` `rgba(168,200,145,0.9)` width 1.4; label text
+  `${(11.5+nr·2)}px ui-monospace…` `rgba(230,232,228, active?0.98:0.5+nr·0.4)` at `(x+rr+5, y+3.5)`.
+  Hover pick = nearest page node with squared screen distance `< 460`.
+
+### 11.9 Camera dynamics & input (app, `spatial.js`)
+```
+initial:        yaw = 0.6, pitch = -0.3
+auto-rotate:    if home & !dragging & !hovering:  tgtYaw += 0.0045   (per frame)
+easing:         yaw   += (tgtYaw   - yaw)   * 0.07
+                pitch += (tgtPitch - pitch) * 0.07
+                camShiftX += (tgtShiftX - camShiftX) * 0.09
+                zoom      += (tgtZoom    - zoom)      * 0.09
+drag:           tgtYaw   += dx * 0.006
+                tgtPitch  = clamp(tgtPitch + dy*0.006, -1.2, 1.2)
+tap vs drag:    treat as a click (open hovered node / go home) if total moved < 6 px
+drawer open:    tgtShiftX = (W > 760 ? -W*0.18 : 0);  tgtZoom = 1.1   (else 0 / 1.0)
+```
+`cluster.js` (background) has **no input**: constant `pitch = -0.3`, `yaw += 0.0045` per frame.
+
+### 11.10 `spatial.js` vs `cluster.js` — the only differences
+| | `spatial.js` (homepage app) | `cluster.js` (fallback background) |
+|---|---|---|
+| Shapes | home, about, goodies, blog | home, about, goodies, blog, **lab=knot** |
+| Interaction | drag-rotate, click nodes, drawers, overlays | none (decorative) |
+| Camera | eased yaw/pitch/shift/zoom + auto-rotate | fixed pitch −0.3, constant yaw spin |
+| Morph step | `morphT += 0.024` | `morphT += 0.022` (cluster→page on load) |
+| Page select | `PAGE_LIST` + `#hash` routing | `<body data-shape>` |
+| Pulse alpha | `×me` (morph-aware) | no `me` factor |
+| Field colors | `rgba(133,148,133,…)`/brighter | `rgba(124,132,124,…)`/dimmer |
+| Visibility | full-screen `<canvas id=spatialCanvas>` | injected fixed `.topo-bg`, `z-index:-1`, **scroll-fade** |
+| Scroll fade | n/a | `opacity = top - (top-min)·min(1, scrollY/dist)`; home `top1.0,min0.12,dist560`; others `top0.22,min0.08,dist260` |
+
+### 11.11 Per-page mapping (the tech behind each page's nodes)
+| Page | Engine | shape key / `data-shape` | Builder | k | Motion |
+|---|---|---|---|---|---|
+| `/` home | spatial.js | `home` | `clusterPos` | 3 | auto-rotate + pulses + parallax field |
+| `/#about` | spatial.js | `about` | `helixPos` | 2 | morph-in + pulses (spins via drag) |
+| `/#goodies` | spatial.js | `goodies` | `latticePos` | 3 | morph-in + pulses |
+| `/#blog` | spatial.js | `blog` | `wavePos(T)` | 3 | live undulating field + pulses |
+| `/goodies/` | cluster.js | `goodies` | `latticePos` | 3 | background spin + pulses + scroll-fade |
+| `/blog/` | cluster.js | `blog` | `wavePos(T)` | 3 | live field + scroll-fade |
+| `/blog/post.html` | cluster.js | `lab` | `knotPos` | 2 | background spin + pulses + scroll-fade |
+
+> Replication note: because every position comes from the seeded `rand` and fixed builders,
+> dropping these functions into a fresh `<canvas>` with the projection (§11.6) and render
+> (§11.8) reproduces the exact look. The only non-deterministic inputs are viewport size
+> (`W,H,dpr`), time `T`, and user drag.
