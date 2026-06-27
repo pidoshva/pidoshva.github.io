@@ -159,17 +159,20 @@
 
   function drawBolt(spk) {
     var p = spk.life / SPARK_DUR, fseed = spk.seed + Math.floor(spk.life * 90);
-    var env = Math.sin(Math.PI * p) * (0.6 + 0.4 * rand(fseed + 11.0));
+    // quick strike, then a gentle fade out (minimal flicker)
+    var rise = 0.16, env = p < rise ? p / rise : 1 - (p - rise) / (1 - rise);
+    if (env < 0) env = 0;
+    env *= 0.85 + 0.15 * rand(fseed + 11.0);
     var ax = spk.ax, ay = spk.ay, bx = spk.bx, by = spk.by;
-    var dx = bx - ax, dy = by - ay, len = Math.sqrt(dx * dx + dy * dy) || 1, nx = -dy / len, ny = dx / len, segs = 9;
-    // three passes: wide blue glow -> mid -> white-hot core
-    var P = [[5.5, '86,166,255', 0.5], [2.4, '150,205,255', 0.75], [1.1, '235,245,255', 1.0]];
+    var dx = bx - ax, dy = by - ay, len = Math.sqrt(dx * dx + dy * dy) || 1, nx = -dy / len, ny = dx / len, segs = 5;
+    // two passes: soft desaturated steel-blue glow -> muted core (low saturation)
+    var P = [[2.6, '120,146,170', 0.26], [0.9, '198,212,226', 0.6]];
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    for (var pp = 0; pp < 3; pp++) {
+    for (var pp = 0; pp < 2; pp++) {
       ctx.beginPath(); ctx.moveTo(ax, ay);
       for (var s = 1; s < segs; s++) {
         var t = s / segs;
-        var jit = (rand(fseed + s * 4.7 + pp * 0.5) - 0.5) * len * 0.55 * (1 - Math.abs(2 * t - 1));
+        var jit = (rand(fseed + s * 4.7 + pp * 0.5) - 0.5) * len * 0.3 * (1 - Math.abs(2 * t - 1));
         ctx.lineTo(ax + dx * t + nx * jit, ay + dy * t + ny * jit);
       }
       ctx.lineTo(bx, by);
@@ -177,8 +180,8 @@
       ctx.stroke();
     }
     ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
-    var fr = 3 + 3 * env;   // bright flash at both ends
-    ctx.fillStyle = 'rgba(200,228,255,' + (0.95 * env).toFixed(3) + ')';
+    var fr = 1.5 + 1.5 * env;   // small soft flash at both ends
+    ctx.fillStyle = 'rgba(180,198,214,' + (0.45 * env).toFixed(3) + ')';
     ctx.beginPath(); ctx.arc(ax, ay, fr, 0, 7); ctx.fill();
     ctx.beginPath(); ctx.arc(bx, by, fr, 0, 7); ctx.fill();
   }
