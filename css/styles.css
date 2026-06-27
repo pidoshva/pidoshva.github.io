@@ -895,6 +895,47 @@ body.spatial .summary-section { padding: 0; }
 #blog-post-view .post-header h1 { font-size: 1.35rem; }
 #blog-post-view .post-content { font-size: 0.95rem; line-height: 1.75; }
 
+/* Top-centre arrow → full-screen journal */
+.journal-trigger {
+  position: fixed; top: 1rem; left: 50%; transform: translateX(-50%);
+  z-index: 25; display: inline-flex; align-items: center; gap: 0.45rem;
+  font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-dim); background: rgba(20, 22, 21, 0.6); border: 1px solid var(--border-2);
+  border-radius: 999px; padding: 0.45rem 0.95rem; cursor: pointer;
+  backdrop-filter: saturate(140%) blur(8px); -webkit-backdrop-filter: saturate(140%) blur(8px);
+  transition: color 0.2s, border-color 0.2s;
+}
+.journal-trigger:hover, .journal-trigger:focus-visible { color: var(--text); border-color: var(--moss); outline: none; }
+.journal-trigger i { color: var(--moss); animation: journalbob 2.2s ease-in-out infinite; }
+@keyframes journalbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+
+/* Full-screen journal overlay (half-blurred backdrop, readable tree + contributions) */
+.journal-overlay {
+  position: fixed; inset: 0; z-index: 40; overflow-y: auto;
+  background: rgba(13, 15, 14, 0.62);
+  backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px) saturate(120%);
+  opacity: 0; transform: translateY(-14px); pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.45s cubic-bezier(.22,1,.36,1);
+}
+.journal-overlay.open { opacity: 1; transform: none; pointer-events: auto; }
+.journal-overlay-inner { max-width: 760px; margin: 0 auto; padding: 5rem 1.5rem 4rem; }
+.journal-close {
+  position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 41;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; color: var(--moss); background: rgba(20, 22, 21, 0.7); border: 1px solid var(--border-2);
+  border-radius: 999px; width: 2.2rem; height: 2.2rem; cursor: pointer; transition: color 0.2s, border-color 0.2s;
+}
+.journal-close:hover, .journal-close:focus-visible { color: var(--moss-bright); border-color: var(--moss); outline: none; }
+.journal-head { margin-bottom: 1.5rem; }
+.journal-head .ptag, .journal-contrib .ptag { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--moss); margin-bottom: 0.55rem; }
+.journal-head h2 { font-size: clamp(1.6rem, 4vw, 2.1rem); margin: 0 0 0.3rem; color: var(--text); font-weight: 700; }
+.journal-sub { color: var(--text-dim); font-size: 0.9rem; margin: 0; }
+.journal-contrib { margin-top: 2.5rem; padding-top: 1.75rem; border-top: 1px solid var(--border); }
+.journal-contrib h3 { font-size: 1.2rem; margin: 0 0 1rem; color: var(--text); font-weight: 650; }
+.journal-overlay .timeline-tree { font-size: 0.85rem; }
+@media (prefers-reduced-motion: reduce) { .journal-overlay { transition: opacity 0.2s ease; } .journal-trigger i { animation: none; } }
+@media (max-width: 560px) { .journal-overlay-inner { padding: 4.5rem 1.1rem 3rem; } }
+
 /* Spatial app — on small screens drop the nav onto its own full-width line
    under the brand so all items fit without clipping */
 @media (max-width: 640px) {

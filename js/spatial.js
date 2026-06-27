@@ -42,20 +42,6 @@
       p.push({ x: (x / (nx - 1) - 0.5) * 1.55, y: (y / (ny - 1) - 0.5) * 1.55, z: (z / (nz - 1) - 0.5) * 1.25 });
     return p;
   }
-  function towerPos() { // single-strand helix tower (journal / timeline)
-    var p = [];
-    for (var i = 0; i < N; i++) {
-      var t = i / (N - 1), a = t * Math.PI * 2 * 3.2, y = (t - 0.5) * 1.95, r = 0.62;
-      p.push({ x: r * Math.cos(a), y: y, z: r * Math.sin(a) });
-    }
-    return p;
-  }
-  function gridPlanePos() { // flat grid plane (contributions / heatmap)
-    var p = [], nx = 8, nz = 6;
-    for (var i = 0; i < nx; i++) for (var j = 0; j < nz; j++)
-      p.push({ x: (i / (nx - 1) - 0.5) * 1.95, y: 0, z: (j / (nz - 1) - 0.5) * 1.4 });
-    return p;
-  }
   function wavePos(t) { // undulating field (blog)
     var p = [], nx = 8, nz = 6;
     for (var i = 0; i < nx; i++) for (var j = 0; j < nz; j++) {
@@ -89,15 +75,13 @@
     var h = helixPos(); SHAPES.about = { pos: h, edges: knn(h, 2), desc: 'helix' };
     var g = latticePos(); SHAPES.goodies = { pos: g, edges: knn(g, 3), desc: 'lattice' };
     var w = wavePos(0); SHAPES.blog = { pos: w, edges: knn(w, 3), desc: 'field', dynamic: true };
-    var j = towerPos(); SHAPES.journal = { pos: j, edges: knn(j, 2), desc: 'timeline' };
-    var p = gridPlanePos(); SHAPES.contributions = { pos: p, edges: knn(p, 3), desc: 'grid' };
   })();
 
-  // five nav + two node-only pages; each label rides a fixed node index through morphs
-  // 'resume' is an external link (geleus.io), not a drawer — handled in goPage()
+  // labeled cluster nodes (each label rides a fixed node index through morphs).
+  // 'resume' opens geleus.io externally; the journal lives in a full-screen overlay
+  // triggered by the top-centre arrow (not a node).
   var PAGE_LIST = [
-    ['home', 3], ['about', 9], ['goodies', 16], ['blog', 23],
-    ['resume', 30], ['journal', 37], ['contributions', 44]
+    ['home', 3], ['about', 12], ['goodies', 22], ['blog', 33], ['resume', 43]
   ];
   var RESUME_URL = 'https://geleus.io/';
 
@@ -223,7 +207,33 @@
   });
   var backBtn = document.getElementById('panelBack');
   if (backBtn) backBtn.addEventListener('click', function () { goPage('home'); });
-  window.addEventListener('keydown', function (e) { if (e.key === 'Escape' && curKey !== 'home') goPage('home'); });
+
+  // --- journal: full-screen overlay (tree + contributions), opened by the top arrow ---
+  var journalOverlay = document.getElementById('journalOverlay');
+  var journalTrigger = document.getElementById('journalTrigger');
+  var journalClose = document.getElementById('journalClose');
+  function openJournal() {
+    if (!journalOverlay) return;
+    journalOverlay.classList.add('open');
+    journalOverlay.setAttribute('aria-hidden', 'false');
+    if (journalTrigger) journalTrigger.setAttribute('aria-expanded', 'true');
+    journalOverlay.scrollTop = 0;
+  }
+  function closeJournal() {
+    if (!journalOverlay) return;
+    journalOverlay.classList.remove('open');
+    journalOverlay.setAttribute('aria-hidden', 'true');
+    if (journalTrigger) journalTrigger.setAttribute('aria-expanded', 'false');
+  }
+  if (journalTrigger) journalTrigger.addEventListener('click', openJournal);
+  if (journalClose) journalClose.addEventListener('click', closeJournal);
+  if (journalOverlay) journalOverlay.addEventListener('click', function (e) { if (e.target === journalOverlay) closeJournal(); });
+
+  window.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (journalOverlay && journalOverlay.classList.contains('open')) { closeJournal(); return; }
+    if (curKey !== 'home') goPage('home');
+  });
   window.addEventListener('popstate', function () { applyState(keyFromHash()); });
 
   // --- pointer (drag to rotate; tap a labeled node to open) ---
@@ -275,13 +285,13 @@
     ctx.lineWidth = 1;
     for (var i = 0; i < BGEDGES.length; i++) {
       var fa = fsp[BGEDGES[i][0]], fb = fsp[BGEDGES[i][1]], fn = 1 - ((fa.z + fb.z) / 2 + 3.2) / 6.4;
-      ctx.strokeStyle = 'rgba(124,132,124,' + (0.02 + fn * 0.04).toFixed(3) + ')';
+      ctx.strokeStyle = 'rgba(133,148,133,' + (0.05 + fn * 0.09).toFixed(3) + ')';
       ctx.beginPath(); ctx.moveTo(fa.x, fa.y); ctx.lineTo(fb.x, fb.y); ctx.stroke();
     }
     for (var i = 0; i < fsp.length; i++) {
       var fn = 1 - (fsp[i].z + 3.2) / 6.4; if (fn < 0) fn = 0;
-      ctx.fillStyle = 'rgba(143,175,120,' + (0.04 + fn * 0.13).toFixed(3) + ')';
-      ctx.beginPath(); ctx.arc(fsp[i].x, fsp[i].y, 0.8 + fn * 1.3, 0, 7); ctx.fill();
+      ctx.fillStyle = 'rgba(143,175,120,' + (0.08 + fn * 0.2).toFixed(3) + ')';
+      ctx.beginPath(); ctx.arc(fsp[i].x, fsp[i].y, 0.9 + fn * 1.5, 0, 7); ctx.fill();
     }
 
     // project cluster
@@ -363,6 +373,7 @@
   function start() {
     resize();
     applyState(keyFromHash()); // honor deep-link, e.g. #goodies
+    if (location.hash === '#journal') openJournal();
     if (reduced) { morphT = 1; draw(); requestAnimationFrame(frame); return; }
     requestAnimationFrame(frame);
   }

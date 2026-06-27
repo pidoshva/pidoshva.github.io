@@ -12,7 +12,7 @@
   <link rel="icon" type="image/png" href="/images/favicon.ico">
   <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css?v=19">
+  <link rel="stylesheet" href="/css/styles.css?v=20">
   <link rel="stylesheet" href="/lib/hljs/atom-one-dark.min.css">
 </head>
 <body class="spatial">
@@ -23,9 +23,14 @@
   <div class="hud-top">
     <a href="/" class="brand">geleus</a>
     <nav class="hud-nav" aria-label="Primary">
-      <button data-node="home">home</button><button data-node="about">about</button><button data-node="goodies">goodies</button><button data-node="blog">blog</button><button data-node="journal">journal</button><button data-node="contributions">contributions</button><button data-node="resume">resume ↗</button>
+      <button data-node="home">home</button><button data-node="about">about</button><button data-node="goodies">goodies</button><button data-node="blog">blog</button><button data-node="resume">resume ↗</button>
     </nav>
   </div>
+
+  <!-- Top-centre arrow: opens the full-screen journal -->
+  <button class="journal-trigger" id="journalTrigger" aria-label="Open journal" aria-expanded="false">
+    <span>journal</span><i class="fas fa-chevron-down"></i>
+  </button>
 
   <div class="hud-corner" id="readout" aria-hidden="true">
     cluster&nbsp; <b id="rNodes">—</b> nodes · <b id="rEdges">—</b> links<br>
@@ -77,28 +82,29 @@
       <div id="blog-post-view" hidden></div>
     </section>
 
-    <section class="drawer-page" data-page="journal" hidden>
-      <div class="drawer-head">
+  </aside>
+
+  <!-- Full-screen journal: tree timeline + contributions at the bottom, blurred backdrop -->
+  <div class="journal-overlay" id="journalOverlay" aria-hidden="true" role="dialog" aria-label="Journal">
+    <button class="journal-close" id="journalClose" aria-label="Close journal"><i class="fas fa-chevron-up"></i></button>
+    <div class="journal-overlay-inner">
+      <div class="journal-head">
         <div class="ptag">weekly summary</div>
         <h2>Journal</h2>
-        <p class="drawer-sub">An auto-generated timeline of the week's work.</p>
+        <p class="journal-sub">An auto-generated timeline of the week's work.</p>
       </div>
       <div id="summary-root"></div>
-    </section>
-
-    <section class="drawer-page" data-page="contributions" hidden>
-      <div class="drawer-head">
+      <div class="journal-contrib">
         <div class="ptag">last 12 months</div>
-        <h2>Contributions</h2>
+        <h3>Contributions</h3>
+        <div id="contrib-root"><div class="contrib-loading">Loading contributions...</div></div>
       </div>
-      <div id="contrib-root"><div class="contrib-loading">Loading contributions...</div></div>
-    </section>
-
-  </aside>
+    </div>
+  </div>
 
   <div class="contrib-tooltip" id="contrib-tooltip"></div>
 
-  <script src="/js/spatial.js?v=2"></script>
+  <script src="/js/spatial.js?v=3"></script>
   <script src="/js/lang-colors.js"></script>
   <script src="/lib/marked/marked.min.js"></script>
   <script src="/lib/hljs/highlight.min.js"></script>
