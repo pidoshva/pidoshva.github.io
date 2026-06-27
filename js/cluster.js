@@ -107,6 +107,8 @@
     return p;
   })();
   var BGEDGES = knn(BGFIELD, 1);
+  var bgEdgeSet = {};
+  for (var bei = 0; bei < BGEDGES.length; bei++) bgEdgeSet[BGEDGES[bei][0] + '_' + BGEDGES[bei][1]] = 1;
 
   function rotP(p, yaw, pitch) {
     var c = Math.cos(yaw), s = Math.sin(yaw), x1 = p.x * c - p.z * s, z1 = p.x * s + p.z * c;
@@ -169,10 +171,21 @@
   // --- Short-circuit arcs between unconnected nodes that drift close ---
   var edgeSet = {};
   for (var ei = 0; ei < edges.length; ei++) edgeSet[edges[ei][0] + '_' + edges[ei][1]] = 1;
-  var sparks = [];                       // active arcs: { a, b, life, seed }
-  var sparkCD = 0.8;                     // seconds until the next arc may fire
-  var SPARK_MAX = isHome ? 3 : 2;        // how many can crackle at once
   var SPARK_DUR = 0.36;                  // lifetime of one arc (s)
+  // independent arc state per layer: the foreground cluster and the drifting
+  // background dot-field both spark between their own unconnected-but-close nodes
+  var clusterSpk = { sparks: [], cd: 0.8, max: isHome ? 3 : 2 };
+  var fieldSpk = { sparks: [], cd: 1.1, max: 3 };
+
+  function avgEdgeLen(pts, edgesArr) {
+    if (!edgesArr.length) return 0;
+    var s = 0;
+    for (var i = 0; i < edgesArr.length; i++) {
+      var A = pts[edgesArr[i][0]], B = pts[edgesArr[i][1]];
+      s += Math.sqrt((A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y));
+    }
+    return s / edgesArr.length;
+  }
 
   function drawSpark(A, B, spk) {
     var p = spk.life / SPARK_DUR;                 // 0..1 through its life
@@ -201,6 +214,35 @@
     ctx.fillStyle = 'rgba(150,205,255,' + (0.75 * env).toFixed(3) + ')';
     ctx.beginPath(); ctx.arc(A.x, A.y, fr, 0, 7); ctx.fill();
     ctx.beginPath(); ctx.arc(B.x, B.y, fr, 0, 7); ctx.fill();
+  }
+
+  // Spark engine for one layer: fire an arc between the closest pair of on-screen,
+  // UNCONNECTED nodes that have drifted within `lim` pixels of each other.
+  // `pts` are projected {x,y}, `eSet` flags existing links, `st` holds this layer's
+  // { sparks, cd, max }. Runs every frame; spawns are throttled by st.cd.
+  function stepSparks(pts, eSet, st, lim) {
+    st.cd -= 0.016;
+    if (st.cd <= 0 && st.sparks.length < st.max) {
+      var bestD = lim * lim, ba = -1, bb = -1, n = pts.length, m = 48;
+      for (var a = 0; a < n; a++) {
+        var PA = pts[a];
+        if (PA.x < -m || PA.x > W + m || PA.y < -m || PA.y > H + m) continue;   // visible only
+        for (var b = a + 1; b < n; b++) {
+          if (eSet[a + '_' + b]) continue;                                       // skip linked pairs
+          var PB = pts[b];
+          if (PB.x < -m || PB.x > W + m || PB.y < -m || PB.y > H + m) continue;
+          var qx = PA.x - PB.x, qy = PA.y - PB.y, qd = qx * qx + qy * qy;
+          if (qd < bestD) { bestD = qd; ba = a; bb = b; }
+        }
+      }
+      if (ba >= 0) { st.sparks.push({ a: ba, b: bb, life: 0, seed: rand(T + ba * 1.3 + bb * 2.1) * 1000 }); st.cd = 0.45 + rand(T * 3.1) * 1.3; }
+      else st.cd = 0.2;                          // nothing close — retry soon
+    }
+    for (var si = st.sparks.length - 1; si >= 0; si--) {
+      st.sparks[si].life += 0.016;
+      if (st.sparks[si].life >= SPARK_DUR) { st.sparks.splice(si, 1); continue; }
+      drawSpark(pts[st.sparks[si].a], pts[st.sparks[si].b], st.sparks[si]);
+    }
   }
 
   function draw() {
@@ -239,6 +281,9 @@
       ctx.fillStyle = 'rgba(143,175,120,' + (0.04 + fn * 0.13).toFixed(3) + ')';
       ctx.beginPath(); ctx.arc(fsp[i].x, fsp[i].y, 0.8 + fn * 1.3, 0, 7); ctx.fill();
     }
+
+    // short-circuit arcs between drifting background dots that fly close
+    if (!prefersReduced) stepSparks(fsp, bgEdgeSet, fieldSpk, Math.min(W, H) * 0.22);
 
     // project the cluster
     var sp = new Array(N);
@@ -279,40 +324,8 @@
       ctx.beginPath(); ctx.arc(P.x, P.y, r, 0, 7); ctx.fill();
     }
 
-    // short-circuit arcs: fire between unconnected nodes that drift close on screen
-    if (!prefersReduced) {
-      sparkCD -= 0.016;
-      if (sparkCD <= 0 && sparks.length < SPARK_MAX) {
-        // proximity threshold adapts to the shape: ~1.5x a typical drawn link, so
-        // "passing close" works whether the cluster is dense (home) or sparse
-        // (lattice/wave/knot), at any viewport scale.
-        var avg = 0;
-        for (var le = 0; le < edges.length; le++) {
-          var LA = sp[edges[le][0]], LB = sp[edges[le][1]];
-          avg += Math.sqrt((LA.x - LB.x) * (LA.x - LB.x) + (LA.y - LB.y) * (LA.y - LB.y));
-        }
-        avg = edges.length ? avg / edges.length : scale * 0.3;
-        var bestD = (avg * 1.5) * (avg * 1.5), ba = -1, bb = -1;
-        for (var a = 0; a < N; a++) {
-          for (var b = a + 1; b < N; b++) {
-            if (edgeSet[a + '_' + b]) continue;                            // skip linked pairs
-            var qx = sp[a].x - sp[b].x, qy = sp[a].y - sp[b].y, qd = qx * qx + qy * qy;
-            if (qd < bestD) { bestD = qd; ba = a; bb = b; }
-          }
-        }
-        if (ba >= 0) {
-          sparks.push({ a: ba, b: bb, life: 0, seed: rand(T + ba * 1.3 + bb * 2.1) * 1000 });
-          sparkCD = 0.45 + rand(T * 3.1) * 1.3;   // breathe between arcs
-        } else {
-          sparkCD = 0.2;                           // nothing close — retry soon
-        }
-      }
-      for (var si = sparks.length - 1; si >= 0; si--) {
-        sparks[si].life += 0.016;
-        if (sparks[si].life >= SPARK_DUR) { sparks.splice(si, 1); continue; }
-        drawSpark(sp[sparks[si].a], sp[sparks[si].b], sparks[si]);
-      }
-    }
+    // short-circuit arcs between unconnected cluster nodes that drift close
+    if (!prefersReduced) stepSparks(sp, edgeSet, clusterSpk, Math.max(avgEdgeLen(sp, edges) * 1.5, scale * 0.18));
   }
 
   function frame() {
