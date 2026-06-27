@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "slug": "a-homepage-that-reshapes-itself",
+      "title": "A Homepage That Reshapes Itself",
+      "date": "2026-06-26",
+      "excerpt": "I rebuilt this site as a single cluster of nodes that morphs into a different shape for every section — no framework, no build step, just vanilla JS and a hand-rolled 3D scene on a 2D canvas. A short note on the idea and the tech behind it (without spilling every detail).",
+      "tags": ["design", "canvas", "vanilla-js", "ui"],
+      "draft": false
+    },
+    {
       "slug": "automating-store-onboarding",
       "title": "Turning a 30-Minute Chore into One Command",
       "date": "2026-05-29",
