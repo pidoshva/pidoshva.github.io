@@ -1,45 +1,45 @@
-so i rebuilt this site.
+So I rebuilt this site.
 
-the homepage isn't a page now. it's a cloud of dots in the dark that reshuffles based on where you're going.
+The homepage isn't a page now. It's a cloud of dots in the dark that reshuffles based on where you're going.
 
-go to goodies, they lock into a grid. go to the blog, they sag into a wave. open the journal and they back off and go quiet while the words take over.
+Go to goodies, they lock into a grid. Go to the blog, they sag into a wave. Open the journal and they back off and go quiet while the words take over.
 
-same dots every time. they just keep finding new arrangements.
+Same dots every time. They just keep finding new arrangements.
 
 ---
 
-## why
+## Why
 
-the old homepage was tasteful and dead. dark, tidy, said the right things, did nothing.
+The old homepage was tasteful and dead. Dark, tidy, said the right things, did nothing.
 
-odd look for a page whose entire job is "this person builds stuff."
+Odd look for a page whose entire job is "this person builds stuff."
 
-so i quit describing the work and let the page be the work. you land, grab a dot, and you're already inside the kind of thing i make.
+So I quit describing the work and let the page be the work. You land, grab a dot, and you're already inside the kind of thing I make.
 
-## the idea
+## The idea
 
-one cluster. it never grows or shrinks. it rearranges.
+One cluster. It never grows or shrinks. It rearranges.
 
-about, goodies, the blog, the journal — each is a dot in the same small universe. tap one, the camera leans in, the dots pour into a new formation, the content shows up. no reloads, no cuts. you don't leave a page, you just move the furniture around.
+About, goodies, the blog, the journal — each is a dot in the same small universe. Tap one, the camera leans in, the dots pour into a new formation, the content shows up. No reloads, no cuts. You don't leave a page, you just move the furniture around.
 
-the itch came from bgstaal's [multipleWindow3dScene](https://github.com/bgstaal/multipleWindow3dScene) — a site as a space you walk through, not a pile of links. mine walks somewhere else, but that's where it started.
+The itch came from bgstaal's [multipleWindow3dScene](https://github.com/bgstaal/multipleWindow3dScene) — a site as a space you walk through, not a pile of links. Mine walks somewhere else, but that's where it started.
 
-## the tech
+## The tech
 
-one rule i wouldn't break: no framework, no build step. hand-written html, css, and js, dropped on github pages and left alone. same as everything here.
+One rule I wouldn't break: no framework, no build step. Hand-written HTML, CSS, and JS, dropped on GitHub Pages and left alone. Same as everything here.
 
-the parts worth saying out loud:
+The parts worth saying out loud:
 
-- the 3d is a lie. flat canvas, a pinch of trig, no engine. a few dozen dots faking depth.
-- one shape system, not seven scenes. the dots are fixed. a "shape" is just a list of where each one belongs, so a morph reads as one object folding itself instead of a swap.
-- sparks run along the wires and a fainter swarm drifts far behind. two cheap tricks, but they're the gap between "org chart" and "oh."
-- the reading is plain html under the spectacle. posts and the journal swing open in a big blurred panel. real text, real links, nothing a crawler has to squint at.
-- the dull old pages still sit underneath all of it. if the clever layer ever trips, nothing you'd bookmark falls with it.
+- The 3D is a lie. Flat canvas, a pinch of trig, no engine. A few dozen dots faking depth.
+- One shape system, not seven scenes. The dots are fixed. A "shape" is just a list of where each one belongs, so a morph reads as one object folding itself instead of a swap.
+- Sparks run along the wires and a fainter swarm drifts far behind. Two cheap tricks, but they're the gap between "org chart" and "oh."
+- The reading is plain HTML under the spectacle. Posts and the journal swing open in a big blurred panel. Real text, real links, nothing a crawler has to squint at.
+- The dull old pages still sit underneath all of it. If the clever layer ever trips, nothing you'd bookmark falls with it.
 
-## what stays mine
+## What stays mine
 
-the projection math. how a label clings to its dot through a morph. the easing curves. the multi-window trick that's still half-built on my laptop. none of that makes the cut here.
+The projection math. How a label clings to its dot through a morph. The easing curves. The multi-window trick that's still half-built on my laptop. None of that makes the cut here.
 
-it's all client-side anyway. you know where view source is.
+It's all client-side anyway. You know where view source is.
 
-mostly i wanted proof that a personal site can be a toy you keep poking at, not a chore you renew once a year. the limits — no build, no libraries, one browser — weren't in the way. they were the point.
+Mostly I wanted proof that a personal site can be a toy you keep poking at, not a chore you renew once a year. The limits — no build, no libraries, one browser — weren't in the way. They were the point.
