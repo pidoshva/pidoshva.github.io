@@ -1,6 +1,196 @@
 {
   "summaries": [
     {
+      "week_start": "2026-06-22",
+      "week_end": "2026-06-27",
+      "generated": "2026-06-27T07:50:28.610549+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 97 commits across 8 repos, including cinematic loading screens & AI trip assistant for vacaish, portfolio lightning effects, and monolog service fixes. Reviewed 9 team PRs spanning auth, refunds, and websocket features.",
+      "highlights": [
+        "vacaish: Implemented cinematic water-ripple loading transition, AI trip-planning assistant (V), and architecture documentation sync",
+        "pidoshva.github.io: Built animated lightning-bolt effects with cross-layer arcs, journal authorship distinction, and node-animation math spec",
+        "monolog (OrderProtection): Shipped coverage badge for published widgets, graceful Shopify scope degradation, and per-claim communication suppression",
+        "pi-setup: Added Claude mode cycling, compatibility setup, and inline review comment style documentation",
+        "gifify: Hardened install and runtime for production deployment",
+        "Reviewed monolog (OrderProtection): 6 PRs including websocket tokens, auth requirements, bundle renaming, and refund handling",
+        "Reviewed documentation (OrderProtection): OpenAPI schema alignment with Joi validation",
+        "cart-widget (OrderProtection): Fixed UK shipping-address exclusion logic gating"
+      ],
+      "repos": [
+        "cart-widget",
+        "documentation",
+        "gifify",
+        "monolog",
+        "pi-setup",
+        "pidoshva.github.io",
+        "run-it-back",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "Harden install and runtime for production use",
+          "repo": "gifify",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): published-widget coverage badge on brand details",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(merchant-svc): degrade gracefully when Shopify scope lookup fails",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(checkout-widget): remove leftover conflicting UK IP blocking logic",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(dispatch-svc): auto-create CE + cart deployments on brand onboarding",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-5676] feat: per-claim suppress all customer communication",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix: opt in setting naming patch",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "docs: document third-party / app-rendered cart drawers in /imp skill",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Live workout ring around user avatars",
+          "repo": "run-it-back",
+          "org": "cambrannelly",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Hub-centered navigation + Profile/Gallery refinements",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-5690] feat(websockets): server-mint Ably realtime tokens",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5669] fix(auth): require auth on internal endpoints",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(claims-svc): resolve real variant id for bundle component reships",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(orders-svc): rename product_bundle to product_relationship with kind enum",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5646] feat(orders-svc): handle Refundid instant refunds",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5596] fix(claims-svc): send claim messages to updated email",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix: align offline claim OpenAPI schema with Joi validation",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix: update jargon",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(billing-svc): granular rev-share for reimbursement payout models",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "run-it-back": "cambrannelly",
+        "documentation": "OrderProtection"
+      },
+      "repo_languages": {
+        "pidoshva.github.io": "JavaScript",
+        "gifify": "Shell",
+        "vacaish": "JavaScript",
+        "monolog": "TypeScript",
+        "pi-setup": "Python",
+        "cart-widget": "TypeScript",
+        "run-it-back": "TypeScript",
+        "documentation": "MDX"
+      },
+      "languages": [
+        "JavaScript",
+        "MDX",
+        "Python",
+        "Shell",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 97,
+        "prs": 10,
+        "repos_active": 8
+      }
+    },
+    {
       "week_start": "2026-06-15",
       "week_end": "2026-06-20",
       "generated": "2026-06-20T08:21:58.983893+00:00",
