@@ -897,16 +897,18 @@ body.spatial .summary-section { padding: 0; }
 
 /* Spatial app — on small screens drop the nav onto its own full-width line
    under the brand so all items fit without clipping */
-@media (max-width: 560px) {
-  .hud-top { padding: 1.1rem 1rem; }
-  .hud-nav { gap: 0.6rem; }
-  .hud-nav button { font-size: 0.72rem; }
-  .hud-nav button::before { display: none; } /* drop dots so all 5 fit one line */
+@media (max-width: 640px) {
+  /* brand on its own line; nav wraps full-width below it (fits 7 items) */
+  .hud-top { display: block; padding: 1.1rem 1rem; }
+  .hud-top .brand { display: inline-block; }
+  .hud-nav { justify-content: flex-start; flex-wrap: wrap; gap: 0.45rem 1rem; margin-top: 0.6rem; }
+  .hud-nav button { font-size: 0.74rem; }
+  .hud-nav button::before { display: none; } /* drop dots to save width */
   body.spatial .hero-id { padding: 1.25rem 1rem; max-width: 100%; }
   body.spatial .hero-id .role-line { max-width: 100%; }
   body.spatial .panel { padding: 1.2rem 1.15rem 2rem; }
 }
 @media (max-width: 360px) {
-  .hud-nav { gap: 0.5rem; }
-  .hud-nav button { font-size: 0.68rem; }
+  .hud-nav { gap: 0.4rem 0.85rem; }
+  .hud-nav button { font-size: 0.7rem; }
 }
