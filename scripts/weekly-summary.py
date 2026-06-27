@@ -107,7 +107,12 @@ def fetch_repo_commits(full_name: str, since: str, until: str) -> list[dict]:
 
 
 def fetch_user_prs(since: str) -> list[dict]:
-    """Fetch all PRs the user authored or was involved in."""
+    """Fetch all PRs the user authored or was involved in.
+
+    The `involves:` query surfaces PRs the user only reviewed/commented on
+    alongside ones they authored, so the role is resolved later from the PR
+    author login (see gather_activity) — never assume involvement == authorship.
+    """
     seen = {}
     for query_type in ["author", "involves"]:
         query = f"{query_type}:{USERNAME} updated:>={since} type:pr"
@@ -192,12 +197,17 @@ def gather_activity(week_start: str, week_end: str) -> dict:
         pr_org = repo_url.split("/")[-2] if repo_url else ""
         merged = bool(p.get("pull_request", {}).get("merged_at"))
         state = "merged" if merged else p.get("state", "open")
+        # "author" = the user wrote this PR; "reviewer" = they only reviewed/
+        # commented on someone else's PR (surfaced via the involves: query).
+        author_login = (p.get("user") or {}).get("login", "")
+        role = "author" if author_login == USERNAME else "reviewer"
         pr_details.append({
             "title": p.get("title", ""),
             "repo": pr_repo,
             "org": pr_org if pr_org != USERNAME else "",
             "state": state,
             "number": p.get("number", 0),
+            "role": role,
         })
 
         # Add repo to repo_data if not already there (PR-only repos)
@@ -217,8 +227,11 @@ def gather_activity(week_start: str, week_end: str) -> dict:
                 "full_name": full_name,
             }
 
-    prs_opened = len([p for p in pr_details if p["state"] == "open"])
-    prs_merged = len([p for p in pr_details if p["state"] == "merged"])
+    # PR stats reflect the user's OWN work — count only PRs they authored.
+    authored_prs = [p for p in pr_details if p["role"] == "author"]
+    prs_opened = len([p for p in authored_prs if p["state"] == "open"])
+    prs_merged = len([p for p in authored_prs if p["state"] == "merged"])
+    prs_reviewed = len([p for p in pr_details if p["role"] == "reviewer"])
 
     languages = set()
     all_messages = []
@@ -235,6 +248,7 @@ def gather_activity(week_start: str, week_end: str) -> dict:
         "pr_details": pr_details,
         "prs_opened": prs_opened,
         "prs_merged": prs_merged,
+        "prs_reviewed": prs_reviewed,
         "issues": len(issues),
         "languages": sorted(languages),
     }
@@ -265,32 +279,47 @@ def generate_summary(activity: dict, notes: str, week_start: str, week_end: str)
         msgs = "; ".join(rd["messages"][:8]) if rd["messages"] else "no direct commits"
         repo_lines.append(f"  - {name}{org_label} ({lang}, {rd['commits']} commits): {msgs}")
 
-    pr_lines = []
+    authored_pr_lines = []
+    reviewed_pr_lines = []
     for pr in activity.get("pr_details", []):
         org_prefix = f"{pr['org']}/" if pr["org"] else ""
-        pr_lines.append(f"  - [{pr['state']}] {org_prefix}{pr['repo']}#{pr['number']}: {pr['title']}")
+        line = f"  - [{pr['state']}] {org_prefix}{pr['repo']}#{pr['number']}: {pr['title']}"
+        if pr.get("role") == "reviewer":
+            reviewed_pr_lines.append(line)
+        else:
+            authored_pr_lines.append(line)
 
     prompt = f"""You are summarizing a developer's weekly GitHub activity for their portfolio website.
 
 Activity for {week_start} to {week_end}:
 - Total commits: {activity['commit_count']}
 - Repos active: {', '.join(activity['repos']) or 'none'}
-- Per-repo breakdown:
+- Per-repo direct commits (code the developer personally wrote and pushed):
 {chr(10).join(repo_lines) or '  (none)'}
-- Pull requests:
-{chr(10).join(pr_lines) or '  (none)'}
+- Pull requests the developer AUTHORED (their own features/fixes):
+{chr(10).join(authored_pr_lines) or '  (none)'}
+- Pull requests the developer ONLY REVIEWED (someone else wrote these — the developer commented on or approved them, but did NOT write the code):
+{chr(10).join(reviewed_pr_lines) or '  (none)'}
 - Languages: {', '.join(activity['languages']) or 'none'}
 - Issues created: {activity['issues']}
 {"- Personal notes: " + notes if notes else ""}
 
 Return a JSON object with exactly these fields:
-- "summary": A 2-3 sentence summary (max 280 chars) of the week's work. Mention specific repos, organizations, technologies, and what was accomplished. Example: "Shipped warranty validation fixes across OrderProtection/monolog (TypeScript). Updated personal portfolio with automated weekly summaries. Reviewed cart-widget feature PRs."
-- "highlights": An array of 5-8 bullet points (each max 120 chars). IMPORTANT:
-  - Start each highlight with the repo name followed by a colon (e.g. "monolog: ...")
-  - Be specific: mention actual features, bug fixes, or changes based on commit messages and PR titles
-  - Include work from ALL repos listed above, including repos with PRs but no direct commits (the developer reviewed or contributed to those PRs)
-  - Group related commits/PRs per repo but create multiple highlights if a repo had diverse work
-  - Mention the organization name for org repos (e.g. "cart-widget (OrderProtection): reviewed customizable info modal PR")
+- "summary": A 2-3 sentence summary (max 280 chars) of the week's work. Mention specific repos, organizations, technologies, and what was accomplished. Keep authored work and reviewed work clearly separate. Example: "Shipped warranty validation fixes across OrderProtection/monolog (TypeScript) and updated the personal portfolio. Reviewed cart-widget feature PRs from teammates."
+- "highlights": An array of 5-8 bullet points (each max 120 chars).
+
+CRITICAL — be precise about authorship. The first verb of each highlight signals who did the work, so choose it correctly:
+  - For DIRECT COMMITS and PRs the developer AUTHORED, use authorship verbs: "Shipped", "Implemented", "Built", "Added", "Created", "Fixed", "Refactored", "Optimized".
+  - For PRs the developer ONLY REVIEWED, start the highlight with "Reviewed" (e.g. "cart-widget (OrderProtection): Reviewed customizable info modal PR"). NEVER describe a reviewed PR with an authorship verb — the developer did not write that code.
+  - Do NOT blend authored work and reviewed work into the same bullet.
+  - Only credit the developer with implementing/shipping something if it appears under "direct commits" or "PRs the developer AUTHORED" above. If it only appears under "ONLY REVIEWED", it is review work.
+
+Formatting:
+  - Start each highlight with the repo name followed by a colon (e.g. "monolog: ...").
+  - Be specific: name actual features, bug fixes, or changes based on commit messages and PR titles.
+  - Cover both authored and reviewed work, but keep them in separate bullets.
+  - Group related commits/PRs per repo; create multiple highlights if a repo had diverse work.
+  - Mention the organization name for org repos (e.g. "cart-widget (OrderProtection): ...").
 
 Return ONLY valid JSON, no markdown fencing."""
 
@@ -347,6 +376,7 @@ def build_entry(activity: dict, result: dict, week_start: str, week_end: str) ->
                 "repo": pr["repo"],
                 "org": pr["org"],
                 "state": pr["state"],
+                "role": pr.get("role", "author"),
             }
             for pr in activity.get("pr_details", [])
         ],
