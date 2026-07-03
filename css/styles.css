@@ -824,7 +824,7 @@ footer a:hover { color: var(--moss); }
    Full-viewport interactive cluster + content drawer.
    Scoped to body.spatial so the fallback pages are untouched.
    ============================================ */
-body.spatial { height: 100vh; min-height: 0; overflow: hidden; display: block; }
+body.spatial { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; display: block; }
 body.spatial #spatialCanvas {
   position: fixed; inset: 0; width: 100%; height: 100%;
   display: block; z-index: 0; cursor: grab; touch-action: none; background: #0f1110;
@@ -834,6 +834,7 @@ body.spatial #spatialCanvas:active { cursor: grabbing; }
 /* HUD: brand + nav */
 .hud-top {
   position: fixed; top: 0; left: 0; right: 0; padding: 1.5rem;
+  padding: calc(1.5rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) 1.5rem calc(1.5rem + env(safe-area-inset-left));
   display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
   flex-wrap: wrap; z-index: 20; font-family: var(--font-mono); pointer-events: none;
 }
@@ -849,10 +850,14 @@ body.spatial #spatialCanvas:active { cursor: grabbing; }
 
 .hud-corner { position: fixed; top: 4.1rem; right: 1.5rem; text-align: right; font-family: var(--font-mono); font-size: 0.66rem; color: var(--text-faint); letter-spacing: 0.08em; line-height: 1.9; z-index: 20; pointer-events: none; }
 .hud-corner b { color: var(--moss); font-weight: 400; }
-@media (max-width: 720px) { .hud-corner { display: none; } }
+@media (max-width: 760px) { .hud-corner { display: none; } } /* matches the block-HUD breakpoint below */
 
 /* Identity block (bottom-left) */
-body.spatial .hero-id { position: fixed; left: 0; bottom: 0; padding: 1.5rem; max-width: min(620px, 100%); z-index: 20; pointer-events: none; }
+body.spatial .hero-id {
+  position: fixed; left: 0; bottom: 0; padding: 1.5rem;
+  padding: 1.5rem calc(1.5rem + env(safe-area-inset-right)) calc(1.5rem + env(safe-area-inset-bottom)) calc(1.5rem + env(safe-area-inset-left));
+  max-width: min(620px, 100%); z-index: 20; pointer-events: none;
+}
 body.spatial .hero-id .role-line { overflow-wrap: anywhere; }
 body.spatial .hero-id .ident { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--moss); margin-bottom: 0.7rem; }
 body.spatial .hero-id h1 { font-size: clamp(1.5rem, 3.6vw, 2.2rem); line-height: 1.1; margin: 0 0 0.5rem; font-weight: 300; letter-spacing: 0.01em; color: var(--text); }
@@ -865,7 +870,9 @@ body.spatial .panel {
   background: rgba(20, 22, 21, 0.9);
   backdrop-filter: saturate(140%) blur(16px); -webkit-backdrop-filter: saturate(140%) blur(16px);
   border-left: 1px solid var(--border-2);
-  padding: 1.3rem 1.6rem 2.5rem; overflow-y: auto;
+  padding: 1.3rem 1.6rem 2.5rem;
+  padding: calc(1.3rem + env(safe-area-inset-top)) calc(1.6rem + env(safe-area-inset-right)) calc(2.5rem + env(safe-area-inset-bottom)) 1.6rem;
+  overflow-y: auto;
   transform: translateX(100%); opacity: 0;
   transition: transform 0.55s cubic-bezier(.22,1,.36,1), opacity 0.35s; z-index: 30;
 }
@@ -897,7 +904,7 @@ body.spatial .summary-section { padding: 0; }
 
 /* Top-centre arrow → full-screen journal */
 .journal-trigger {
-  position: fixed; top: 1rem; left: 50%; transform: translateX(-50%);
+  position: fixed; top: 1rem; top: calc(1rem + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
   z-index: 25; display: inline-flex; align-items: center; gap: 0.45rem;
   font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--text-dim); background: rgba(20, 22, 21, 0.6); border: 1px solid var(--border-2);
@@ -918,9 +925,12 @@ body.spatial .summary-section { padding: 0; }
   transition: opacity 0.4s ease, transform 0.45s cubic-bezier(.22,1,.36,1);
 }
 .journal-overlay.open { opacity: 1; transform: none; pointer-events: auto; }
-.journal-overlay-inner { max-width: 760px; margin: 0 auto; padding: 5rem 1.5rem 4rem; }
+.journal-overlay-inner {
+  max-width: 760px; margin: 0 auto; padding: 5rem 1.5rem 4rem;
+  padding: calc(5rem + env(safe-area-inset-top)) calc(1.5rem + env(safe-area-inset-right)) calc(4rem + env(safe-area-inset-bottom)) calc(1.5rem + env(safe-area-inset-left));
+}
 .journal-close {
-  position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 41;
+  position: fixed; top: 1rem; top: calc(1rem + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 41;
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 0.9rem; color: var(--moss); background: rgba(20, 22, 21, 0.7); border: 1px solid var(--border-2);
   border-radius: 999px; width: 2.2rem; height: 2.2rem; cursor: pointer; transition: color 0.2s, border-color 0.2s;
@@ -936,21 +946,34 @@ body.spatial .summary-section { padding: 0; }
 #postOverlay .post-article { max-width: 100%; padding-top: 0; }
 #postOverlay .post-header h1 { font-size: clamp(1.6rem, 4vw, 2.1rem); }
 @media (prefers-reduced-motion: reduce) { .journal-overlay { transition: opacity 0.2s ease; } .journal-trigger i { animation: none; } }
-@media (max-width: 560px) { .journal-overlay-inner { padding: 4.5rem 1.1rem 3rem; } }
+@media (max-width: 560px) {
+  .journal-overlay-inner {
+    padding: 4.5rem 1.1rem 3rem;
+    padding: calc(4.5rem + env(safe-area-inset-top)) calc(1.1rem + env(safe-area-inset-right)) calc(3rem + env(safe-area-inset-bottom)) calc(1.1rem + env(safe-area-inset-left));
+  }
+}
 
 /* Spatial app — on small screens drop the nav onto its own full-width line
-   under the brand so all items fit without clipping */
-@media (max-width: 640px) {
-  /* brand on its own line; nav wraps full-width below it (fits 7 items) */
-  .hud-top { display: block; padding: 1.1rem 1rem; }
+   under the brand so all items fit without clipping. 760px matches the JS
+   drawer-shift breakpoint (spatial.js: W > 760) and keeps the centred journal
+   pill from ever colliding with the right-aligned nav (it would at ≤ ~740px). */
+@media (max-width: 760px) {
+  /* brand on its own line; nav wraps full-width below it */
+  .hud-top { display: block; padding: 1.1rem 1rem; padding: calc(1.1rem + env(safe-area-inset-top)) calc(1rem + env(safe-area-inset-right)) 1.1rem calc(1rem + env(safe-area-inset-left)); }
   .hud-top .brand { display: inline-block; }
   .hud-nav { justify-content: flex-start; flex-wrap: wrap; gap: 0.45rem 1rem; margin-top: 0.6rem; }
-  .hud-nav button { font-size: 0.74rem; }
+  .hud-nav button { font-size: 0.74rem; padding: 0.3rem 0; } /* taller tap targets */
   .hud-nav button::before { display: none; } /* drop dots to save width */
-  body.spatial .hero-id { padding: 1.25rem 1rem; max-width: 100%; }
+  /* journal pill rides the brand line, pinned top-right — clear of brand and nav */
+  .journal-trigger {
+    left: auto; transform: none;
+    top: 0.95rem; top: calc(0.95rem + env(safe-area-inset-top));
+    right: 1rem; right: calc(1rem + env(safe-area-inset-right));
+  }
+  body.spatial .hero-id { padding: 1.25rem 1rem; padding: 1.25rem calc(1rem + env(safe-area-inset-right)) calc(1.25rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left)); max-width: 100%; }
   body.spatial .hero-id .role-line { max-width: 100%; }
   /* mobile: drawer opens full-width but more translucent so the cluster shows through */
-  body.spatial .panel { padding: 1.2rem 1.15rem 2rem; width: 100%; background: rgba(16, 18, 17, 0.58); }
+  body.spatial .panel { padding: 1.2rem 1.15rem 2rem; padding: calc(1.2rem + env(safe-area-inset-top)) calc(1.15rem + env(safe-area-inset-right)) calc(2rem + env(safe-area-inset-bottom)) calc(1.15rem + env(safe-area-inset-left)); width: 100%; background: rgba(16, 18, 17, 0.58); }
 }
 @media (max-width: 360px) {
   .hud-nav { gap: 0.4rem 0.85rem; }
