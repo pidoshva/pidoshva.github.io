@@ -1,6 +1,315 @@
 {
   "summaries": [
     {
+      "week_start": "2026-06-29",
+      "week_end": "2026-07-04",
+      "generated": "2026-07-04T07:47:23.364870+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 82 commits across 6 repos: major iOS game-swap UX overhaul in vacaish, checkout widget opt-out fixes in cart-widget (OrderProtection), dispatch service & valet refinements in monolog (OrderProtection), and workout editor improvements in run-it-back. Reviewed 12 PRs including auth guard & Kafka context handling in monolog.",
+      "highlights": [
+        "vacaish: Shipped game photo reload fix, corner-thumbnail zoom interaction, and 49 commits of iOS app polish including skill deduplication and AI session refactoring.",
+        "cart-widget (OrderProtection): Fixed checkout widget opt-out preference persistence, external line removal handling, and toggle responsiveness across 6 commits.",
+        "monolog (OrderProtection): Implemented store cache invalidation on status transitions, mobile alignment fixes across valet pages, and dispatch service onboarding queue inlining.",
+        "run-it-back: Fixed feed refresh on workout edits, duration input format (mm:ss), cardio stat labeling, and title edit persistence.",
+        "pidoshva.github.io: Updated homepage branding with new favicon, tab title, and mobile-safe journal pill positioning.",
+        "monolog (OrderProtection): Reviewed auth guard tenant-scoping (5 services), Kafka/RPC context handling, PAT external API integration, and claims service refactoring PRs.",
+        "monolog (OrderProtection): Reviewed bundle component claims resolution, ProductVariant table retirement, and Ably realtime token minting features."
+      ],
+      "repos": [
+        "cart-widget",
+        "documentation",
+        "monolog",
+        "pidoshva.github.io",
+        "run-it-back",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "Some bug fixes",
+          "repo": "run-it-back",
+          "org": "cambrannelly",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Add GIF comments",
+          "repo": "run-it-back",
+          "org": "cambrannelly",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(checkout-widget): respect external OP line removal in checkout as buyer opt-out",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "docs(imp): add Rebuy Smart Cart traps and checkout intercept pattern",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(merchant-svc): invalidate store cache on status transitions",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(checkout-widget): keep OP toggle responsive and blink-free on slow carts",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(shopify-svc): lazy-init analytics Shopify client",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-5605] fix(valet): tighten mobile alignment across pages",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(dispatch-svc): auto-create CE + cart deployments on brand onboarding",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(shopify-svc): tag backorder reships when variant allows overselling",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "perf(imp): selective theme pull instead of full ~275-file download",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(shopify-svc): validate customerId before account credit creation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat(dispatch-svc, valet): Imp Tab redesign; rank priority brands by trailing-30-day revenue",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "Info modal: 1:1 logo preview and pixel size display",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(metadata-svc,orders-svc): apply OP:OtaEligible tag to eligible orders",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat: add variant rounding to widget settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(metadata-svc): ensure EW duration tags always reach Shopify",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(dispatch-svc): surface expected CDN slug in theme-published Slack alert",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(shopify-svc): fix TS2366 missing return in fetchOne retry loop",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "refactor(dispatch-svc): drop theme audit from new-theme-published alert",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "chore(imp): old widget cleanup, diff docs, and push fixes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(merchant-svc): include EW revenue in A/B test profit calc",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat: configurable coverage terms URL for extended warranty emails",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(widget-impl): derive CDN identifier from brand name",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): update info modal status locally after publish",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "chore: change trip icon to sun",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "docs(claims): add Claim Automation guide",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5697] feat: wire PATs into the external API guard + Valet management UI",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5698] fix(authz): tenant-scope remediation across 5 services",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5695] docs(outbox): add transactional outbox spec",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "refactor(claims-svc): retire monolithic CLAIM-WORKFLOWS.md",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(claims-svc): handle multi-variant bundle components in claims",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5688] fix(auth): handle Kafka/RPC contexts in internal guard",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5664] refactor(orders-svc): retire v1 ProductVariant table",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(claims-svc): resolve real variant id for bundle component reships",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5669] fix(auth): require auth on internal endpoints",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5690] feat(websockets): server-mint Ably realtime tokens",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "run-it-back": "cambrannelly",
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "documentation": "OrderProtection"
+      },
+      "repo_languages": {
+        "vacaish": "JavaScript",
+        "pidoshva.github.io": "JavaScript",
+        "run-it-back": "TypeScript",
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "documentation": "MDX"
+      },
+      "languages": [
+        "JavaScript",
+        "MDX",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 82,
+        "prs": 11,
+        "repos_active": 6
+      }
+    },
+    {
       "week_start": "2026-06-22",
       "week_end": "2026-06-27",
       "generated": "2026-06-27T07:50:28.610549+00:00",
