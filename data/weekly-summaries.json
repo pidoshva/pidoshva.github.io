@@ -1,6 +1,217 @@
 {
   "summaries": [
     {
+      "week_start": "2026-07-06",
+      "week_end": "2026-07-11",
+      "generated": "2026-07-11T07:11:51.806144+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 106 commits to vacaish (Swift) adding presence signals, founder mark customization, and social features. Across OrderProtection repos, implemented widget config drafting, onboarding defaults, and infrastructure fixes. Reviewed 13 PRs including auth matrix, subscriptions integration, and analytics production setup.",
+      "highlights": [
+        "vacaish: Shipped presence system with explicit away signals, social following/people search, and seven-form founder mark collection with precise spacing.",
+        "vacaish: Fixed CI Firebase stubbing for unit tests; hardened entry flow; optimized hub bulb alignment and LazyVStack recycling across ForEach branches.",
+        "monolog (OrderProtection): Implemented widget config drafting (Phase 8) with draft-only backend and new-store onboarding defaults (customizations + 30-day filing).",
+        "monolog (OrderProtection): Fixed clientId/brandType persistence on brand onboarding; added Rebuy Custom Code block install docs for OP widget.",
+        "monolog (OrderProtection): Refactored Google Maps key rotation prep across pulse, valet, concierge services.",
+        "ops (OrderProtection): Fixed redundant service clause in Maps alert filter; scoped Maps alert policy by credential_id.",
+        "monolog (OrderProtection): Reviewed authorization matrix + deny-by-default gate, AI substitute products in reships, and OAuth scope enforcement.",
+        "ops (OrderProtection): Reviewed analytics-svc production infrastructure (DB/creds/grants, KSA/GSA, BigQuery IAM) and restricted Google Maps keys."
+      ],
+      "repos": [
+        "cart-widget",
+        "documentation",
+        "monolog",
+        "ops",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "feat(imp): widget config drafting (Phase 8) with draft-only backend",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat(ios): optional clickable location in itinerary items",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(terraform): drop redundant service clause from Maps alert filter",
+          "repo": "ops",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(terraform): scope Maps alert policy by resource.label.credential_id",
+          "repo": "ops",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "docs(imp): add Rebuy Custom Code block install for OP widget",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "refactor(pulse,valet,concierge): prep Google Maps key rotation (ENG-5691)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(dispatch-svc): persist clientId and brandType on brand at onboarding",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(merchant-svc): new-store onboarding defaults \u2014 widget customizations + 30-day filing window",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(subscriptions): add Recharge customer-portal adapter",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5692] feat(auth): authorization matrix + deny-by-default gate",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(subscriptions-svc): wire recharge widget contract",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5761] fix(claims-svc): ship AI substitute products in reships",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "docs(settings): add Custom Tags to Order and Claim Tags",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(security): manage restricted Google Maps keys",
+          "repo": "ops",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(frontend): source Google Maps browser key from secrets",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5749] fix(shopify-svc): keep line item properties on reships",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5558] fix(dispatch-svc): align Wyllo parser with real payload",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(prod): analytics-svc production infra \u2014 DB/creds/grants + KSA/GSA + BigQuery IAM",
+          "repo": "ops",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5734] fix(orders-svc): enforce OAuth scopes on /v2/products API",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "test(authz): add authorization regression test suite (ENG-5693)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "docs(claims): note AI-generated image analysis in Claim Automation",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5733] feat(billing-svc): configurable margin threshold type",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(orders-svc): add Ship24 as a webhook + POD tracking provider",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "ops": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "documentation": "OrderProtection"
+      },
+      "repo_languages": {
+        "vacaish": "Swift",
+        "monolog": "TypeScript",
+        "ops": "HCL",
+        "cart-widget": "TypeScript",
+        "documentation": "MDX"
+      },
+      "languages": [
+        "HCL",
+        "MDX",
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 114,
+        "prs": 8,
+        "repos_active": 5
+      }
+    },
+    {
       "week_start": "2026-06-29",
       "week_end": "2026-07-04",
       "generated": "2026-07-04T07:47:23.364870+00:00",
