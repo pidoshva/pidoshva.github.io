@@ -1,6 +1,220 @@
 {
   "summaries": [
     {
+      "week_start": "2026-07-13",
+      "week_end": "2026-07-18",
+      "generated": "2026-07-18T07:00:34.182258+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 106 commits to vacaish (Swift) with iOS features, bug fixes, and TestFlight prep. Advanced widget config drafting in OrderProtection/monolog (TypeScript). Reviewed 13 PRs across both repos, including Kafka typing and identity service updates.",
+      "highlights": [
+        "vacaish: Shipped iOS v1.18.3 with playlist feature, leaderboard avatar fixes, feed scroll stability, and game reveal crash resolution.",
+        "vacaish: Implemented in-app upload progress card, countdown widget memory optimization, and notification deep links with unread indicators.",
+        "vacaish: Built checklist-assignment notifications, identity-led member switcher, and gallery toolbar consolidation.",
+        "vacaish: Established TestFlight CI/CD pipeline with auto version bumping (patch-only) and bundle ID/icon updates.",
+        "monolog (OrderProtection): Implemented widget config drafting (Phase 8) with draft-only backend, entitlement guards, and secure writes.",
+        "monolog (OrderProtection): Reviewed 6 Kafka message topic typing PRs and identity service PAT store access via account model.",
+        "vacaish: Reviewed 7 PRs including itinerary map features, web hub layout sync, and dynamic island constant removal.",
+        "monolog (OrderProtection): Reviewed lodash prototype pollution security upgrade and international reship routing via Global-E."
+      ],
+      "repos": [
+        "monolog",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "fix(ios): in-app upload progress card + honest video-upload state",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(ios): countdown widget background \u2014 downscale for the extension's memory cap",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "ci: auto version bumps are patch-only \u2014 minor/major become explicit choices",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(ios): checklist-assignment notifications + switcher/presence fixes + gallery toolbar consolidation",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "ci(ios): TestFlight deploy workflow \u2014 archive + upload an ios-v tag",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(ios): group checklist by default + identity-led member switcher",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(ios): notification deep links, drawer-on-push-tap, unread dots, swipe-to-delete",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "chore(legal): fill privacy/terms operator, contact, jurisdiction",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "chore(ios): TestFlight prep \u2014 rename bundle IDs, fix icon, enable push",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(imp): widget config drafting (Phase 8) with draft-only backend",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-4126] feat(shopify-svc): route international reships via Global-E",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-5697] fix(identity-svc): PAT store access via account model",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(kafka): type final message topic batch",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix: Itinerary location missing coordinates on Map view.",
+          "repo": "vacaish",
+          "org": "",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "chore: sync web and iOS hub layouts",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "chore: remove dynamic island constant outline",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(kafka): type seventh batch of message topics",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(kafka): type sixth batch of message topics",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat: Itinerary map - web.",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(kafka): type fifth batch of message topics",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(kafka): type fourth batch of message topics",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(kafka): type third batch of message topics",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5730] fix(deps): upgrade lodash to 4.17.23 (prototype pollution)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat: itinerary map view",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat: Location component.",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection"
+      },
+      "repo_languages": {
+        "vacaish": "Swift",
+        "monolog": "TypeScript"
+      },
+      "languages": [
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 110,
+        "prs": 10,
+        "repos_active": 2
+      }
+    },
+    {
       "week_start": "2026-07-06",
       "week_end": "2026-07-11",
       "generated": "2026-07-11T07:11:51.806144+00:00",
