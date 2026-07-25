@@ -1,6 +1,223 @@
 {
   "summaries": [
     {
+      "week_start": "2026-07-20",
+      "week_end": "2026-07-25",
+      "generated": "2026-07-25T07:18:33.861007+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped account management features across OrderProtection/monolog (TypeScript) and trip templates + social feed redesign in vacaish (Swift), totaling 41 commits. Reviewed service hardening and claims features on monolog; reviewed Maps integration on vacaish.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped account-name rollup headers, hide-account toggle, and identity-service role assignment (ENG-5696) across 6 TypeScript commits.",
+        "monolog (OrderProtection): Fixed valet persistence, dashboard brand deletion, deployment badges, and onboarding toast issues.",
+        "vacaish: Built trip templates with 100 curated itineraries, DB-backed ratings, and community PDF export; shipped social feed full-screen view + hub redesign.",
+        "vacaish: Implemented file parsing for itineraries/checklists, account recovery, template deletion, and geo-fence pin fixes across web + iOS.",
+        "vacaish: Fixed PDF branding, day-header orphaning, template apply hangs (two-phase timeouts), and tier-1 audit issues (Spotify leak, upload data-loss).",
+        "tether (cambrannelly): Shipped per-limb volume calculation for weighted exercises (#28).",
+        "monolog (OrderProtection): Reviewed merchant widget config hardening, cross-feed deduplication, and multi-item warranty claims PRs.",
+        "vacaish: Reviewed MapsOpener (MKLocalSearch-backed POI address integration) implementation."
+      ],
+      "repos": [
+        "monolog",
+        "tether",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "Per-limb volume for all weighted exercises",
+          "repo": "tether",
+          "org": "cambrannelly",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): make admin-stores account rollup opt-in via Show account ID toggle",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): persist hide-account-name toggle across refresh",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): repair imp dashboard brand delete, deployment badges, onboarding toast",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): account-name rollup + hide-account toggle on admin stores",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-5696] feat(identity-svc): account admin + multi-store members",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(web): templates + social feed + hub discover \u2014 the iOS features, web-wide",
+          "repo": "vacaish",
+          "org": "",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(ios): template fixes stranded after #42's merge",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(ios): trip templates \u2014 100 curated itineraries, DB-backed with ratings",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(ios): upcoming-trip bar rounds days DOWN (matches countdown)",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "build(ios): auto-stamp build number from git commit count on archive",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(ios): social feed full-screen + own-trip filter; hub tap-through + icon",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(ios): hub title \"Your trips\" \u2192 \"Hub\"",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(ios): audit tier-1 \u2014 Spotify leak, upload data-loss, game crash/stats fixes",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(ios): Hub redesign \u2014 upcoming-trip bar, Social feed, Templates teaser",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix: reconcile deleted-account contributions (ghost counts)",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(web): desktop redesign \u2014 sidebar, top bar, hero & widescreen layouts",
+          "repo": "vacaish",
+          "org": "",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(merchant-svc): harden partner CHECKOUT widget configs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5803] fix(orders-svc): dedupe cross-feed fulfillments by tracking number and items",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(widget): default cart widget font to inherit + thread custom-font URL [ENG-5790]",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5784] feat(concierge): online item-level claim completeness nudge",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5783] feat(concierge): multi-item in-store warranty claims",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5780] feat(claims-svc): loud alerts on automation tool failures",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(identity-svc, merchant-svc): fail closed on missing accountId",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(ios): MapsOpener \u2014 MKLocalSearch-backed Open in Maps for POI-style addresses",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "tether": "cambrannelly"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "tether": "TypeScript",
+        "vacaish": "Swift"
+      },
+      "languages": [
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 41,
+        "prs": 16,
+        "repos_active": 3
+      }
+    },
+    {
       "week_start": "2026-07-13",
       "week_end": "2026-07-18",
       "generated": "2026-07-18T07:00:34.182258+00:00",
