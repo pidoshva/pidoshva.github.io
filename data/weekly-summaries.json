@@ -1,6 +1,42 @@
 {
   "summaries": [
     {
+      "week_start": "2026-07-27",
+      "week_end": "2026-08-01",
+      "generated": "2026-08-01T07:28:01.737856+00:00",
+      "trigger": "schedule",
+      "summary": "Light week with focus on code review. Reviewed cart widget font inheritance feature in OrderProtection/monolog (TypeScript) to improve default styling and custom font URL handling.",
+      "highlights": [
+        "monolog (OrderProtection): Reviewed default cart widget font inheritance + custom-font URL threading feature [ENG-5790]"
+      ],
+      "repos": [
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "feat(widget): default cart widget font to inherit + thread custom-font URL [ENG-5790]",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 0,
+        "prs": 0,
+        "repos_active": 1
+      }
+    },
+    {
       "week_start": "2026-07-20",
       "week_end": "2026-07-25",
       "generated": "2026-07-25T07:18:33.861007+00:00",
