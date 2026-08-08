@@ -1,6 +1,58 @@
 {
   "summaries": [
     {
+      "week_start": "2026-08-03",
+      "week_end": "2026-08-08",
+      "generated": "2026-08-08T05:42:55.437483+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 7 commits to vacaish (Swift) focusing on media uploads, user identity, and itinerary features. Authored 2 TypeScript PRs for OrderProtection/monolog: admin account rollup opt-in toggle and Google Maps key rotation prep.",
+      "highlights": [
+        "vacaish: Fixed iOS upload Live Activity behavior and implemented swipe-to-dismiss gesture for media lightbox",
+        "vacaish: Built global UserPlate system for unified user identity across app surfaces",
+        "vacaish: Added Delete Ghost Posts setting, tripSweeper automation, and skipped-stop notifications",
+        "vacaish: Implemented per-batch upload notifications (e.g., 'added N photos, M videos') across web and iOS",
+        "vacaish: Added visual indicators for skipped stops in itinerary list view and capped gallery uploads at 10 files/batch",
+        "monolog (OrderProtection): Authored PR to make admin stores account rollup opt-in via Show account ID toggle",
+        "monolog (OrderProtection): Authored refactor PR prepping Google Maps key rotation infrastructure across pulse, valet, and concierge services"
+      ],
+      "repos": [
+        "monolog",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "feat(valet): make admin stores account rollup opt-in via Show account ID toggle",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "refactor(pulse,valet,concierge): prep Google Maps key rotation (ENG-5691)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection"
+      },
+      "repo_languages": {
+        "vacaish": "Swift",
+        "monolog": "TypeScript"
+      },
+      "languages": [
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 7,
+        "prs": 1,
+        "repos_active": 2
+      }
+    },
+    {
       "week_start": "2026-07-27",
       "week_end": "2026-08-01",
       "generated": "2026-08-01T07:28:01.737856+00:00",
