@@ -1,6 +1,126 @@
 {
   "summaries": [
     {
+      "week_start": "2026-08-10",
+      "week_end": "2026-08-15",
+      "generated": "2026-08-15T05:25:22.168850+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped checkout gating, Shopify scope handling, and UI fixes across OrderProtection repos (TypeScript), plus trip templates and media features in vacaish (Swift). Reviewed merchant defaults and documentation improvements from teammates.",
+      "highlights": [
+        "cart-widget (OrderProtection): Shipped checkout widget gating on host state, selling plans, and payment methods; fixed toggle reset and late-connecting element initialization.",
+        "monolog (OrderProtection): Implemented checkout suppression settings and completed Shopify reinstall with missing scopes as warning; refactored widget config per review feedback.",
+        "vacaish: Built trip templates on web with browse/rate/apply/share; added media descriptions with edit/remove in lightbox and day-based feed redesign on iOS.",
+        "claude-micro: Redesigned hero with SVG device art (glowing keycaps, knob, joystick) and centered badges; added Bubble Tea TUI edition with color presets and hex configurator.",
+        "pidoshva.github.io: Implemented GitHub rate limit survival with fresh-cache skip and stale fallback.",
+        "Reviewed monolog (OrderProtection): Claims dashboard with run-level attribution and UK opt-in merchant defaults.",
+        "Reviewed documentation (OrderProtection): Onboarding walkthrough and Gorgias SOP generation documentation."
+      ],
+      "repos": [
+        "cart-widget",
+        "claude-micro",
+        "documentation",
+        "monolog",
+        "pidoshva.github.io",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "[IMP-1451] fix(ui): don't reset the toggle on builds without a controller",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(widget-config): add checkout suppression settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(checkout-widget): add Skylar checkout gating",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "chore(shopify): open reinstall scope warning pr",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "[IMP-1451] fix(api): stickyDispatch init events so late-connecting elements receive them",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-5886] fix: complete Shopify reinstall with missing scopes as a warning",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(claim-automation): models dashboard with run-level attribution",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5928] feat(merchant-svc): UK opt-in and store capability defaults",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "docs(general): add an onboarding walkthrough and lead with General",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "docs(sops): document generating SOPs from Gorgias",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "documentation": "OrderProtection"
+      },
+      "repo_languages": {
+        "pidoshva.github.io": "JavaScript",
+        "claude-micro": "JavaScript",
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "vacaish": "Swift",
+        "documentation": "MDX"
+      },
+      "languages": [
+        "JavaScript",
+        "MDX",
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 30,
+        "prs": 5,
+        "repos_active": 6
+      }
+    },
+    {
       "week_start": "2026-08-03",
       "week_end": "2026-08-08",
       "generated": "2026-08-08T05:42:55.437483+00:00",
