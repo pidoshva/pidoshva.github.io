@@ -36,8 +36,8 @@
       const raw = localStorage.getItem(CACHE_KEY);
       if (!raw) return null;
       const { data, ts } = JSON.parse(raw);
-      if (Date.now() - ts > CACHE_TTL) return null;
-      return data;
+      if (!Array.isArray(data)) return null;
+      return { data, fresh: Date.now() - ts <= CACHE_TTL };
     } catch { return null; }
   }
 
@@ -197,22 +197,35 @@
 
   function init() {
     const cached = getCached();
-    if (cached) render(cached);
+
+    // Fresh cache: render it and skip the API entirely (helps stay under
+    // GitHub's 60 req/hr unauthenticated rate limit).
+    if (cached && cached.fresh) {
+      render(cached.data);
+      return;
+    }
 
     fetch(API_URL)
       .then(r => {
-        if (!r.ok) throw new Error(r.status);
+        if (!r.ok) throw new Error(String(r.status));
         return r.json();
       })
       .then(repos => {
         setCache(repos);
         render(repos);
       })
-      .catch(() => {
-        if (!cached) {
-          const root = document.getElementById('repo-root');
-          if (root) root.innerHTML = '<div class="goodies-error">Could not load repos. Try again later.</div>';
+      .catch(err => {
+        // Stale cache beats an error message.
+        if (cached) {
+          render(cached.data);
+          return;
         }
+        const root = document.getElementById('repo-root');
+        if (!root) return;
+        const rateLimited = err && (err.message === '403' || err.message === '429');
+        root.innerHTML = rateLimited
+          ? '<div class="goodies-error">GitHub API rate limit reached. Repos will load again within the hour.</div>'
+          : '<div class="goodies-error">Could not load repos. Try again later.</div>';
       });
   }
 
