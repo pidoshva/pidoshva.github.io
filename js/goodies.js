@@ -56,10 +56,60 @@
         if (!r.ok) throw new Error(r.status);
         return r.text();
       })
+      // Non-standard filename or case (readme.md, README.markdown, …):
+      // let the API resolve whichever file GitHub treats as the readme.
+      .catch(() =>
+        fetch(`https://api.github.com/repos/${USERNAME}/${repoName}/readme`, {
+          headers: { Accept: 'application/vnd.github.raw+json' }
+        }).then(r => {
+          if (!r.ok) throw new Error(r.status);
+          return r.text();
+        })
+      )
       .then(md => {
         readmeCache[repoName] = md;
         return md;
       });
+  }
+
+  function slugify(text) {
+    return text.toLowerCase().trim()
+      .replace(/[^\w\- ]+/g, '')
+      .replace(/\s+/g, '-');
+  }
+
+  // Make a rendered README behave inside the site: absolutize relative
+  // asset/link paths, and keep TOC anchors from touching location.hash
+  // (the spatial app routes on the hash).
+  function prepareReadme(container, repoName, branch) {
+    const rawBase = `https://raw.githubusercontent.com/${USERNAME}/${repoName}/${branch}/`;
+    const blobBase = `https://github.com/${USERNAME}/${repoName}/blob/${branch}/`;
+    const isExternal = s => /^(https?:)?\/\//i.test(s) || s.startsWith('data:') || s.startsWith('mailto:');
+
+    container.querySelectorAll('img[src]').forEach(img => {
+      const src = img.getAttribute('src');
+      if (src && !isExternal(src)) img.src = rawBase + src.replace(/^\.?\//, '');
+    });
+
+    container.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+      if (!h.id) h.id = slugify(h.textContent);
+    });
+
+    container.querySelectorAll('a[href]').forEach(a => {
+      const href = a.getAttribute('href');
+      if (!href) return;
+      if (href.startsWith('#')) {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          const target = container.querySelector('#' + CSS.escape(href.slice(1)));
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      } else if (!isExternal(href)) {
+        a.href = blobBase + href.replace(/^\.?\//, '');
+        a.target = '_blank';
+        a.rel = 'noopener';
+      }
+    });
   }
 
   function toggleReadme(card, repoName, defaultBranch) {
@@ -85,6 +135,7 @@
         const readme = document.createElement('div');
         readme.className = 'repo-readme post-content';
         readme.innerHTML = marked.parse(md);
+        prepareReadme(readme, repoName, defaultBranch);
         card.appendChild(readme);
         if (window.hljs) {
           readme.querySelectorAll('pre code').forEach(function (block) {
@@ -189,6 +240,7 @@
       root.innerHTML =
         '<div class="journal-head"><div class="ptag">readme</div><h2>' + escapeHtml(repo) + '</h2></div>' +
         '<div class="post-content">' + marked.parse(md) + '</div>';
+      prepareReadme(root.querySelector('.post-content'), repo, branch);
       if (window.hljs) {
         root.querySelectorAll('pre code').forEach(function (block) { hljs.highlightElement(block); });
       }

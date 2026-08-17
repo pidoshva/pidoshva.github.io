@@ -709,7 +709,7 @@ nav .external::after { content: ' \2197'; font-size: 0.7rem; }
 }
 .post-content blockquote p:last-child { margin-bottom: 0; }
 
-.post-content img { border-radius: var(--radius); margin: 1.25rem 0; }
+.post-content img { max-width: 100%; height: auto; border-radius: var(--radius); margin: 1.25rem 0; }
 .post-content hr { border: none; border-top: 1px solid var(--border); margin: 2.25rem 0; }
 
 .post-content table { width: 100%; border-collapse: collapse; margin-bottom: 1.1rem; font-size: 0.9rem; }
