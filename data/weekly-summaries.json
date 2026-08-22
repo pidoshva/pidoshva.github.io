@@ -1,6 +1,88 @@
 {
   "summaries": [
     {
+      "week_start": "2026-08-17",
+      "week_end": "2026-08-22",
+      "generated": "2026-08-22T05:28:26.583020+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 23 commits to OrderProtection/monolog (TypeScript) fixing asset management, location toggles, and product sync; merged SKU automation and version lookup features. Also fixed pricing tier matching in cart-widget and updated personal portfolio.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped 8 location toggle fixes\u2014controlled inputs, validation at save, disabled row states, and explanatory messaging for unassign restrictions",
+        "monolog (OrderProtection): Merged feat(shopify-svc) automating OP product SKU and fulfillment-location management across brand portfolios",
+        "monolog (OrderProtection): Fixed asset pipeline by restoring tracked PNG files and gitignore coverage for Pi extension test files",
+        "monolog (OrderProtection): Merged feat(mcp) adding get_brand_widget_versions tool for per-brand version lookups",
+        "monolog (OrderProtection): Open PR feat(dispatch-svc) adding per-brand implementation profiles for /imp endpoint",
+        "cart-widget (OrderProtection): Shipped fix matching protection tier on presentment price across pricing tiers",
+        "tether (cambrannelly): Open PR refactoring engagement UI\u2014consolidating six hand-rolled like/comment rows into one shared component",
+        "claude-micro: Shipped Configurator UI improvements\u2014muted agent cell reassignment, color grid, and keymap reassign screen"
+      ],
+      "repos": [
+        "cart-widget",
+        "claude-micro",
+        "monolog",
+        "pidoshva.github.io",
+        "tether"
+      ],
+      "prs": [
+        {
+          "title": "feat(shopify-svc): automate OP product SKU and fulfillment-location management",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(dispatch-svc): add per-brand implementation profile for /imp",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(pricing): match protection tier on presentment price",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "refactor(engagement): replace six hand-rolled like/comment rows with one shared bar",
+          "repo": "tether",
+          "org": "cambrannelly",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat(mcp): add get_brand_widget_versions tool for per-brand version lookups",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "tether": "cambrannelly"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "claude-micro": "JavaScript",
+        "pidoshva.github.io": "JavaScript",
+        "tether": "TypeScript"
+      },
+      "languages": [
+        "JavaScript",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 27,
+        "prs": 5,
+        "repos_active": 5
+      }
+    },
+    {
       "week_start": "2026-08-10",
       "week_end": "2026-08-15",
       "generated": "2026-08-15T05:25:22.168850+00:00",
