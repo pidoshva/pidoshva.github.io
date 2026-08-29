@@ -1,6 +1,130 @@
 {
   "summaries": [
     {
+      "week_start": "2026-08-24",
+      "week_end": "2026-08-29",
+      "generated": "2026-08-29T11:29:52.991391+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped Checkout+ row layout features and brand-funded badge styling across OrderProtection/monolog and cart-widget (TypeScript), with 16 commits spanning docs, compiler customization, and UI refinements. Reviewed GCP Certificate Manager TLS integration PR.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped Checkout+ row layout compiler, customizer, and installation docs; hardened decline button layout",
+        "cart-widget (OrderProtection): Implemented brand-funded coverage badge rendering with theme-controlled styling and storage resolution",
+        "cart-widget (OrderProtection): Built horizontal stack reversal/sizing and pinned ui-button behavior across all config shapes",
+        "monolog (OrderProtection): Fixed valet inventory location sync durability; exposed op-slot presentation attributes in cart builder",
+        "cart-widget (OrderProtection): Fixed brand-funded badge colors and opt-in toggle visibility; refactored storefront API URL resolution",
+        "tether (cambrannelly): Refactored engagement UI by replacing six hand-rolled like/comment rows with one shared component bar",
+        "monolog (OrderProtection): Reviewed GCP Certificate Manager per-domain custom-domain TLS integration feature PR"
+      ],
+      "repos": [
+        "cart-widget",
+        "monolog",
+        "tether"
+      ],
+      "prs": [
+        {
+          "title": "refactor(engagement): replace six hand-rolled like/comment rows with one shared bar",
+          "repo": "tether",
+          "org": "cambrannelly",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): expose op-slot presentation attributes in the cart builder",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget): style projected controls from config, and degrade one node at a time",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "docs(imp): how to install the Checkout+ row layout",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget): Checkout+ row layout runtime",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): Checkout+ row layout \u2014 compiler and customizer",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(shopify-svc, valet): make OP inventory location sync correct and durable",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget): render brand funded coverage as a badge",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(cart-widget): hide the opt-in toggle when coverage is brand funded",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(cart-widget): show brand funded coverage as free instead of hiding it",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(shopify-svc): queue OP product applies and fix location homing",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat(merchant-svc): per-domain custom-domain TLS via GCP Certificate Manager (ENG-61)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "tether": "cambrannelly"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript"
+      },
+      "languages": [
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 16,
+        "prs": 9,
+        "repos_active": 3
+      }
+    },
+    {
       "week_start": "2026-08-17",
       "week_end": "2026-08-22",
       "generated": "2026-08-22T05:28:26.583020+00:00",
