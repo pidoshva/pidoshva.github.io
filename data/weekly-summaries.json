@@ -1,6 +1,204 @@
 {
   "summaries": [
     {
+      "week_start": "2026-08-31",
+      "week_end": "2026-09-05",
+      "generated": "2026-09-05T08:51:25.589574+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 35 commits across OrderProtection and Implimesh repos, advancing the widget builder UX with navigation, styling, and customization features in TypeScript/JavaScript. Reviewed AI status badges and analytics API enhancements from teammates.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped widget customizer improvements\u2014variant casing, drop targets, preview stability, and merchant Theme Slot placement",
+        "monolog (OrderProtection): Implemented stacking, centering, and outer spacing controls in the builder, plus View Cart button alongside Checkout+",
+        "cart-widget (OrderProtection): Shipped navigation support for ui-button, projected control styling, SVG color preservation, and badge glyph recoloring fixes",
+        "claude-micro: Refactored CLI to Go configurator only, fixed terminal focus under iTerm login shell, and added idle sleep daemon feature",
+        "implimesh (Implimesh): Established architecture pattern enforcement for TypeScript and added Tailscale Box Connect access guide",
+        "monolog (OrderProtection): Reviewed comprehensive AI status badges feature and store credit bonus toggle fix from teammates",
+        "monolog (OrderProtection): Authored v2 widget config library PR (open) covering envelope, roles, adoption, bindings, and validator"
+      ],
+      "repos": [
+        "cart-widget",
+        "claude-micro",
+        "implimesh",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "[ENG-6012] feat(shared-constants): widget config v2 library \u2014 envelope, roles, adoption, bindings, validator",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-5978] fix(valet): widget customizer cleanup \u2014 previews, drop targets, variant casing",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Establish the architecture pattern: enforce it on TypeScript, name it, and put it in the tree",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "Overhaul 1/10 \u2014 Settle the architecture pattern and the language policy",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): let a merchant actually place a Theme Slot",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget): let a ui-button navigate so View Cart can match Checkout+",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "refactor(valet): move the keyword label out of the loop",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): make a CSS keyword a choice instead of a word you have to type",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(cart-widget): keep a badge's knocked-out glyph when recolouring it",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): say what the logo colour actually does to a badge",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Add Box Connect guide for Tailscale access",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget): style projected controls, keep SVG colours, free the text action",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): make the widget builder usable without reading CSS",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): quieten nested group bands, and withhold the SVG switch from non-SVGs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): expose op-slot presentation attributes in the cart builder",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget): let a text take either protection action",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(cart-widget): keep an SVG's own colours until a colour is asked for",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget): style projected controls from config, and degrade one node at a time",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): make the widget builder readable without CSS",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): stop the store credit bonus toggle from resurrecting itself",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5943] feat(valet,claims-svc): comprehensive AI status badges",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(analytics-svc): expose resolutions_view in the analytics API",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "implimesh": "Implimesh",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "implimesh": "JavaScript",
+        "claude-micro": "JavaScript",
+        "cart-widget": "TypeScript"
+      },
+      "languages": [
+        "JavaScript",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 35,
+        "prs": 14,
+        "repos_active": 4
+      }
+    },
+    {
       "week_start": "2026-08-24",
       "week_end": "2026-08-29",
       "generated": "2026-08-29T11:29:52.991391+00:00",
