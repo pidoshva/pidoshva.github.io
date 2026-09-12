@@ -1,6 +1,183 @@
 {
   "summaries": [
     {
+      "week_start": "2026-09-07",
+      "week_end": "2026-09-12",
+      "generated": "2026-09-12T09:03:06.955492+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped pricing and coverage eligibility features across OrderProtection/monolog and cart-widget (TypeScript), plus major TypeScript migration work in Implimesh. Reviewed claims and refund handling PRs from teammates.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped merchant rounding policy selection, coverage eligibility refactor from widget config to price rule sets, and email customizer image upload restoration.",
+        "cart-widget (OrderProtection): Implemented variant ladder matching using store rounding policy and unblocked release commit.",
+        "implimesh: Built TypeScript Worker overhaul (39 modules, strict mode), established architecture pattern enforcement, and converted pre-PR collision check to command.",
+        "monolog (OrderProtection): Reviewed claims communications, refund amount reporting, and store-create failure rollback fixes from teammates.",
+        "documentation (OrderProtection): Reviewed claim queue guide update.",
+        "cart-widget (OrderProtection): Open PR for binding bus listeners once and holding delivery until first render."
+      ],
+      "repos": [
+        "cart-widget",
+        "documentation",
+        "implimesh",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "fix(cart-widget): bind bus listeners once and hold delivery until first render",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(release): unblock the cart-widget release commit",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget): match the variant ladder using the store's rounding policy",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): let merchants choose how a premium rounds onto the variant ladder",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "refactor(valet): stop editing coverage eligibility in the widget customizer",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(merchant-svc): move coverage eligibility from widget config to the price rule sets",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): restore image upload in the email customizer",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "`as` joins the ratchet, and the architecture document is checked against the tree",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): keep the Select Brand tabs on one row without cutting off",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "The pre-PR collision check becomes a command instead of a habit",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(merchant-svc): seed a default info modal at store onboarding",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Overhaul 2/10 \u2014 The Worker becomes TypeScript: 39 modules, strict, and a type checker that gates every PR",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Establish the architecture pattern: enforce it on TypeScript, name it, and put it in the tree",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(claims): add On Hold communications and email preferences (ENG-6034)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6054] fix(claims-svc,valet): price off the true root order",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "docs(claims): update claim queue guide",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6049] fix(shopify-svc): report the amount a refund accepted",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5842] fix(claims-svc): alert on silent auto-execute failures",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6037] fix(merchant-svc): roll back a stranded account on store-create failure",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "cart-widget": "OrderProtection",
+        "monolog": "OrderProtection",
+        "implimesh": "Implimesh",
+        "documentation": "OrderProtection"
+      },
+      "repo_languages": {
+        "cart-widget": "TypeScript",
+        "monolog": "TypeScript",
+        "implimesh": "TypeScript",
+        "documentation": "MDX"
+      },
+      "languages": [
+        "MDX",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 18,
+        "prs": 13,
+        "repos_active": 4
+      }
+    },
+    {
       "week_start": "2026-08-31",
       "week_end": "2026-09-05",
       "generated": "2026-09-05T08:51:25.589574+00:00",
