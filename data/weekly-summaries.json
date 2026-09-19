@@ -1,6 +1,247 @@
 {
   "summaries": [
     {
+      "week_start": "2026-09-14",
+      "week_end": "2026-09-19",
+      "generated": "2026-09-19T09:13:35.827509+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 56 commits across OrderProtection's cart-widget and monolog (TypeScript), plus Implimesh (JavaScript) and vacaish (Swift). Focused on geo-restriction refactoring, brand-funded widget features, settings caching, and checkout branding. Reviewed infrastructure and claims service PRs from teammates.",
+      "highlights": [
+        "cart-widget (OrderProtection): Refactored geo-restriction logic from UK flag to country list; fixed settings revalidation so merchant saves reach open tabs.",
+        "monolog (OrderProtection): Shipped brand-funded toggle on general settings, bidirectional country limits, browser cache fixes for insurance payload, and branding fetch logging.",
+        "cart-widget (OrderProtection): Implemented brand-funded coverage display, configurable logo rendering with colour controls, and UI image padding for artwork.",
+        "implimesh: Shipped system contract schema and credential access controls; merged credential drop palette fix.",
+        "vacaish: Implemented trip budget feature across web and iOS with ledger, splits, balances, and settle-up functionality.",
+        "monolog (OrderProtection): Reviewed claims service enhancements including on-hold communications, email preferences, and item restock preference logic.",
+        "monolog (OrderProtection): Reviewed per-domain custom-domain TLS provisioning via GCP Certificate Manager (ENG-61 infrastructure work)."
+      ],
+      "repos": [
+        "cart-widget",
+        "implimesh",
+        "monolog",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "Memory gets a schema, and the contract settles who may open a credential",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "The credential drop page ships the palette it was already using",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "The system contract, caught up and given a check",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "refactor(checkout-widget): resolve the geo restriction from the store and retire the UK literals",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(utils): revalidate cached settings so a merchant save reaches open cart tabs",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(merchant-svc): stop browsers caching the insurance payload for five minutes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(shopify-svc): log why theme and checkout branding fetches fail",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(checkout-widget): render the toggle layout for a brand-funded range",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(checkout-widget,ui): show brand-funded coverage when the store asks for it",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "refactor(merchant-svc,valet): name the country list for the rule that reads it",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(checkout-widget): read the brand-funded toggle off the insurance payload",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(merchant-svc,valet): move brand-funded toggle to general settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(cart-widget): bind bus listeners once and hold delivery until first render",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget,checkout-widget): read the country list under its new name",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat(checkout-widget): read eligibility from the store and honour the country rule",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(merchant-svc,valet): let the country limit run in either direction",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(constants,valet): match the cart mark to checkout and put its spacing on a control",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(pulse): keep a call site class off the inner input",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet,constants): apply the cart logo size and colour controls",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(ui): let a ui-image pad its artwork to a fraction of the box",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(checkout-widget): render the configured logo, and let it take a colour",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(constants,valet): give both widgets the same default logo size",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(merchant-svc,valet): let merchants colour the OP logo at checkout",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Tell the customer a plan is waiting, and the rest of the portal",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6073] feat(claims-svc,concierge): prefer the item if it comes back in stock",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(merchant-svc): per-domain custom-domain TLS via GCP Certificate Manager (ENG-61)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(claims): add On Hold communications and email preferences (ENG-6034)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6054] fix(claims-svc,valet): price off the true root order",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "implimesh": "Implimesh",
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "implimesh": "JavaScript",
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "vacaish": "Swift"
+      },
+      "languages": [
+        "JavaScript",
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 56,
+        "prs": 22,
+        "repos_active": 4
+      }
+    },
+    {
       "week_start": "2026-09-07",
       "week_end": "2026-09-12",
       "generated": "2026-09-12T09:03:06.955492+00:00",
