@@ -1,6 +1,251 @@
 {
   "summaries": [
     {
+      "week_start": "2026-09-21",
+      "week_end": "2026-09-26",
+      "generated": "2026-09-26T09:43:50.230895+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped extended warranty customization across OrderProtection cart-widget and monolog (TypeScript), plus budget v2 features in vacaish (Swift). Reviewed infrastructure and claims-service PRs at Implimesh and OrderProtection.",
+      "highlights": [
+        "cart-widget (OrderProtection): Shipped extended warranty tiers, per-tile coverage nodes, and four-chip layout fixes for cart display.",
+        "monolog (OrderProtection): Implemented coverage tile editing in widget builder, premium split logic, and legacy upgrade compatibility.",
+        "vacaish: Built budget v2 with iOS receipt scanning, split modes, line items; added desktop sidebar layout and Report feature.",
+        "implimesh: Fixed contract process mapping, unified stack orchestration with production logging, and service boundary definition.",
+        "implimesh: Reviewed infrastructure PRs including Go runner integration, JWK scanner fixes, and signal contract safety rails.",
+        "monolog (OrderProtection): Reviewed claims-service worker lifecycle and stock preference optimization across OrderProtection.",
+        "cart-widget (OrderProtection): Reviewed browser top-layer modal rendering and checkout preference persistence fixes."
+      ],
+      "repos": [
+        "brand-ai-agents",
+        "cart-widget",
+        "implimesh",
+        "monolog",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "Fix red main: scan waivers for the Go runner's non-secrets",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Runner: bring the Go module into the repo",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6098] feat: keep four coverage chips on one line at cart widths",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6098] feat: per-tile coverage option nodes and chip spacing fix",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6098] feat(valet): edit each coverage tile in the widget builder",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(ui): let projected theme markup inherit the theme's box-sizing",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6098] feat: extended warranty cart widget customizer and premium split fixes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6098] feat: extended warranty tiers in the cart widget",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Contract: which of the two processes a thing belongs to",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6088] feat(checkout-widget): preference-first init replaces onlyCE",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "The five services all have a home, and the Go boundary is drawn",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "One command to run the stack, and production gets logs for the first time",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Memory: the store, the contract it settles, and the endpoints that reach it",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(web): duplicate Join button, centered desktop pages, Gallery command bar",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat: budget v2 on iOS (scan, split modes, detail) + Report on both platforms",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6088] refactor(merchant-svc,valet): remove CE Only widget setting",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat: budget v2 \u2014 split modes, line items, receipt scanning, Home spend pill",
+          "repo": "vacaish",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Carry three commits off staging into main, and fix the one that was wrong",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "#213: the emitted sections are the vocabulary, and two consumers were blind",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "The scanner could not see a JWK private key, which is the one it must",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Step 8: the safety rails get mechanisms instead of paragraphs",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Step 7: the two halves of the signal contract are held to each other",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "The factory leaves quarantine: execution to runner/, prose to docs/",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(utils): persist explicit Checkout+ choice so checkout cannot re-a\u2026",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(ui): render the info modal in the browser top layer",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(claims-svc): drain workers before closing dependencies",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(simple-modern): don't escalate a name on a removable band as personalization",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6073] feat(claims-svc,concierge): prefer the item if it comes back in stock",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "implimesh": "Implimesh",
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "brand-ai-agents": "OrderProtection"
+      },
+      "repo_languages": {
+        "implimesh": "JavaScript",
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "vacaish": "Swift",
+        "brand-ai-agents": "Shell"
+      },
+      "languages": [
+        "JavaScript",
+        "Shell",
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 33,
+        "prs": 17,
+        "repos_active": 5
+      }
+    },
+    {
       "week_start": "2026-09-14",
       "week_end": "2026-09-19",
       "generated": "2026-09-19T09:13:35.827509+00:00",
