@@ -1,6 +1,262 @@
 {
   "summaries": [
     {
+      "week_start": "2026-09-28",
+      "week_end": "2026-10-03",
+      "generated": "2026-10-03T10:15:03.600995+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 31 commits across 6 repos: built order tag automation and geolocation fixes in OrderProtection (TypeScript), iPhone Duo layouts in Vacaish (Swift), and multi-step runner architecture in Implimesh (JavaScript). Reviewed infrastructure and feature PRs from teammates.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped allowed order tags automation card with autosave, AI-assisted resolve, and CE Only backward compatibility fixes.",
+        "vacaish: Implemented iPhone Duo ambient modes, split layouts with hinge support, side dock positioning, and documentation for multi-device compatibility.",
+        "implimesh: Built 4-step runner architecture across 5 open PRs covering lease management, POST /run endpoint, and CI stack verification.",
+        "cart-widget (OrderProtection): Fixed geolocation-based country rule judgment and shipping preference initialization; refactored protection resolution logic.",
+        "implimesh: Merged foundational docs (system.md build map, lease client fixture) and established CODEOWNERS for Go modules.",
+        "Reviewed: implimesh production/staging deployment strategy and HSM key sealing PR (#241, #243); monolog claims automation table and Slack integration PRs.",
+        "Reviewed: OrderProtection documentation updates for product taxonomy sync and AI-assisted claims setup; team roles and parent account support features."
+      ],
+      "repos": [
+        "brand-ai-agents",
+        "cart-widget",
+        "documentation",
+        "implimesh",
+        "monolog",
+        "vacaish"
+      ],
+      "prs": [
+        {
+          "title": "Step 2: startRun, the four run steps, and the runner's two classes",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "Step 4: the runner serves POST /run, and has an image",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "Step 1: what a run is, before either side builds one",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Step 3: one live lease per credential, taken atomically",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "CI only: the #234\u2013#238 stack against main (do not merge)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "CODEOWNERS: the Go unseal and lease client are owned",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(claims-svc): let the AI add allowed order tags on resolve",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(dorai-home): message before resolving warranty claims, replace parts, hold out-of-stock",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat(dispatch-svc): add per-brand implementation profile for /imp",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): make admin stores account rollup opt-in via Show account ID toggle",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "refactor(valet): move the keyword label out of the loop",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(shopify-svc, valet): make OP inventory location sync correct and durable",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6088] refactor(valet): retire the CE Only control, keep stored values backward compatible",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6088] feat(checkout-widget): preference-first init replaces onlyCE",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "system.md: a build map for the Worker and the runner",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "#221: the Go lease client and /api/internal are held to one fixture",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(utils,checkout-widget): judge country rules on the shopper's location in both widgets",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(merchant-svc): answer geoCountry per request instead of from the quote cache",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6098] docs(imp): teach /imp the extended warranty coverage widget",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6098] fix: let an oversized single-word chip title break instead of overflowing",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6098] feat: keep four coverage chips on one line at cart widths",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Production ships from a tag, staging ships from main, memory gets migrated",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "k2: /connect seals to the HSM key, and k1 is retired having sealed nothing",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5964] feat(claims-svc): add the claim_automation_tool_run table",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Every required Env field has to come from somewhere, in both environments",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6122] feat(team-members): Parent Account Support and User roles",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "docs(claims): add catalog sync and AI-assisted setup to Product Taxonomy guide",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6124] feat(dispatch-svc,claims-svc): brand Slack posts lift holds",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6112] feat(dispatch-svc,claims-svc): save brand Slack card replies as regular internal notes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "implimesh": "Implimesh",
+        "monolog": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "brand-ai-agents": "OrderProtection",
+        "documentation": "OrderProtection"
+      },
+      "repo_languages": {
+        "implimesh": "JavaScript",
+        "monolog": "TypeScript",
+        "cart-widget": "TypeScript",
+        "vacaish": "Swift",
+        "brand-ai-agents": "Python",
+        "documentation": "MDX"
+      },
+      "languages": [
+        "JavaScript",
+        "MDX",
+        "Python",
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 31,
+        "prs": 17,
+        "repos_active": 6
+      }
+    },
+    {
       "week_start": "2026-09-21",
       "week_end": "2026-09-26",
       "generated": "2026-09-26T09:43:50.230895+00:00",
