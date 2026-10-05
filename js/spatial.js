@@ -1,516 +1,378 @@
-// Spatial home app — the interactive node-cluster that IS the homepage.
-// A chaotic field of 48 linked nodes with energy pulses + a deep parallax field;
-// 5 labeled page-nodes (home/about/goodies/blog/resume) you can click to fly the
-// camera, morph the cluster into that page's shape, and slide its content drawer in
-// from the right. The journal lives in a full-screen overlay (top-centre arrow);
-// blog posts + repo READMEs open in a shared full-screen overlay. Drag to rotate
-// (mouse + touch). Esc / "back to home" returns. Deep-linkable via #hash; back/forward
-// work. Drawers hold the site's real content roots, populated by the existing modules.
-// Pure vanilla JS, no deps. Respects prefers-reduced-motion.
-// Full math/replication spec: ARCHITECTURE.md §11.
+// Spatial home app — the interactive node-cluster that IS the homepage (v2).
+//
+// One cluster of 96 linked nodes sits on a continuous timeline of five sections
+// (home → about → goodies → blog → journal). Scrolling the wheel, swiping, arrow keys
+// or clicking a lit node SCRUBS that timeline: the cluster pours (staggered, per node)
+// from one shape into the next — nebula, torus knot, nested crystal, standing wave,
+// spine — and snaps to the nearest section when you stop. Translucent faces, depth of
+// field, a cursor lens, motion trails, lightning bolts and a deep parallax field dress it.
+//
+// Content lives in a floating glass WINDOW that is part of the scene: draggable by its
+// title bar, resizable on 8 handles, remembered in localStorage (`geleus_win`). The
+// cluster reflows into the largest free region beside it; the window's corners tether to
+// the nearest nodes and the active section's node docks to its title bar. Blog posts and
+// repo READMEs open in a full-screen reader overlay. Deep-linkable via #hash; back/forward
+// work; Esc returns. Modules (goodies/blog/summary/contributions) fill their usual roots
+// inside the window. Geometry + draw passes are shared with cluster.js via js/geo.js.
+// Pure vanilla JS. Respects prefers-reduced-motion. Full math: ARCHITECTURE.md §11.
 (function () {
+  var G = window.GELEUS && window.GELEUS.geo;
+  if (!G) return;
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  var CAM = 3.2, N = 48, T = 0;
+  var $ = function (id) { return document.getElementById(id); };
+  var N = G.N, CAM = G.CAM, rand = G.rand, lerp = G.lerp, clamp = G.clamp, easeIO = G.easeIO, nearOf = G.nearOf;
+  var cv = $('spatialCanvas'); if (!cv) return;
+  var ctx = cv.getContext('2d'), W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2), T = 0;
 
-  function rand(s) { var x = Math.sin(s * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
-  function easeIO(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
-  function lerp(a, b, t) { return a + (b - a) * t; }
-  function nearOf(z) { var n = 1 - (z + 1) / 2.4; return n < 0 ? 0 : (n > 1 ? 1 : n); }
-
-  // --- Shape builders (each returns exactly N points) ---
-  function clusterPos() {
-    var p = [];
-    for (var i = 0; i < N; i++) {
-      var r = Math.cbrt(rand(i * 5 + 1)) * 1.0, a = rand(i * 5 + 2) * 6.2832, b = Math.acos(2 * rand(i * 5 + 3) - 1);
-      var x = r * Math.sin(b) * Math.cos(a) * 1.3, y = r * Math.cos(b) * 0.85, z = r * Math.sin(b) * Math.sin(a) * 1.1;
-      x += (rand(i * 5 + 4) - 0.5) * 0.3; y += (rand(i * 5 + 5) - 0.5) * 0.3;
-      p.push({ x: x, y: y, z: z });
-    }
-    return p;
-  }
-  function helixPos() { // double helix (about)
-    var p = [], pairs = N / 2;
-    for (var k = 0; k < pairs; k++) {
-      var tt = k / (pairs - 1), a = tt * Math.PI * 2 * 2.3, y = (tt - 0.5) * 1.95, r = 0.52;
-      p.push({ x: r * Math.cos(a), y: y, z: r * Math.sin(a) });
-      p.push({ x: r * Math.cos(a + Math.PI), y: y, z: r * Math.sin(a + Math.PI) });
-    }
-    return p;
-  }
-  function latticePos() { // 3D cube lattice (goodies)
-    var p = [], nx = 4, ny = 4, nz = 3;
-    for (var x = 0; x < nx; x++) for (var y = 0; y < ny; y++) for (var z = 0; z < nz; z++)
-      p.push({ x: (x / (nx - 1) - 0.5) * 1.55, y: (y / (ny - 1) - 0.5) * 1.55, z: (z / (nz - 1) - 0.5) * 1.25 });
-    return p;
-  }
-  function wavePos(t) { // undulating field (blog)
-    var p = [], nx = 8, nz = 6;
-    for (var i = 0; i < nx; i++) for (var j = 0; j < nz; j++) {
-      var x = (i / (nx - 1) - 0.5) * 1.95, z = (j / (nz - 1) - 0.5) * 1.5;
-      p.push({ x: x, y: Math.sin(x * 3 + t * 1.6) * 0.24 + Math.cos(z * 3 + t * 1.2) * 0.24, z: z });
-    }
-    return p;
-  }
-
-  function knn(pos, k) {
-    var edges = [], seen = {};
-    for (var a = 0; a < pos.length; a++) {
-      var d = [];
-      for (var b = 0; b < pos.length; b++) {
-        if (a === b) continue;
-        var dx = pos[a].x - pos[b].x, dy = pos[a].y - pos[b].y, dz = pos[a].z - pos[b].z;
-        d.push({ b: b, dd: dx * dx + dy * dy + dz * dz });
-      }
-      d.sort(function (p, q) { return p.dd - q.dd; });
-      for (var e = 0; e < k; e++) {
-        var bi = d[e].b, lo = Math.min(a, bi), hi = Math.max(a, bi), key = lo + '_' + hi;
-        if (!seen[key]) { seen[key] = 1; edges.push([lo, hi]); }
-      }
-    }
-    return edges;
-  }
-
-  var SHAPES = {};
-  (function () {
-    var c = clusterPos(); SHAPES.home = { pos: c, edges: knn(c, 3), desc: 'cluster' };
-    var h = helixPos(); SHAPES.about = { pos: h, edges: knn(h, 2), desc: 'helix' };
-    var g = latticePos(); SHAPES.goodies = { pos: g, edges: knn(g, 3), desc: 'lattice' };
-    var w = wavePos(0); SHAPES.blog = { pos: w, edges: knn(w, 3), desc: 'field', dynamic: true };
-  })();
-
-  // labeled cluster nodes (each label rides a fixed node index through morphs).
-  // 'resume' opens geleus.io externally; the journal lives in a full-screen overlay
-  // triggered by the top-centre arrow (not a node).
-  var PAGE_LIST = [
-    ['home', 3], ['about', 12], ['goodies', 22], ['blog', 33], ['resume', 43]
+  // --- sections: the timeline. index = position on it; ANCH = the lit node that carries the label ---
+  var SHAPES = G.buildShapes();
+  var SEC = [
+    { key: 'home',    n: '00', shape: 'nebula',  pitch: -0.28, desc: 'a loose cluster of 96 nodes. scroll to morph it.' },
+    { key: 'about',   n: '01', shape: 'knot',    pitch: -0.55, desc: 'two strands, one surface. who i am and where i am from.' },
+    { key: 'goodies', n: '02', shape: 'crystal', pitch: -0.22, desc: 'three nested shells. open-source repos and experiments.' },
+    { key: 'blog',    n: '03', shape: 'field',   pitch: -0.6,  desc: 'a standing wave. notes, writeups, things learned.' },
+    { key: 'journal', n: '04', shape: 'spine',   pitch: -0.08, desc: 'a trunk with branches. the week, auto-generated.' }
   ];
+  var SHAPE_LABEL = { nebula: 'nebula', knot: 'torus knot', crystal: 'crystal', field: 'field', spine: 'spine' };
+  SEC.forEach(function (s) { s.S = SHAPES[s.shape]; });
+  var LAST = SEC.length - 1, ANCH = [5, 20, 41, 63, 84];
   var RESUME_URL = 'https://geleus.io/';
+  function posAt(i) { return (SEC[i].S.dynamic && !reduced) ? G.field(T) : SEC[i].S.pos; }
+  function idxOfKey(k) { for (var i = 0; i < SEC.length; i++) if (SEC[i].key === k) return i; return 0; }
+  function keyFromHash() { return idxOfKey(location.hash.slice(1)); }
 
-  // deep, dim node-field behind the art
-  var BGFIELD = (function () {
-    var p = [];
-    for (var i = 0; i < 78; i++) {
-      var u = rand(i + 7), v = rand(i + 77), w = rand(i + 777);
-      var r = 1.5 + 1.7 * Math.cbrt(u), a = v * 6.2832, b = Math.acos(2 * w - 1);
-      p.push({ x: r * Math.sin(b) * Math.cos(a), y: r * Math.cos(b), z: r * Math.sin(b) * Math.sin(a) });
-    }
-    return p;
-  })();
-  var BGEDGES = knn(BGFIELD, 1);
-  var bgEdgeSet = {};
-  for (var bei = 0; bei < BGEDGES.length; bei++) bgEdgeSet[BGEDGES[bei][0] + '_' + BGEDGES[bei][1]] = 1;
+  var BG = G.bgField(90);
 
-  function rotP(p, yaw, pitch) {
-    var c = Math.cos(yaw), s = Math.sin(yaw), x1 = p.x * c - p.z * s, z1 = p.x * s + p.z * c;
-    var cp = Math.cos(pitch), sp = Math.sin(pitch);
-    return { x: x1, y: p.y * cp - z1 * sp, z: p.y * sp + z1 * cp };
-  }
-
-  // --- Lightning bolts: an explicit jagged blue arc fires whenever two
-  // unconnected things drift close on screen — background dots to each other,
-  // a dot crossing the main rotating cluster, or two cluster nodes. The bolt's
-  // endpoints freeze where the strike happened and it flashes out over SPARK_DUR.
-  var SPARK_DUR = 0.42;
-  var fieldSpk = { sparks: [], cd: 0.5, max: 4 };    // dot <-> dot
-  var crossSpk = { sparks: [], cd: 0.5, max: 4 };    // dot <-> cluster node
-  var clusterSpk = { sparks: [], cd: 0.8, max: 2 };  // cluster node <-> node
-
-  function avgEdgeLen(pts, edgesArr) {
-    if (!edgesArr.length) return 0;
-    var s = 0;
-    for (var i = 0; i < edgesArr.length; i++) {
-      var A = pts[edgesArr[i][0]], B = pts[edgesArr[i][1]]; if (!A || !B) continue;
-      s += Math.sqrt((A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y));
-    }
-    return s / edgesArr.length;
-  }
-
-  function onScreen(P) { var m = 48; return P && P.x >= -m && P.x <= W + m && P.y >= -m && P.y <= H + m; }
-
-  // closest unconnected pair within one projected set (eSet flags existing links)
-  function closestUnlinked(pts, eSet, lim) {
-    var bestD = lim * lim, ba = -1, bb = -1, n = pts.length;
-    for (var a = 0; a < n; a++) {
-      if (!onScreen(pts[a])) continue;
-      for (var b = a + 1; b < n; b++) {
-        if (eSet && eSet[a + '_' + b]) continue;
-        if (!onScreen(pts[b])) continue;
-        var qx = pts[a].x - pts[b].x, qy = pts[a].y - pts[b].y, qd = qx * qx + qy * qy;
-        if (qd < bestD) { bestD = qd; ba = a; bb = b; }
-      }
-    }
-    return ba >= 0 ? { A: pts[ba], B: pts[bb] } : null;
-  }
-
-  // closest pair across two projected sets (e.g. a drifting dot crossing the cluster)
-  function closestCross(ptsA, ptsB, lim) {
-    var bestD = lim * lim, ba = -1, bb = -1;
-    for (var a = 0; a < ptsA.length; a++) {
-      if (!onScreen(ptsA[a])) continue;
-      for (var b = 0; b < ptsB.length; b++) {
-        if (!onScreen(ptsB[b])) continue;
-        var qx = ptsA[a].x - ptsB[b].x, qy = ptsA[a].y - ptsB[b].y, qd = qx * qx + qy * qy;
-        if (qd < bestD) { bestD = qd; ba = a; bb = b; }
-      }
-    }
-    return ba >= 0 ? { A: ptsA[ba], B: ptsB[bb] } : null;
-  }
-
-  function drawBolt(spk) {
-    var p = spk.life / SPARK_DUR, fseed = spk.seed + Math.floor(spk.life * 90);
-    // quick strike, then a gentle fade out (minimal flicker)
-    var rise = 0.16, env = p < rise ? p / rise : 1 - (p - rise) / (1 - rise);
-    if (env < 0) env = 0;
-    env *= 0.85 + 0.15 * rand(fseed + 11.0);
-    var ax = spk.ax, ay = spk.ay, bx = spk.bx, by = spk.by;
-    var dx = bx - ax, dy = by - ay, len = Math.sqrt(dx * dx + dy * dy) || 1, nx = -dy / len, ny = dx / len, segs = 5;
-    // two passes: soft desaturated steel-blue glow -> muted core (low saturation)
-    var P = [[2.6, '120,146,170', 0.26], [0.9, '198,212,226', 0.6]];
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    for (var pp = 0; pp < 2; pp++) {
-      ctx.beginPath(); ctx.moveTo(ax, ay);
-      for (var s = 1; s < segs; s++) {
-        var t = s / segs;
-        var jit = (rand(fseed + s * 4.7 + pp * 0.5) - 0.5) * len * 0.3 * (1 - Math.abs(2 * t - 1));
-        ctx.lineTo(ax + dx * t + nx * jit, ay + dy * t + ny * jit);
-      }
-      ctx.lineTo(bx, by);
-      ctx.lineWidth = P[pp][0]; ctx.strokeStyle = 'rgba(' + P[pp][1] + ',' + (P[pp][2] * env).toFixed(3) + ')';
-      ctx.stroke();
-    }
-    ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
-    var fr = 1.5 + 1.5 * env;   // small soft flash at both ends
-    ctx.fillStyle = 'rgba(180,198,214,' + (0.45 * env).toFixed(3) + ')';
-    ctx.beginPath(); ctx.arc(ax, ay, fr, 0, 7); ctx.fill();
-    ctx.beginPath(); ctx.arc(bx, by, fr, 0, 7); ctx.fill();
-  }
-
-  // throttled spawn + per-frame flash for one bolt layer; `finder` returns a pair or null
-  function stepBolts(st, finder) {
-    st.cd -= 0.016;
-    if (st.cd <= 0 && st.sparks.length < st.max) {
-      var pr = finder();
-      if (pr) {
-        st.sparks.push({ ax: pr.A.x, ay: pr.A.y, bx: pr.B.x, by: pr.B.y, life: 0, seed: rand(T * 1.7 + pr.A.x * 0.013 + pr.B.y * 0.017) * 1000 });
-        st.cd = 0.22 + rand(T * 3.1) * 0.5;     // brief breath between strikes
-      } else { st.cd = 0.06; }
-    }
-    for (var si = st.sparks.length - 1; si >= 0; si--) {
-      st.sparks[si].life += 0.016;
-      if (st.sparks[si].life >= SPARK_DUR) { st.sparks.splice(si, 1); continue; }
-      drawBolt(st.sparks[si]);
-    }
-  }
+  // --- state ---
+  var p = 0, tp = 0, shown = -1, lastSec = -1;
+  var yaw = 0.6, tgtYaw = 0.6, pitch = -0.28, userPitch = 0;
+  var cxS = 0, cyS = 0, sclS = 0, winOpen = false;
+  var drag = false, lx = 0, ly = 0, moved = 0, ptype = 'mouse', mouseX = -1, mouseY = -1, hovered = -1;
+  var DEL = []; for (var di = 0; di < N; di++) DEL.push(rand(di * 3.3 + 9) * 0.4); // per-node morph delay
+  var cur = new Array(N), sp = new Array(N), ox = [], oy = [];
+  for (var oi = 0; oi < N; oi++) { ox.push(0); oy.push(0); }
+  var tickPts = [], identTop = 0, frames = 0, fps = 0, fpsT = performance.now(), fpsN = 0;
+  var bolts = G.boltLayer(2, 0.8);
 
   // --- DOM ---
-  var cv = document.getElementById('spatialCanvas'), ctx = cv.getContext('2d'), W = 0, H = 0;
-  var panel = document.getElementById('panel');
-  var drawerPages = document.querySelectorAll('#panel .drawer-page');
-  var navBtns = document.querySelectorAll('.hud-nav [data-node]');
-  var rNodes = document.getElementById('rNodes'), rEdges = document.getElementById('rEdges'),
-      rYaw = document.getElementById('rYaw'), rPit = document.getElementById('rPit'),
-      rEffect = document.getElementById('rEffect'), rEffectD = document.getElementById('rEffectD');
+  var win = $('win'), winBar = $('winBar'), winDim = $('winDim'), winBody = $('winBody');
+  var pages = document.querySelectorAll('#win section[data-page]');
+  var navBtns = document.querySelectorAll('.hud-nav [data-node]'), ticks = document.querySelectorAll('.rail .tick');
+  var railDot = $('railDot'), hint = $('hint'), ident = document.querySelector('.hero-id');
+  var tele = { links: $('tLinks'), faces: $('tFaces'), morph: $('tMorph'), rot: $('tRot'), fps: $('tFps') };
 
-  // minimal seamless backdrop — pre-rendered
-  var bgC = document.createElement('canvas'), bgX = bgC.getContext('2d');
-  function buildBg() {
-    bgC.width = Math.floor(W * dpr); bgC.height = Math.floor(H * dpr); bgX.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var lg = bgX.createLinearGradient(0, 0, 0, H); lg.addColorStop(0, '#0f1110'); lg.addColorStop(1, '#0a0b0a');
-    bgX.fillStyle = lg; bgX.fillRect(0, 0, W, H);
-    var rg = bgX.createRadialGradient(W * 0.5, H * 0.42, Math.min(W, H) * 0.18, W * 0.5, H * 0.5, Math.max(W, H) * 0.78);
-    rg.addColorStop(0, 'rgba(0,0,0,0)'); rg.addColorStop(1, 'rgba(0,0,0,0.5)');
-    bgX.fillStyle = rg; bgX.fillRect(0, 0, W, H);
+  var vigC = document.createElement('canvas'), grain = G.makeGrain();
+  function measure() {
+    var cr = cv.getBoundingClientRect();
+    tickPts = Array.prototype.map.call(document.querySelectorAll('.rail .tick-dot'), function (el) {
+      var r = el.getBoundingClientRect(); return { x: r.left - cr.left + r.width / 2, y: r.top - cr.top + r.height / 2 };
+    });
+    if (ident) identTop = ident.getBoundingClientRect().top - cr.top;
   }
   function resize() {
     W = cv.clientWidth; H = cv.clientHeight;
-    cv.width = Math.floor(W * dpr); cv.height = Math.floor(H * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); buildBg();
+    cv.width = Math.floor(W * dpr); cv.height = Math.floor(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    G.buildVignette(vigC, W, H, dpr); measure();
   }
 
-  // --- state ---
-  var posCur = SHAPES.home.pos.map(function (p) { return { x: p.x, y: p.y, z: p.z }; });
-  var fromPos = posCur.map(function (p) { return { x: p.x, y: p.y, z: p.z }; });
-  var toPos = SHAPES.home.pos, fromEdges = SHAPES.home.edges, toEdges = SHAPES.home.edges;
-  var morphT = 1, curKey = 'home';
-  var yaw = 0.6, pitch = -0.3, tgtYaw = 0.6, tgtPitch = -0.3;
-  var camShiftX = 0, tgtShiftX = 0, zoom = 1, tgtZoom = 1;
-  var dragging = false, lastX = 0, lastY = 0, moved = 0, mouseX = -1, mouseY = -1, hoveredPage = null;
-
-  function setShape(key) {
-    var prev = curKey; if (key === prev && morphT >= 1) return;
-    fromPos = posCur.map(function (p) { return { x: p.x, y: p.y, z: p.z }; });
-    toPos = SHAPES[key].pos; fromEdges = SHAPES[prev].edges; toEdges = SHAPES[key].edges; morphT = 0; curKey = key;
+  // --- the window: dragged, resized, remembered ---
+  var WIN = { x: 0, y: 0, w: 0, h: 0 }, WKEY = 'geleus_win';
+  function defaultWin() { WIN.w = clamp(W * 0.48, 420, 760); WIN.h = clamp(H * 0.74, 340, 900); WIN.x = Math.max(16, W - WIN.w - 190); WIN.y = (H - WIN.h) / 2 + 8; }
+  function clampWin() {
+    WIN.w = clamp(WIN.w, 320, W - 32); WIN.h = clamp(WIN.h, 240, H - 32);
+    WIN.x = clamp(WIN.x, 16, W - WIN.w - 16); WIN.y = clamp(WIN.y, 16, H - WIN.h - 16);
   }
-
-  // --- navigation / drawer ---
-  function setActiveNav(key) {
-    Array.prototype.forEach.call(navBtns, function (b) { b.classList.toggle('active', b.getAttribute('data-node') === key); });
+  function applyWin(save) {
+    clampWin();
+    win.style.left = WIN.x + 'px'; win.style.top = WIN.y + 'px'; win.style.width = WIN.w + 'px'; win.style.height = WIN.h + 'px';
+    if (winDim) winDim.textContent = Math.round(WIN.w) + ' × ' + Math.round(WIN.h);
+    if (save) { try { localStorage.setItem(WKEY, JSON.stringify(WIN)); } catch (e) {} }
   }
-  function showDrawerPage(key) {
-    Array.prototype.forEach.call(drawerPages, function (s) { s.hidden = (s.getAttribute('data-page') !== key); });
+  function loadWin() {
+    var ok = false;
+    try { var j = JSON.parse(localStorage.getItem(WKEY) || 'null');
+      if (j && j.w > 0 && j.h > 0 && j.x + j.w <= W && j.y + j.h <= H) { WIN = { x: j.x, y: j.y, w: j.w, h: j.h }; ok = true; } } catch (e) {}
+    if (!ok) defaultWin();
+    applyWin(false);
   }
+  // the cluster takes the largest free region beside the window (clear of the HUD strip
+  // and the identity block), sized to lean slightly under the window's glass
+  function layoutTarget() {
+    var base = Math.min(W, H) * (W < 700 ? 0.42 : 0.34);
+    if (!(tp > 0)) return { cx: W / 2, cy: H / 2, s: base };
+    if (W <= 760) return { cx: W / 2, cy: H / 2 - H * 0.16, s: base };
+    var top = 72, bot = (identTop || H - 215) - 10;
+    var regs = [
+      { x: 0, y: top, w: WIN.x, h: bot - top },
+      { x: WIN.x + WIN.w, y: top, w: W - WIN.x - WIN.w - 150, h: bot - top },
+      { x: 0, y: top, w: W, h: WIN.y - top },
+      { x: 0, y: WIN.y + WIN.h, w: W, h: bot - WIN.y - WIN.h }
+    ], R = regs[0];
+    for (var i = 1; i < regs.length; i++) if (Math.min(regs[i].w, regs[i].h) > Math.min(R.w, R.h)) R = regs[i];
+    var m = Math.min(R.w, R.h);
+    return { cx: R.x + R.w / 2, cy: R.y + R.h / 2, s: clamp(m * 0.43, base * 0.4, base) };
+  }
+  var wdrag = null, wres = null;
+  function endWin() { if (wdrag || wres) { wdrag = null; wres = null; win.classList.remove('moving'); applyWin(true); } }
+  if (winBar) {
+    winBar.addEventListener('pointerdown', function (e) {
+      if (W <= 760 || (e.target.closest && e.target.closest('button, a'))) return;
+      wdrag = { x: e.clientX, y: e.clientY, wx: WIN.x, wy: WIN.y }; winBar.setPointerCapture(e.pointerId); win.classList.add('moving'); e.preventDefault();
+    });
+    winBar.addEventListener('pointermove', function (e) { if (!wdrag) return; WIN.x = wdrag.wx + e.clientX - wdrag.x; WIN.y = wdrag.wy + e.clientY - wdrag.y; applyWin(false); });
+    winBar.addEventListener('pointerup', endWin); winBar.addEventListener('pointercancel', endWin);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('#win .h'), function (h) {
+    h.addEventListener('pointerdown', function (e) {
+      wres = { d: h.getAttribute('data-d'), x: e.clientX, y: e.clientY, r: { x: WIN.x, y: WIN.y, w: WIN.w, h: WIN.h } };
+      h.setPointerCapture(e.pointerId); win.classList.add('moving'); e.preventDefault();
+    });
+    h.addEventListener('pointermove', function (e) {
+      if (!wres) return;
+      var d = wres.d, dx = e.clientX - wres.x, dy = e.clientY - wres.y, r = wres.r;
+      if (d.indexOf('e') >= 0) WIN.w = r.w + dx;
+      if (d.indexOf('s') >= 0) WIN.h = r.h + dy;
+      if (d.indexOf('w') >= 0) { var nw = clamp(r.w - dx, 320, r.x + r.w - 16); WIN.x = r.x + r.w - nw; WIN.w = nw; }
+      if (d.indexOf('n') >= 0) { var nh = clamp(r.h - dy, 240, r.y + r.h - 16); WIN.y = r.y + r.h - nh; WIN.h = nh; }
+      applyWin(false);
+    });
+    h.addEventListener('pointerup', endWin); h.addEventListener('pointercancel', endWin);
+  });
+  var fitBtn = $('winFit');
+  if (fitBtn) fitBtn.addEventListener('click', function () {
+    WIN.h = clamp(winBody.scrollHeight + winBar.offsetHeight + 2, 240, H - 32);
+    WIN.w = Math.max(320, Math.min(WIN.w, 560)); applyWin(true);
+  });
 
-  // --- blog: expand a post in-place inside the drawer (keeps the spatial design) ---
-  // --- blog post: opens in a full-screen overlay (same large window as the journal) ---
-  var postOverlay = document.getElementById('postOverlay');
-  var postContent = document.getElementById('post-overlay-content');
-  var postClose = document.getElementById('postClose');
+  // --- navigation / routing ---
+  var typeTimer, statusEl = $('status');
+  function typeStatus(s) {
+    if (!statusEl) return;
+    clearTimeout(typeTimer); var i = 0; statusEl.textContent = '';
+    if (reduced) { statusEl.textContent = s; return; }
+    (function step() { statusEl.textContent = s.slice(0, ++i); if (i < s.length) typeTimer = setTimeout(step, 14 + rand(i) * 24); })();
+  }
+  function liveUpdate() { // follows the scrub target continuously
+    var i = Math.round(tp), S = SEC[i];
+    Array.prototype.forEach.call(navBtns, function (b) { b.classList.toggle('active', b.getAttribute('data-node') === S.key); });
+    Array.prototype.forEach.call(ticks, function (b) { b.classList.toggle('active', +b.getAttribute('data-i') === i); });
+    var ey = $('eyebrow'); if (ey) ey.textContent = S.n + ' / ' + S.key + ' — ' + SHAPE_LABEL[S.shape];
+    if (i !== lastSec) { lastSec = i; typeStatus(S.desc); }
+  }
+  // go(i): set the timeline target; pushes history unless silent (popstate / initial)
+  function go(i, silent) {
+    tp = clamp(Math.round(i), 0, LAST); liveUpdate(); if (hint) hint.classList.add('gone');
+    if (shown !== tp) settle(-1);                  // never show a stale section while the morph travels
+    if (silent) return;
+    var key = SEC[tp].key, url = tp === 0 ? (location.pathname + location.search) : '#' + key;
+    if (keyFromHash() !== tp || (tp === 0 && location.hash)) {
+      try { history.pushState({ key: key }, '', url); } catch (e) { location.hash = tp === 0 ? '' : key; }
+    }
+  }
+  function settle(i) { // the window opens only once the morph has landed
+    if (i === shown) return; shown = i; winOpen = i > 0;
+    if (i <= 0) { win.classList.remove('open'); win.setAttribute('aria-hidden', 'true'); return; }
+    Array.prototype.forEach.call(pages, function (s) { s.hidden = (+s.getAttribute('data-page') !== i); });
+    var tag = $('winTag'); if (tag) tag.textContent = SEC[i].n + ' / ' + SEC[i].key;
+    win.classList.add('open'); win.setAttribute('aria-hidden', 'false'); if (winBody) winBody.scrollTop = 0;
+  }
+  Array.prototype.forEach.call(navBtns, function (b) {
+    b.addEventListener('click', function () {
+      var k = b.getAttribute('data-node');
+      if (k === 'resume') { window.open(RESUME_URL, '_blank', 'noopener'); return; }
+      go(idxOfKey(k));
+    });
+  });
+  Array.prototype.forEach.call(ticks, function (b) { b.addEventListener('click', function () { go(+b.getAttribute('data-i')); }); });
+  var closeBtn = $('winClose'); if (closeBtn) closeBtn.addEventListener('click', function () { go(0); });
+  window.addEventListener('popstate', function () { go(keyFromHash(), true); });
+
+  var snapT;
+  function scrub(d) {
+    tp = clamp(tp + d, 0, LAST); liveUpdate(); if (hint) hint.classList.add('gone');
+    clearTimeout(snapT); snapT = setTimeout(function () { go(Math.round(tp)); }, 360);
+  }
+  window.addEventListener('wheel', function (e) {
+    if (e.target.closest && e.target.closest('#win, .reader-overlay')) return; // let content scroll
+    e.preventDefault(); scrub(e.deltaY * 0.0014);
+  }, { passive: false });
+
+  // --- full-screen reader: blog posts + repo READMEs (shared overlay) ---
+  var postOverlay = $('postOverlay'), postContent = $('post-overlay-content'), postClose = $('postClose');
+  function openReader() { postContent.innerHTML = ''; postOverlay.classList.add('open'); postOverlay.setAttribute('aria-hidden', 'false'); postOverlay.scrollTop = 0; }
   function openPost(slug) {
-    if (!postOverlay || !postContent || !window.GELEUS || !window.GELEUS.loadPost) return false;
-    postContent.innerHTML = '';
-    postOverlay.classList.add('open'); postOverlay.setAttribute('aria-hidden', 'false'); postOverlay.scrollTop = 0;
+    if (!postOverlay || !postContent || !window.GELEUS.loadPost) return false;
+    openReader();
     window.GELEUS.loadPost(slug, postContent).catch(function () {
       postContent.innerHTML = '<p class="blog-error">Could not load this post. <a href="/blog/post.html?slug=' + encodeURIComponent(slug) + '">Open it on the full page →</a></p>';
     });
     return true;
   }
-  function closePost() {
-    if (!postOverlay) return;
-    postOverlay.classList.remove('open'); postOverlay.setAttribute('aria-hidden', 'true');
-  }
-  if (postClose) postClose.addEventListener('click', closePost);
-  if (postOverlay) postOverlay.addEventListener('click', function (e) { if (e.target === postOverlay) closePost(); });
   function openReadme(repo, branch) {
-    if (!postOverlay || !postContent || !window.GELEUS || !window.GELEUS.loadReadme) return false;
-    postContent.innerHTML = '';
-    postOverlay.classList.add('open'); postOverlay.setAttribute('aria-hidden', 'false'); postOverlay.scrollTop = 0;
-    window.GELEUS.loadReadme(repo, branch, postContent).catch(function () {
-      postContent.innerHTML = '<p class="blog-error">Could not load the README.</p>';
-    });
+    if (!postOverlay || !postContent || !window.GELEUS.loadReadme) return false;
+    openReader();
+    window.GELEUS.loadReadme(repo, branch, postContent).catch(function () { postContent.innerHTML = '<p class="blog-error">Could not load the README.</p>'; });
     return true;
   }
-  // intercept blog-card clicks (posts) and repo README buttons → full-screen overlay.
-  // README uses capture so the inline goodies.js handler doesn't also fire.
-  panel.addEventListener('click', function (e) {
+  function closeReader() { if (!postOverlay) return; postOverlay.classList.remove('open'); postOverlay.setAttribute('aria-hidden', 'true'); }
+  if (postClose) postClose.addEventListener('click', closeReader);
+  if (postOverlay) postOverlay.addEventListener('click', function (e) { if (e.target === postOverlay) closeReader(); });
+  // README buttons use capture so goodies.js's inline expander doesn't also fire
+  win.addEventListener('click', function (e) {
     var rbtn = e.target.closest('.repo-expand-btn');
     if (rbtn && openReadme(rbtn.getAttribute('data-repo'), rbtn.getAttribute('data-branch'))) { e.preventDefault(); e.stopPropagation(); }
   }, true);
-  panel.addEventListener('click', function (e) {
-    var card = e.target.closest('.blog-card');
-    if (!card) return;
-    var href = card.getAttribute('href') || '';
-    var m = href.match(/slug=([^&]+)/);
-    var slug = m ? decodeURIComponent(m[1]) : null;
+  win.addEventListener('click', function (e) {
+    var card = e.target.closest('.blog-card'); if (!card) return;
+    var m = (card.getAttribute('href') || '').match(/slug=([^&]+)/), slug = m ? decodeURIComponent(m[1]) : null;
     if (slug && openPost(slug)) e.preventDefault(); // else fall back to /blog/post.html
   });
 
-  function applyState(key) {
-    if (!SHAPES[key]) key = 'home';
-    setShape(key); setActiveNav(key);
-    if (key === 'home') {
-      panel.classList.remove('open'); tgtShiftX = 0; tgtZoom = 1;
-    } else {
-      showDrawerPage(key); panel.classList.add('open');
-      tgtShiftX = (W > 760 ? -W * 0.18 : 0); tgtZoom = 1.1;
-    }
-  }
-  function goPage(key) {
-    if (key === 'resume') { window.open(RESUME_URL, '_blank', 'noopener'); return; }
-    applyState(key);
-    var url = key === 'home' ? (location.pathname + location.search) : '#' + key;
-    if (location.hash.slice(1) !== key && !(key === 'home' && !location.hash)) {
-      try { history.pushState({ key: key }, '', url); } catch (e) { location.hash = key === 'home' ? '' : key; }
-    }
-  }
-  function keyFromHash() { var h = location.hash.slice(1); return SHAPES[h] ? h : 'home'; }
-
-  Array.prototype.forEach.call(navBtns, function (b) {
-    b.addEventListener('click', function () { goPage(b.getAttribute('data-node')); });
-  });
-  var backBtn = document.getElementById('panelBack');
-  if (backBtn) backBtn.addEventListener('click', function () { goPage('home'); });
-
-  // --- journal: full-screen overlay (tree + contributions), opened by the top arrow ---
-  var journalOverlay = document.getElementById('journalOverlay');
-  var journalTrigger = document.getElementById('journalTrigger');
-  var journalClose = document.getElementById('journalClose');
-  function openJournal() {
-    if (!journalOverlay) return;
-    journalOverlay.classList.add('open');
-    journalOverlay.setAttribute('aria-hidden', 'false');
-    if (journalTrigger) journalTrigger.setAttribute('aria-expanded', 'true');
-    journalOverlay.scrollTop = 0;
-  }
-  function closeJournal() {
-    if (!journalOverlay) return;
-    journalOverlay.classList.remove('open');
-    journalOverlay.setAttribute('aria-hidden', 'true');
-    if (journalTrigger) journalTrigger.setAttribute('aria-expanded', 'false');
-  }
-  if (journalTrigger) journalTrigger.addEventListener('click', openJournal);
-  if (journalClose) journalClose.addEventListener('click', closeJournal);
-  if (journalOverlay) journalOverlay.addEventListener('click', function (e) { if (e.target === journalOverlay) closeJournal(); });
-
   window.addEventListener('keydown', function (e) {
-    if (e.key !== 'Escape') return;
-    if (postOverlay && postOverlay.classList.contains('open')) { closePost(); return; }
-    if (journalOverlay && journalOverlay.classList.contains('open')) { closeJournal(); return; }
-    if (curKey !== 'home') goPage('home');
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (e.key === 'Escape') { if (postOverlay && postOverlay.classList.contains('open')) closeReader(); else if (tp !== 0) go(0); else return; }
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown') go(Math.round(tp) + 1);
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') go(Math.round(tp) - 1);
+    else if (/^[1-5]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey) go(+e.key - 1);
+    else return;
+    e.preventDefault();
   });
-  window.addEventListener('popstate', function () { applyState(keyFromHash()); });
 
-  // --- pointer (drag to rotate; tap a labeled node to open) ---
-  function relPos(e) { var r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
-  cv.addEventListener('pointerdown', function (e) { dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY; cv.setPointerCapture(e.pointerId); });
+  // --- pointer on the canvas: drag rotates (mouse) / vertical swipe scrubs (touch); tap a lit node ---
+  function rel(e) { var r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+  cv.addEventListener('pointerdown', function (e) { drag = true; moved = 0; lx = e.clientX; ly = e.clientY; ptype = e.pointerType; cv.setPointerCapture(e.pointerId); });
   cv.addEventListener('pointermove', function (e) {
-    var p = relPos(e); mouseX = p.x; mouseY = p.y;
-    if (dragging) {
-      var dx = e.clientX - lastX, dy = e.clientY - lastY; moved += Math.abs(dx) + Math.abs(dy);
-      tgtYaw += dx * 0.006; tgtPitch = Math.max(-1.2, Math.min(1.2, tgtPitch + dy * 0.006)); lastX = e.clientX; lastY = e.clientY;
-    }
+    var q = rel(e); mouseX = q.x; mouseY = q.y;
+    if (!drag) return;
+    var dx = e.clientX - lx, dy = e.clientY - ly; moved += Math.abs(dx) + Math.abs(dy); lx = e.clientX; ly = e.clientY;
+    if (ptype === 'touch') { if (Math.abs(dy) > Math.abs(dx)) scrub(-dy * 0.004); else tgtYaw += dx * 0.007; }
+    else { tgtYaw += dx * 0.006; userPitch = clamp(userPitch + dy * 0.006, -1, 1); }
   });
   cv.addEventListener('pointerup', function () {
-    dragging = false;
-    if (moved < 6) { if (hoveredPage) goPage(hoveredPage); else if (curKey !== 'home') goPage('home'); }
+    drag = false;
+    if (moved < 6) { if (hovered >= 0) go(hovered); else if (Math.round(tp) !== 0) go(0); }
   });
   cv.addEventListener('pointerleave', function () { mouseX = -1; mouseY = -1; });
-  window.addEventListener('pointerup', function () { dragging = false; });
+  window.addEventListener('pointerup', function () { drag = false; });
 
   // --- render ---
   function draw() {
-    if (!reduced && curKey === 'home' && !dragging && !hoveredPage) tgtYaw += 0.0045;
-    yaw += (tgtYaw - yaw) * 0.07; pitch += (tgtPitch - pitch) * 0.07;
-    camShiftX += (tgtShiftX - camShiftX) * 0.09; zoom += (tgtZoom - zoom) * 0.09;
-    var sf = W < 700 ? 0.46 : 0.33;
-    var cx = W / 2 + camShiftX, cy = H / 2, scale = Math.min(W, H) * sf * zoom;
+    if (reduced) p = tp; else p += (tp - p) * 0.075;
+    var i = clamp(Math.floor(p + 1e-6), 0, LAST), f = clamp(p - i, 0, 1), ri = Math.round(p), S = SEC[ri], k;
+    if (!reduced && ri === 0 && !drag && hovered < 0) tgtYaw += 0.0035;
+    yaw += (tgtYaw - yaw) * 0.07;
+    pitch += ((S.pitch + userPitch) - pitch) * 0.05;
+    var L = layoutTarget();
+    if (sclS === 0) { cxS = L.cx; cyS = L.cy; sclS = L.s; }
+    cxS += (L.cx - cxS) * 0.08; cyS += (L.cy - cyS) * 0.08; sclS += (L.s - sclS) * 0.08;
 
-    if (morphT < 1) {
-      morphT = Math.min(1, morphT + 0.024); var e = easeIO(morphT);
-      for (var i = 0; i < N; i++) {
-        posCur[i].x = lerp(fromPos[i].x, toPos[i].x, e);
-        posCur[i].y = lerp(fromPos[i].y, toPos[i].y, e);
-        posCur[i].z = lerp(fromPos[i].z, toPos[i].z, e);
-      }
-      if (morphT >= 1) fromEdges = toEdges;
-    } else if (curKey === 'blog' && !reduced) {
-      posCur = wavePos(T);
+    // staggered morph: each node leaves on its own delay so the cluster "pours"
+    var A = posAt(i), B = (f > 1e-4 && i < LAST) ? posAt(i + 1) : null;
+    for (k = 0; k < N; k++) {
+      if (!B) cur[k] = A[k];
+      else { var e = easeIO(clamp((f - DEL[k]) / 0.6, 0, 1)); cur[k] = { x: lerp(A[k].x, B[k].x, e), y: lerp(A[k].y, B[k].y, e), z: lerp(A[k].z, B[k].z, e) }; }
+    }
+    var ef = B ? easeIO(f) : 0;
+
+    // trails: clear less when things move fast
+    var speed = Math.abs(tp - p) * 1.6 + Math.abs(tgtYaw - yaw) * 0.9, ta = reduced ? 1 : clamp(1 - speed * 2.4, 0.28, 1);
+    ctx.fillStyle = 'rgba(14,16,15,' + ta.toFixed(3) + ')'; ctx.fillRect(0, 0, W, H);
+    ctx.drawImage(vigC, 0, 0, W, H);
+
+    var px = mouseX >= 0 ? (mouseX - W / 2) * 0.02 : 0, py = mouseY >= 0 ? (mouseY - H / 2) * 0.02 : 0;
+    G.drawDeepField(ctx, BG, W, H, T, px, py, reduced);
+
+    // project + cursor lens (nodes near the pointer are pushed aside and spring back)
+    var cx = cxS, cy = cyS, scale = sclS;
+    for (k = 0; k < N; k++) {
+      var r = G.rotP(cur[k], yaw, pitch), fz = CAM / (CAM + r.z), x = cx + r.x * fz * scale, y = cy + r.y * fz * scale, tx = 0, ty = 0;
+      if (mouseX >= 0 && !drag) { var dx = x - mouseX, dy = y - mouseY, d = Math.sqrt(dx * dx + dy * dy), R = 150;
+        if (d < R && d > 0.01) { var s = 1 - d / R, push = s * s * 26; tx = dx / d * push; ty = dy / d * push; } }
+      ox[k] += (tx - ox[k]) * 0.18; oy[k] += (ty - oy[k]) * 0.18;
+      sp[k] = { x: x + ox[k], y: y + oy[k], z: r.z, rx: r.x, ry: r.y };
     }
 
-    ctx.clearRect(0, 0, W, H); ctx.drawImage(bgC, 0, 0, W, H);
+    if (B) { G.drawFaces(ctx, sp, SEC[i].S.tris, 1 - ef); G.drawFaces(ctx, sp, SEC[i + 1].S.tris, ef); G.drawEdges(ctx, sp, SEC[i].S.edges, 1 - ef); G.drawEdges(ctx, sp, SEC[i + 1].S.edges, ef); }
+    else { G.drawFaces(ctx, sp, SEC[i].S.tris, 1); G.drawEdges(ctx, sp, SEC[i].S.edges, 1); }
+    if (!reduced && !B) G.drawPulses(ctx, sp, SEC[i].S.edges, T, 3);
+    G.drawNodes(ctx, sp);
+    if (!reduced && !B) G.stepBolts(ctx, bolts, function () { return G.closestUnlinked(sp, SEC[i].S.eset, scale * 0.2, W, H); }, T);
 
-    // deep parallax field
-    var fby = reduced ? 0.4 : T * 0.03, fbp = -0.18, fbs = Math.min(W, H) * 0.52, fcamF = 5;
-    var fsp = new Array(BGFIELD.length);
-    for (var i = 0; i < BGFIELD.length; i++) {
-      var fr = rotP(BGFIELD[i], fby, fbp), ff = fcamF / (fcamF + fr.z);
-      fsp[i] = { x: W / 2 + fr.x * ff * fbs, y: H / 2 + fr.y * ff * fbs, z: fr.z };
-    }
-    ctx.lineWidth = 1;
-    for (var i = 0; i < BGEDGES.length; i++) {
-      var fa = fsp[BGEDGES[i][0]], fb = fsp[BGEDGES[i][1]], fn = 1 - ((fa.z + fb.z) / 2 + 3.2) / 6.4;
-      ctx.strokeStyle = 'rgba(133,148,133,' + (0.05 + fn * 0.09).toFixed(3) + ')';
-      ctx.beginPath(); ctx.moveTo(fa.x, fa.y); ctx.lineTo(fb.x, fb.y); ctx.stroke();
-    }
-    for (var i = 0; i < fsp.length; i++) {
-      var fn = 1 - (fsp[i].z + 3.2) / 6.4; if (fn < 0) fn = 0;
-      ctx.fillStyle = 'rgba(143,175,120,' + (0.08 + fn * 0.2).toFixed(3) + ')';
-      ctx.beginPath(); ctx.arc(fsp[i].x, fsp[i].y, 0.9 + fn * 1.5, 0, 7); ctx.fill();
-    }
-
-    // project cluster
-    var sp = new Array(N);
-    for (var i = 0; i < N; i++) {
-      var r = rotP(posCur[i], yaw, pitch), f = CAM / (CAM + r.z);
-      sp[i] = { x: cx + r.x * f * scale, y: cy + r.y * f * scale, z: r.z };
-    }
-
-    // edges (crossfade during morph)
-    function edgeSet(edges, aMul) {
-      for (var e = 0; e < edges.length; e++) {
-        var A = sp[edges[e][0]], B = sp[edges[e][1]]; if (!A || !B) continue;
-        var nr = nearOf((A.z + B.z) / 2); ctx.lineWidth = 0.7 + nr * 1.4;
-        ctx.strokeStyle = 'rgba(143,175,120,' + ((0.1 + nr * 0.5) * aMul).toFixed(3) + ')';
-        ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
-      }
-    }
-    var me = morphT < 1 ? easeIO(morphT) : 1;
-    if (morphT < 1) edgeSet(fromEdges, 1 - me);
-    edgeSet(toEdges, me);
-
-    // pulses
-    if (!reduced) {
-      for (var e = 0; e < toEdges.length; e++) {
-        var A = sp[toEdges[e][0]], B = sp[toEdges[e][1]]; if (!A || !B) continue;
-        var ph = (T * 0.55 + e * 0.1973) % 1, x = A.x + (B.x - A.x) * ph, y = A.y + (B.y - A.y) * ph, nr = nearOf(A.z + (B.z - A.z) * ph);
-        ctx.fillStyle = 'rgba(224,236,210,' + ((0.3 + nr * 0.55) * me).toFixed(3) + ')';
-        ctx.beginPath(); ctx.arc(x, y, 1.1 + nr * 1.7, 0, 7); ctx.fill();
+    // anchors: hover test, lit node + label, leader line to its rail tick
+    hovered = -1;
+    if (mouseX >= 0 && !drag) { var hb = 22 * 22;
+      for (var ai = 0; ai < ANCH.length; ai++) { var Q = sp[ANCH[ai]], ddx = Q.x - mouseX, ddy = Q.y - mouseY, dd = ddx * ddx + ddy * ddy; if (dd < hb) { hb = dd; hovered = ai; } } }
+    cv.style.cursor = drag ? 'grabbing' : (hovered >= 0 ? 'pointer' : 'grab');
+    ctx.font = '500 11px "JetBrains Mono", ui-monospace, Menlo, monospace';
+    for (ai = 0; ai < ANCH.length; ai++) {
+      var Pq = sp[ANCH[ai]], nq = nearOf(Pq.z), act = (ai === ri || ai === hovered), rq = 2.6 + nq * 2.2;
+      var g3 = ctx.createRadialGradient(Pq.x, Pq.y, 0, Pq.x, Pq.y, rq * 3.6); g3.addColorStop(0, 'rgba(168,200,145,' + (act ? 0.55 : 0.3) + ')'); g3.addColorStop(1, 'rgba(168,200,145,0)');
+      ctx.fillStyle = g3; ctx.beginPath(); ctx.arc(Pq.x, Pq.y, rq * 3.6, 0, 7); ctx.fill();
+      ctx.fillStyle = 'rgba(230,240,222,1)'; ctx.beginPath(); ctx.arc(Pq.x, Pq.y, rq, 0, 7); ctx.fill();
+      if (act) { ctx.strokeStyle = 'rgba(168,200,145,.9)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(Pq.x, Pq.y, rq + 5 + Math.sin(T * 3) * 1.2, 0, 7); ctx.stroke(); }
+      ctx.fillStyle = 'rgba(230,232,228,' + (act ? 0.98 : 0.42 + nq * 0.3).toFixed(2) + ')';
+      ctx.fillText(SEC[ai].n + ' ' + SEC[ai].key, Pq.x + rq + 7, Pq.y + 4);
+      var tk = tickPts[ai];
+      if (tk) {
+        ctx.setLineDash(act ? [] : [2, 5]); ctx.lineWidth = 1; ctx.strokeStyle = act ? 'rgba(143,175,120,.6)' : 'rgba(120,134,124,.16)';
+        ctx.beginPath(); ctx.moveTo(Pq.x, Pq.y);
+        if (W > 760) { var mx = tk.x - 56; ctx.lineTo(mx, Pq.y); ctx.lineTo(mx + 18, tk.y); ctx.lineTo(tk.x - 8, tk.y); }
+        else { var my = tk.y + 40; ctx.lineTo(Pq.x, my); ctx.lineTo(tk.x, my - 14); ctx.lineTo(tk.x, tk.y + 8); }
+        ctx.stroke(); ctx.setLineDash([]);
       }
     }
 
-    // nodes
-    var ord = []; for (var i = 0; i < N; i++) ord.push(i);
-    ord.sort(function (a, b) { return sp[b].z - sp[a].z; });
-    for (var o = 0; o < ord.length; o++) {
-      var i = ord[o], P = sp[i], nr = nearOf(P.z), r = 1.7 + nr * 2.6;
-      if (nr > 0.62) {
-        var g = ctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, r * 3);
-        g.addColorStop(0, 'rgba(168,200,145,' + (0.22 * nr) + ')'); g.addColorStop(1, 'rgba(168,200,145,0)');
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(P.x, P.y, r * 3, 0, 7); ctx.fill();
+    // the window belongs to the scene: corners tether to the nearest nodes, the active node docks to the title bar
+    if (winOpen && W > 760) {
+      var corners = [[WIN.x, WIN.y], [WIN.x + WIN.w, WIN.y], [WIN.x, WIN.y + WIN.h], [WIN.x + WIN.w, WIN.y + WIN.h]];
+      ctx.lineWidth = 1; ctx.setLineDash([3, 5]);
+      for (var ci = 0; ci < 4; ci++) {
+        var cxw = corners[ci][0], cyw = corners[ci][1], bn = -1, bdd = 1e12;
+        for (k = 0; k < N; k++) { if (nearOf(sp[k].z) < 0.3) continue; var ex = sp[k].x - cxw, ey = sp[k].y - cyw, edd = ex * ex + ey * ey; if (edd < bdd) { bdd = edd; bn = k; } }
+        if (bn >= 0) {
+          var al = clamp(1 - Math.sqrt(bdd) / (Math.min(W, H) * 0.7), 0.08, 0.5);
+          ctx.strokeStyle = 'rgba(143,175,120,' + al.toFixed(3) + ')'; ctx.beginPath(); ctx.moveTo(cxw, cyw); ctx.lineTo(sp[bn].x, sp[bn].y); ctx.stroke();
+          ctx.fillStyle = 'rgba(168,200,145,' + (al + 0.3).toFixed(3) + ')'; ctx.fillRect(cxw - 2.5, cyw - 2.5, 5, 5);
+        }
       }
-      ctx.fillStyle = 'rgba(168,200,145,' + (0.42 + nr * 0.55).toFixed(3) + ')';
-      ctx.beginPath(); ctx.arc(P.x, P.y, r, 0, 7); ctx.fill();
+      ctx.setLineDash([]);
+      var dock = sp[ANCH[ri]], dkx = WIN.x, dky = WIN.y + 18;
+      ctx.strokeStyle = 'rgba(168,200,145,.75)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(dock.x, dock.y); ctx.lineTo(dkx, dky); ctx.stroke();
+      ctx.fillStyle = 'rgba(168,200,145,.95)'; ctx.beginPath(); ctx.arc(dkx, dky, 3, 0, 7); ctx.fill();
     }
 
-    // lightning bolts — drift dots zap each other, cross the rotating cluster, or arc between cluster nodes
-    if (!reduced) {
-      var minWH = Math.min(W, H);
-      var ckeys = {}; for (var ce = 0; ce < toEdges.length; ce++) ckeys[toEdges[ce][0] + '_' + toEdges[ce][1]] = 1;
-      stepBolts(fieldSpk, function () { return closestUnlinked(fsp, bgEdgeSet, minWH * 0.18); });
-      stepBolts(crossSpk, function () { return closestCross(fsp, sp, minWH * 0.13); });
-      stepBolts(clusterSpk, function () { return closestUnlinked(sp, ckeys, Math.max(avgEdgeLen(sp, toEdges) * 1.4, scale * 0.16)); });
-    }
+    ctx.globalAlpha = 0.055; ctx.fillStyle = grain; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
 
-    // labeled page-nodes (clickable)
-    hoveredPage = null;
-    if (mouseX >= 0 && !dragging) {
-      var hb = 460;
-      for (var pi = 0; pi < PAGE_LIST.length; pi++) {
-        var Q = sp[PAGE_LIST[pi][1]], dx = Q.x - mouseX, dy = Q.y - mouseY, dd = dx * dx + dy * dy;
-        if (dd < hb) { hb = dd; hoveredPage = PAGE_LIST[pi][0]; }
-      }
+    // settle → window; rail dot; telemetry
+    settle((Math.abs(p - tp) < 0.02 && tp === Math.round(tp)) ? tp : -1);
+    if (railDot && tickPts.length === SEC.length && W > 760) {
+      var rr0 = railDot.parentNode.getBoundingClientRect(), cr = cv.getBoundingClientRect();
+      railDot.style.top = (lerp(tickPts[0].y, tickPts[LAST].y, p / LAST) - (rr0.top - cr.top)) + 'px';
     }
-    cv.style.cursor = dragging ? 'grabbing' : (hoveredPage ? 'pointer' : 'grab');
-    for (var pi = 0; pi < PAGE_LIST.length; pi++) {
-      var key = PAGE_LIST[pi][0], P = sp[PAGE_LIST[pi][1]], nr = nearOf(P.z), active = (key === curKey || key === hoveredPage), rr = 3 + nr * 2.4;
-      var g2 = ctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, rr * 3.4);
-      g2.addColorStop(0, 'rgba(168,200,145,' + (0.32 + 0.3 * nr) + ')'); g2.addColorStop(1, 'rgba(168,200,145,0)');
-      ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(P.x, P.y, rr * 3.4, 0, 7); ctx.fill();
-      ctx.fillStyle = 'rgba(224,236,210,1)'; ctx.beginPath(); ctx.arc(P.x, P.y, rr, 0, 7); ctx.fill();
-      if (active) { ctx.strokeStyle = 'rgba(168,200,145,0.9)'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(P.x, P.y, rr + 5, 0, 7); ctx.stroke(); }
-      ctx.font = '600 ' + (11.5 + nr * 2).toFixed(0) + 'px ui-monospace,SFMono-Regular,Menlo,monospace';
-      ctx.fillStyle = 'rgba(230,232,228,' + (active ? 0.98 : (0.5 + nr * 0.4)) + ')';
-      ctx.fillText(key, P.x + rr + 5, P.y + 3.5);
+    frames++; fpsN++; var now = performance.now();
+    if (now - fpsT > 500) { fps = Math.round(fpsN * 1000 / (now - fpsT)); fpsN = 0; fpsT = now; }
+    if (frames % 6 === 0 && tele.links) {
+      tele.links.textContent = S.S.edges.length; tele.faces.textContent = S.S.tris.length;
+      tele.morph.textContent = Math.round(p / LAST * 100) + '%';
+      tele.rot.textContent = Math.round((yaw * 180 / Math.PI) % 360) + '° · ' + Math.round(pitch * 180 / Math.PI) + '°';
+      tele.fps.textContent = fps + ' fps';
     }
-
-    if (rNodes) rNodes.textContent = N;
-    if (rEdges) rEdges.textContent = SHAPES[curKey].edges.length;
-    if (rYaw) rYaw.textContent = Math.round((yaw * 180 / Math.PI) % 360) + '°';
-    if (rPit) rPit.textContent = Math.round(pitch * 180 / Math.PI) + '°';
-    if (rEffect) rEffect.textContent = curKey;
-    if (rEffectD) rEffectD.textContent = SHAPES[curKey].desc;
+    if (frames % 30 === 0) measure();
   }
-
   function frame() { if (!reduced) T += 0.016; draw(); requestAnimationFrame(frame); }
-
-  function start() {
-    resize();
-    applyState(keyFromHash()); // honor deep-link, e.g. #goodies
-    if (location.hash === '#journal') openJournal();
-    if (reduced) { morphT = 1; draw(); requestAnimationFrame(frame); return; }
-    requestAnimationFrame(frame);
-  }
 
   var rt;
   window.addEventListener('resize', function () {
     clearTimeout(rt);
-    rt = setTimeout(function () {
-      dpr = Math.min(window.devicePixelRatio || 1, 2); resize();
-      // re-evaluate drawer shift for the new width
-      if (curKey !== 'home') tgtShiftX = (W > 760 ? -W * 0.18 : 0);
-    }, 150);
+    rt = setTimeout(function () { dpr = Math.min(window.devicePixelRatio || 1, 2); resize(); applyWin(false); }, 120);
   });
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-  else start();
+  function start() {
+    resize(); loadWin();
+    var h = keyFromHash(); tp = h; p = h;        // honour deep links (#goodies, #journal, …)
+    go(h, true);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    requestAnimationFrame(frame);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

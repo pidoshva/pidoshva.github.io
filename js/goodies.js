@@ -1,9 +1,12 @@
 // GitHub repo cards with expandable README
 (function () {
   const USERNAME = 'pidoshva';
-  const API_URL = `https://api.github.com/users/${USERNAME}/repos?sort=updated&per_page=30`;
+  // per_page=100 so a `goodie` repo can never fall off the end of the list just
+  // because other repos were pushed to more recently.
+  const API_URL = `https://api.github.com/users/${USERNAME}/repos?sort=updated&per_page=100`;
   const CACHE_KEY = 'geleus_repos';
-  const CACHE_TTL = 3600000; // 1 hour
+  const CACHE_VERSION = 2;   // bump to invalidate every visitor's cached payload
+  const CACHE_TTL = 300000;  // 5 min — how long we serve the cache without revalidating
   const REQUIRED_TOPIC = 'goodie';
 
   // Language colors — shared via lang-colors.js, fallback to empty
@@ -31,19 +34,40 @@
     return `${Math.floor(months / 12)}y ago`;
   }
 
+  // Only the fields the cards actually use. The raw API payload is ~10x larger,
+  // which risks blowing the localStorage quota and silently losing the cache.
+  function slim(repos) {
+    return repos.map(r => ({
+      name: r.name,
+      html_url: r.html_url,
+      description: r.description,
+      language: r.language,
+      stargazers_count: r.stargazers_count,
+      forks_count: r.forks_count,
+      updated_at: r.updated_at,
+      clone_url: r.clone_url,
+      default_branch: r.default_branch,
+      topics: r.topics || []
+    }));
+  }
+
   function getCached() {
     try {
       const raw = localStorage.getItem(CACHE_KEY);
       if (!raw) return null;
-      const { data, ts } = JSON.parse(raw);
-      if (!Array.isArray(data)) return null;
-      return { data, fresh: Date.now() - ts <= CACHE_TTL };
+      const c = JSON.parse(raw);
+      // Older/unknown shapes are dropped rather than trusted — otherwise a cache
+      // written by a previous version keeps serving its stale topic lists.
+      if (c.v !== CACHE_VERSION || !Array.isArray(c.data)) return null;
+      return { data: c.data, etag: c.etag || null, fresh: Date.now() - c.ts <= CACHE_TTL };
     } catch { return null; }
   }
 
-  function setCache(data) {
+  function setCache(data, etag) {
     try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        v: CACHE_VERSION, data, etag: etag || null, ts: Date.now()
+      }));
     } catch { /* ignore */ }
   }
 
@@ -250,28 +274,37 @@
   function init() {
     const cached = getCached();
 
-    // Fresh cache: render it and skip the API entirely (helps stay under
-    // GitHub's 60 req/hr unauthenticated rate limit).
-    if (cached && cached.fresh) {
-      render(cached.data);
-      return;
-    }
+    // Paint the cache first so the section is never empty, then revalidate below
+    // so a `goodie` topic added or removed on GitHub shows up on the next load.
+    if (cached) render(cached.data);
+    if (cached && cached.fresh) return;
 
-    fetch(API_URL)
+    // Conditional request. If nothing changed GitHub answers 304, which — unlike
+    // a 200 — costs nothing against the 60 req/hr unauthenticated limit, so we can
+    // check for topic changes on essentially every visit instead of once an hour.
+    const headers = {};
+    if (cached && cached.etag) headers['If-None-Match'] = cached.etag;
+
+    fetch(API_URL, { headers, cache: 'no-store' })
       .then(r => {
+        // Not modified: topics are unchanged, so just trust the cache for another TTL.
+        if (r.status === 304 && cached) {
+          setCache(cached.data, cached.etag);
+          return null;
+        }
         if (!r.ok) throw new Error(String(r.status));
-        return r.json();
+        const etag = r.headers.get('ETag');
+        return r.json().then(repos => ({ repos: slim(repos), etag }));
       })
-      .then(repos => {
-        setCache(repos);
-        render(repos);
+      .then(res => {
+        if (!res) return;
+        const changed = !cached || JSON.stringify(res.repos) !== JSON.stringify(cached.data);
+        setCache(res.repos, res.etag);
+        if (changed) render(res.repos); // skip the DOM rebuild when nothing moved
       })
       .catch(err => {
-        // Stale cache beats an error message.
-        if (cached) {
-          render(cached.data);
-          return;
-        }
+        // Stale cache beats an error message — and it is already on screen.
+        if (cached) return;
         const root = document.getElementById('repo-root');
         if (!root) return;
         const rateLimited = err && (err.message === '403' || err.message === '429');

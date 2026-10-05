@@ -12,17 +12,22 @@ no build step. Interactive terminal résumé lives separately at geleus.io.
 > morph/pulse/field equations, and a per-page mapping, transcribed verbatim and 100% replicable
 > — is in **[ARCHITECTURE.md §11](ARCHITECTURE.md#11-appendix--exact-geometry--math-replication-spec)**.
 
-## What this site is now (post June-2026 rebuild)
+## What this site is now (spatial v2, October 2026)
 
 The **homepage (`/`) is an interactive app**, not a normal page: a full-viewport `<canvas>`
-rendering one cluster of 48 nodes that **morphs into a different shape per section**, with
-content in a right **drawer** (about/goodies/blog) or a **full-screen overlay** (journal,
-blog posts, repo READMEs). All driven by `js/spatial.js`. Occasional minimal, desaturated
-**lightning bolts** arc between unconnected nodes/dots that drift close (three layers:
-dot↔dot, dot↔cluster, node↔node) — see [`ARCHITECTURE.md §3.2 + §11.12`](ARCHITECTURE.md).
+rendering one cluster of **96 nodes** on a **scrubbable timeline of five sections**
+(home → about → goodies → blog → journal). Wheel / swipe / arrow keys / clicking a lit node
+scrub it; the cluster pours (per-node staggered) from one shape into the next — nebula,
+torus knot, nested crystal, standing wave, spine — and snaps to the nearest section.
+Translucent faces, depth of field, a cursor lens, motion trails, lightning bolts and a deep
+parallax field dress it. Content lives in a **floating glass window** that is *part of the
+scene*: draggable, resizable (8 handles), remembered in `localStorage`; the cluster reflows
+into the free space beside it and its corners tether to the nearest nodes. Blog posts and
+repo READMEs open in a **full-screen reader**. All driven by `js/spatial.js`, with geometry
+and draw passes shared via `js/geo.js` — see [`ARCHITECTURE.md §3`](ARCHITECTURE.md).
 
 `/goodies/`, `/blog/`, `/blog/post.html` are **fallback pages** (normal scrolling HTML for
-deep links + SEO) that use `js/cluster.js` as an animated *background*.
+deep links + SEO) that use `js/cluster.js` (same shapes/look, non-interactive) as a background.
 
 ## Tech stack
 
@@ -46,9 +51,10 @@ HUD/code/labels. The canvas palette is duplicated as `rgba()` literals in the JS
 
 | File | Purpose |
 |---|---|
-| `index.html` | the spatial app (canvas, HUD nav, drawer, overlays) |
-| `js/spatial.js` | ★ homepage engine: shapes, morph, nav, hash routing, overlays |
-| `js/cluster.js` | animated background for fallback pages (`<body data-shape>`) |
+| `index.html` | the spatial app (canvas, HUD nav, section rail, window, reader overlay) |
+| `js/geo.js` | ★ shared geometry + draw passes (`window.GELEUS.geo`) — load before either engine |
+| `js/spatial.js` | ★ homepage engine: timeline scrub, morph, window, nav, hash routing, reader |
+| `js/cluster.js` | animated background for fallback pages (`<body data-shape>`), built on geo.js |
 | `js/goodies.js` | repo cards (`#repo-root`); `window.GELEUS.loadReadme` |
 | `js/blog.js` | post list/reader (`#blog-list-root`/`#post-root`); `window.GELEUS.loadPost` |
 | `js/summary.js` | weekly-summary tree (`#summary-root`) |
@@ -70,7 +76,10 @@ HUD/code/labels. The canvas palette is duplicated as `rgba()` literals in the JS
 - **All JS in IIFEs**; shared state only via `window.GELEUS`. `camelCase`. HTML-escape API content.
 - **DOM contracts:** modules find fixed ids (`#repo-root`, `#blog-list-root`, `#summary-root`,
   `#contrib-root`, etc.) — renaming an id means updating the module too.
-- **localStorage keys** (clear to force refresh): `geleus_repos`, `geleus_contrib`, `geleus_profile`.
+- **localStorage keys** (clear to force refresh): `geleus_repos`, `geleus_contrib`, `geleus_profile`,
+  `geleus_win` (the homepage window's position/size).
+- **geo.js is shared.** Any change to a shape builder or draw pass affects BOTH the homepage and the
+  fallback backgrounds — bump `geo.js?v=` in all four HTML files.
 - **Deploy:** edit → bump `?v=` → commit → push `main`. GitHub Pages auto-deploys (~1–2 min).
 - Pushing code does **not** refresh the journal — run `gh workflow run weekly-summary.yml` or wait for Saturday's cron.
 - **Journal authorship:** the journal distinguishes PRs you *authored* (Shipped/Implemented/…) from
@@ -85,7 +94,9 @@ the journal — all have step-by-step recipes in [`ARCHITECTURE.md`](ARCHITECTUR
 ## Verify
 
 `python3 -m http.server` → `localhost:8000` (try `/#goodies`, `/#blog`, `/#journal`). Smoke
-check: cluster spins/drags, each nav node morphs + opens live content, the journal arrow opens
-the tree + heatmap overlay, a blog card and a repo "readme" each open the full-screen reader,
-`Esc`/back work, fallback pages still load. (Headless Chrome misrenders narrow viewports —
-check mobile on a real device.)
+check: cluster spins/drags; wheel scrubs the morph and snaps; each nav item / rail tick / lit node
+opens its window with live content (journal = tree + heatmap); the window drags and resizes and
+the cluster reflows; a blog card and a repo "readme" each open the full-screen reader; `Esc`/back
+work; fallback pages still load. (Headless Chrome misrenders narrow viewports — check mobile on a
+real device. Also: `requestAnimationFrame` pauses in a hidden tab, so the window only opens once
+the morph has *landed* — a background tab looks "stuck" until it is shown.)

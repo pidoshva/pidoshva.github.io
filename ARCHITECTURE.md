@@ -2,17 +2,21 @@
 
 In-depth reference for editing and extending the site. For a quick orientation read
 [`CLAUDE.md`](CLAUDE.md); this file is the deep dive. Everything here reflects the
-**spatial rebuild** (June 2026): the homepage is now a single interactive 3D node
-cluster, and the old multi-page layout survives only as fallback pages.
+**spatial v2 rebuild** (October 2026): the homepage is a single interactive 3D node
+cluster on a scrubbable section timeline with a floating content window; the old multi-page
+layout survives only as fallback pages.
 
 ---
 
 ## 1. Mental model
 
 - **`/` (homepage)** is a self-contained **app**: a full-viewport `<canvas>` rendering
-  one cluster of 48 nodes. The cluster **morphs into a different shape per section**,
-  and content opens in a right-hand **drawer** (about/goodies/blog) or a **full-screen
-  overlay** (journal, blog posts, repo READMEs). Driven entirely by `js/spatial.js`.
+  one cluster of **96 nodes** on a **timeline of five sections** (home, about, goodies,
+  blog, journal). Scrolling/swiping/keys/clicking **scrub** the timeline and the cluster
+  **morphs into a different shape per section**. Content opens in a **floating glass
+  window** that is part of the scene (draggable, resizable, remembered); blog posts and
+  repo READMEs open in a **full-screen reader**. Driven by `js/spatial.js` on top of the
+  shared `js/geo.js`.
 - **`/goodies/`, `/blog/`, `/blog/post.html`** are **fallback pages** — normal scrolling
   HTML kept for deep links, bookmarks, and SEO. They use `js/cluster.js` as an animated
   *background* (not interactive). They are what crawlers and no-JS visitors get.
@@ -23,11 +27,11 @@ cluster, and the old multi-page layout survives only as fallback pages.
   Pages from `main`. All JS is in IIFEs; shared globals live under `window.GELEUS`.
 
 ```
-visitor → / ─────────────► index.html + spatial.js (the app)
-                              ├─ drawer pages   → goodies.js / blog.js inject into #repo-root / #blog-list-root
-                              ├─ journal overlay → summary.js + contributions.js inject into #summary-root / #contrib-root
-                              └─ post/readme overlay → window.GELEUS.loadPost / loadReadme
-visitor → /goodies/ etc ──► fallback page + cluster.js background + same modules
+visitor → / ─────────────► index.html + geo.js + spatial.js (the app)
+                              ├─ window sections → goodies.js / blog.js inject into #repo-root / #blog-list-root
+                              │                    summary.js + contributions.js inject into #summary-root / #contrib-root (journal)
+                              └─ reader overlay  → window.GELEUS.loadPost / loadReadme
+visitor → /goodies/ etc ──► fallback page + geo.js + cluster.js background + same modules
 weekly cron ─────────────► scripts/weekly-summary.py → data/weekly-summaries.json (committed by bot)
 ```
 
@@ -37,7 +41,7 @@ weekly cron ─────────────► scripts/weekly-summary.py
 
 ```
 pidoshva.github.io/
-├── index.html                 # THE APP (spatial homepage)
+├── index.html                 # THE APP (spatial v2 homepage)
 ├── goodies/index.html         # fallback page (repo cards)
 ├── blog/index.html            # fallback page (post list)
 ├── blog/post.html             # fallback page (single post reader, ?slug=)
@@ -45,8 +49,9 @@ pidoshva.github.io/
 ├── blog/posts/*.md            # blog post bodies (Markdown)
 ├── css/styles.css             # ALL styles (single file, CSS variables, no preprocessor)
 ├── js/
-│   ├── spatial.js             # ★ homepage app: cluster engine + nav + overlays
-│   ├── cluster.js             # animated background for fallback pages (per-page shape)
+│   ├── geo.js                 # ★ SHARED geometry + draw passes (window.GELEUS.geo) — load first
+│   ├── spatial.js             # ★ homepage app: timeline scrub, morph, window, nav, reader
+│   ├── cluster.js             # animated background for fallback pages (per-page shape), on geo.js
 │   ├── topo.js                # LEGACY background (kept, unused — safe to ignore)
 │   ├── goodies.js             # repo cards; exposes window.GELEUS.loadReadme
 │   ├── blog.js                # post list + reader; exposes window.GELEUS.loadPost
@@ -77,150 +82,152 @@ requires a matching change in `js/spatial.js`**:
 
 | Element | Role |
 |---|---|
-| `canvas#spatialCanvas` | render target |
+| `canvas#spatialCanvas` | render target (fixed, full viewport) |
+| `.frame` | four viewfinder corner brackets (decorative) |
 | `.hud-top > .brand` | "geleus" wordmark (links to `/`) |
-| `.hud-nav button[data-node="…"]` | nav buttons; `data-node` ∈ `home,about,goodies,blog,resume` |
-| `#readout` + `#rNodes/#rEdges/#rYaw/#rPit/#rEffect/#rEffectD` | live HUD readout (desktop only) |
-| `.hero-id.hero` → `h1`, `.role-line` | identity block. `.hero h1` is synced by `profile.js` |
-| `#journalTrigger` | top-center arrow → opens journal overlay |
-| `#panel` | right drawer; gets `.open` class |
-| `.drawer-page[data-page="about\|goodies\|blog"]` | drawer sections (only the active one is shown) |
-| `#repo-root` / `#blog-list-root` | injection roots inside the goodies/blog drawer pages |
-| `#journalOverlay` + `#journalClose` | full-screen journal overlay; `.open` toggles |
-| `#summary-root` / `#contrib-root` | journal content (tree + heatmap), inside the journal overlay |
-| `#postOverlay` + `#postClose` + `#post-overlay-content` | full-screen reader for blog posts AND repo READMEs |
+| `.hud-nav button[data-node="…"]` | nav; `data-node` ∈ `home,about,goodies,blog,journal,resume` (`resume` opens geleus.io) |
+| `.rail .tick[data-i="0..4"]` + `.tick-dot` + `#railDot` | section rail (the timeline); leader lines are drawn to each `.tick-dot`; `#railDot` is the progress dot |
+| `.hero-id.hero` → `#eyebrow`, `h1`, `.role-line`, `#status` | identity block; `.hero h1` is synced by `profile.js`; `#status` is the typed section description |
+| `.tele` → `#tLinks/#tFaces/#tMorph/#tRot/#tFps` | live telemetry (desktop only) |
+| `#hint` | first-use hint; fades after the first scrub |
+| `#win` | **the window**; `.open` toggles; `#winBar` (drag handle, `#winTag`, `#winDim`, `#winFit`, `#winClose`), `#winBody` (scrolls), `.h[data-d=n|s|e|w|ne|nw|se|sw]` resize handles |
+| `#win section[data-page="1..4"]` | window sections (about=1, goodies=2, blog=3, journal=4); only the active one is shown |
+| `#repo-root` / `#blog-list-root` / `#summary-root` / `#contrib-root` | module injection roots inside the window sections |
+| `#postOverlay` + `#postClose` + `#post-overlay-content` | full-screen **reader** for blog posts AND repo READMEs (`.reader-overlay`) |
 | `#contrib-tooltip` | hover tooltip used by `contributions.js` |
 
-**Script load order** (matters — `lang-colors` before `goodies`; `marked`+`hljs` before
-`blog`/`goodies` so Markdown + highlighting are available):
-`spatial.js → lang-colors.js → marked → hljs → goodies.js → blog.js → summary.js → contributions.js → profile.js`.
+**Script load order** (matters — `geo.js` before `spatial.js`; `lang-colors` before `goodies`;
+`marked`+`hljs` before `blog`/`goodies`):
+`geo.js → spatial.js → lang-colors.js → marked → hljs → goodies.js → blog.js → summary.js → contributions.js → profile.js`.
 `nav.js` is **not** loaded here.
 
-### 3.2 The engine (`js/spatial.js`, ~vanilla IIFE)
+### 3.2 The engine (`js/spatial.js` on `js/geo.js`)
 
-**Geometry.** A fixed set of `N = 48` nodes. Each "shape" is just a list of `N` target
-positions plus a nearest-neighbour edge list (`knn(pos, k)`):
+**Shared core (`geo.js`, `window.GELEUS.geo`).** Deterministic geometry and the per-frame draw
+passes used by both the app and the fallback background: `N = 96` nodes, `CAM = 3.4`, `rand`,
+`knn`, `trisOf` (every triangle whose three sides are edges → translucent faces),
+the five shape builders, `buildShapes()` (adds `tris`, `eset`), `bgField(90)`, `rotP`, the depth
+colour LUT `col(nr)` (far steel `104,122,138` → near moss `168,200,145`), and draw passes
+`drawDeepField / drawFaces / drawEdges / drawPulses / drawNodes`, the bolt layer
+(`boltLayer / stepBolts / closestUnlinked`), `makeGrain`, `buildVignette`. Exact math: §11.
 
-| Shape key | Builder | k | `desc` | Used by |
+**Sections = the timeline.** `SEC[i]` (index = position on the timeline):
+
+| i | key | shape | pitch | window |
 |---|---|---|---|---|
-| `home` | `clusterPos()` — chaotic ball | 3 | cluster | home node |
-| `about` | `helixPos()` — double helix | 2 | helix | about node |
-| `goodies` | `latticePos()` — 4×4×3 cube | 3 | lattice | goodies node |
-| `blog` | `wavePos(t)` — 8×6 undulating field (`dynamic:true`, recomputed each frame) | 3 | field | blog node |
+| 0 | `home` | `nebula` — chaotic ball, knn 3 | −0.28 | closed |
+| 1 | `about` | `knot` — (2,3) torus knot, chain + 2 cross-links | −0.55 | about text + links |
+| 2 | `goodies` | `crystal` — 3 nested icosphere shells | −0.22 | `#repo-root` |
+| 3 | `blog` | `field` — 12×8 standing wave (`dynamic`, rebuilt each frame) | −0.6 | `#blog-list-root` |
+| 4 | `journal` | `spine` — trunk 16 + 5 branches each | −0.08 | `#summary-root` + `#contrib-root` |
 
-`SHAPES = { home, about, goodies, blog }`. (There is **no** `resume`/`journal` shape —
-see below.) To add a section shape, add a builder + a `SHAPES` entry (see Cookbook §9).
+`ANCH = [5, 20, 41, 63, 84]` pins each section's **lit, labelled node** to a fixed node index so
+it rides every morph. `resume` is nav-only (`window.open('https://geleus.io/')`).
 
-**Labeled page-nodes.** `PAGE_LIST` pins each clickable label to a *fixed node index* so
-the label rides the morph:
-```js
-PAGE_LIST = [ ['home',3], ['about',12], ['goodies',22], ['blog',33], ['resume',43] ]
-RESUME_URL = 'https://geleus.io/'   // resume is an EXTERNAL link, not a shape/drawer
-```
+**Timeline scrub.** `tp` is the target position (0..4), `p` eases toward it (`p += (tp−p)·0.075`).
+Wheel: `tp += deltaY·0.0014` (ignored over `#win`/`.reader-overlay` so content scrolls); touch
+vertical drag: `tp −= dy·0.004`; both snap to `round(tp)` 360 ms after the last input via `go()`.
+Keys: arrows / PageUp/Down step, `1–5` jump, `Esc` closes the reader, else goes home.
+`go(i, silent)` sets `tp`, updates nav/rail/eyebrow/status (`liveUpdate`), hides stale window
+content (`settle(-1)`), and pushes history unless `silent`.
 
-**Render loop** (`draw()`, via `requestAnimationFrame`):
-1. auto-rotate yaw (home only, when not dragging/hovering) and ease `yaw/pitch/camShiftX/zoom` toward targets;
-2. if mid-morph, lerp `posCur` from `fromPos`→`toPos` with `easeIO`; blog re-derives `wavePos(T)` each frame once settled;
-3. draw pre-rendered backdrop (`buildBg`), then the dim parallax **BGFIELD** (78 nodes), then cluster edges (cross-faded during a morph), then **pulses** travelling along edges, then depth-sorted nodes, then **lightning bolts** (three layers, see below), then the 5 labeled page-nodes (glow + text);
-4. update the `#readout`.
+**Morph.** With `i = floor(p)`, `f = p − i`: node `k` lerps `posAt(i)[k] → posAt(i+1)[k]` by
+`easeIO(clamp((f − DEL[k]) / 0.6, 0, 1))`, `DEL[k] = rand(k·3.3+9)·0.4` — a per-node delay so the
+cluster "pours". Faces + edges of both shapes crossfade by `easeIO(f)`. Pulses and bolts run only
+when settled.
 
-**Projection** is hand-rolled: rotate by yaw/pitch, perspective-divide by `CAM`, scale by
-`min(W,H) * sf` where `sf = W<700 ? 0.46 : 0.33`.
+**Window layout.** `layoutTarget()` returns the cluster centre + scale: home → viewport centre,
+`base = min(W,H)·(W<700 ? .42 : .34)`; a section on desktop → the **largest free region** beside
+the window (left / right / above / below, judged by `min(w,h)`), kept clear of the HUD strip (72 px)
+and the identity block (its measured top − 10), scale `clamp(m·0.43, base·0.4, base)` so the
+cluster leans slightly under the glass; mobile → centre raised by `0.16·H`. `cx/cy/scale` ease
+at 0.08. The window itself: `WIN {x,y,w,h}`, default `w = clamp(0.48W, 420, 760)`,
+`h = clamp(0.74H, 340, 900)`, `x = max(16, W − w − 190)` (clears the rail); dragged by `#winBar`,
+resized by the 8 handles (min 320×240, 16 px viewport margin), `fit` shrinks to content,
+persisted as JSON in `localStorage.geleus_win` (validated against the viewport on load).
 
-**Tunable constants** (top of file unless noted):
+**Render loop** (`draw()`, per frame): ease `p/yaw/pitch/cx/cy/scale` → build `cur` positions →
+trail-clear (`rgba(14,16,15, ta)`, `ta = clamp(1 − speed·2.4, 0.28, 1)`, i.e. motion trails when
+moving) → vignette → deep field (mouse parallax `(mouse − centre)·0.02`) → project + **cursor
+lens** (nodes within 150 px of the pointer are pushed `((1−d/R)²·26)` px away, offsets ease 0.18)
+→ faces → edges → pulses (every 3rd edge) → nodes (depth of field) → bolts → **anchors** (glow,
+white core, pulsing ring when active, label `NN key`, elbow **leader line** to its rail tick) →
+**window tethers** (each window corner → nearest node with `nearOf ≥ 0.3`, dashed, alpha by
+distance; the active anchor → title bar dock point, solid) → grain (alpha 0.055) → `settle()`
+→ rail dot → telemetry (every 6 frames) → `measure()` (every 30 frames).
+
+**Settle.** `settle(i)` runs with `i = tp` once `|p − tp| < 0.02` and `tp` is integral, else `−1`.
+`i ≤ 0` closes the window; otherwise it shows `section[data-page=i]`, sets `#winTag`, opens the
+window. Because this is frame-driven, a **hidden tab** (rAF paused) keeps its old state until shown.
+
+**Tunable constants** (all in `spatial.js` unless noted):
 
 | Constant | Default | Effect |
 |---|---|---|
-| `N` | 48 | node count (all shapes must return N points) |
-| `CAM` | 3.2 | camera distance (smaller = more perspective) |
-| `sf` | 0.46 / 0.33 | cluster scale on mobile / desktop |
-| auto-rotate | `tgtYaw += 0.0045` | idle spin speed (home only) |
-| morph speed | `morphT += 0.024` | reshape duration (~per frame) |
-| `BGFIELD` count | 78 | background field density |
-| field alpha | edges `0.05+fn*0.09`, nodes `0.08+fn*0.2` | background visibility |
-| pulse | `T*0.55 + e*0.1973` phase; alpha `0.3+nr*0.55` | energy dots brightness/speed |
-| drawer shift | `tgtShiftX = -W*0.18` (desktop), `tgtZoom = 1.1` | how far the cluster slides when a drawer opens |
-| hover pick | squared-dist `< 460` | click target radius for page-nodes |
-
-**Lightning bolts** (`spatial.js` and `cluster.js`, identical code). Occasional minimal,
-desaturated electric spikes fire between *unconnected* things that have drifted close on
-screen. **Three independent layers**, each with its own `{ sparks, cd, max }` state:
-
-| Layer | Pair | Excludes | Proximity threshold |
-|---|---|---|---|
-| `fieldSpk` | background dot ↔ background dot | `bgEdgeSet` (BGEDGES links) | `min(W,H)·0.18` |
-| `crossSpk` | background dot ↔ cluster node ("crossing the rotating object") | — | `min(W,H)·0.13` |
-| `clusterSpk` | cluster node ↔ cluster node | current edge set | `max(avgEdgeLen·1.4, scale·0.16)` |
-
-Pipeline: `stepBolts(state, finder)` decrements `cd`; when `cd ≤ 0` and under `max`, `finder()`
-returns the **closest on-screen unconnected pair** within the threshold (`closestUnlinked` for one
-set, `closestCross` across two). On a hit it **freezes** the two endpoints into a spark
-`{ax,ay,bx,by,life,seed}` and sets `cd = 0.22 + rand·0.5`; on a miss `cd = 0.06`. Each spark lives
-`SPARK_DUR = 0.42s`. `drawBolt` draws a **5-segment** jagged spike (perpendicular jitter
-`len·0.3·(1−|2t−1|)` — max mid, zero at the nodes), two passes: desaturated steel-blue glow
-`120,146,170` (w2.6) then muted core `198,212,226` (w0.9), plus small endpoint flashes
-`180,198,214`. Envelope is a **quick strike then linear fade** (`rise = 0.16`) ×`(0.85+0.15·rand)`
-flicker. Disabled under reduced motion.
-
-> **Tuning knobs** (to refine later): per-layer `cd`/`max` = frequency; the three thresholds =
-> how close triggers a strike; `SPARK_DUR` = fade length; `segs` + jitter factor `0.3` = spikiness;
-> the pass colors/widths/alphas = brightness + saturation; `rise` = strike-vs-fade balance.
-> History of this feature: started vivid 3-pass electric blue (9 segs), then minimised to the
-> current 2-pass desaturated 5-seg spike. Bump `?v=` on both files when retuning.
+| `N` / `CAM` (geo.js) | 96 / 3.4 | node count / camera distance |
+| auto-rotate | `tgtYaw += 0.0035` | idle spin (home, not dragging/hovering) |
+| scrub gain | wheel `0.0014`, touch `0.004`, snap `360 ms` | scroll feel |
+| ease | `p 0.075`, `yaw 0.07`, `pitch 0.05`, layout `0.08` | responsiveness |
+| `DEL` spread | `rand·0.4`, window `0.6` | how staggered the morph is |
+| trails | `ta = clamp(1 − speed·2.4, .28, 1)` | afterimage strength |
+| lens | `R = 150`, push `26` | cursor repulsion |
+| hover pick | 22 px | lit-node click radius |
+| bolts | `boltLayer(2, 0.8)`, `lim = scale·0.2` | node↔node arcs (one layer now) |
+| grain | `0.055` | film grain alpha |
 
 ### 3.3 Navigation, routing, overlays
 
-- **`goPage(key)`** is the single entry point for navigation. `resume` → `window.open(RESUME_URL)`
-  and returns (no morph). Otherwise → `applyState(key)` + `history.pushState('#'+key)`.
-- **`applyState(key)`** morphs the cluster (`setShape`), highlights the nav button, and
-  opens/closes the drawer (`#panel.open`, shifts the camera on desktop).
-- **Deep links / history:** on load `keyFromHash()` reads `location.hash` (`#goodies`, `#about`,
-  …); `popstate` re-applies on back/forward; `#journal` auto-opens the journal overlay.
-- **Triggers:** top nav buttons, **clicking a labeled node in the cluster** (pointer-up with
-  little movement → `goPage(hoveredPage)`), the journal arrow, and `Esc`/backdrop/close-chevron
-  to dismiss overlays. `Esc` precedence: post overlay → journal overlay → back to home.
-- **Journal** is a full-screen overlay (NOT a node or drawer). The top-center `#journalTrigger`
-  opens `#journalOverlay`, which contains the weekly-summary tree **and** the contributions
-  heatmap at the bottom. (This is why journal/contributions are not in `PAGE_LIST`.)
-- **Blog posts & repo READMEs** open in the shared `#postOverlay`. `spatial.js` intercepts
-  clicks inside `#panel`:
-  - `.repo-expand-btn` → **capture phase** + `stopPropagation` (so `goodies.js`'s own inline
-    handler does NOT also fire) → `openReadme(repo, branch)` → `window.GELEUS.loadReadme(...)`.
-  - `.blog-card` → `openPost(slug)` → `window.GELEUS.loadPost(slug, ...)`; falls back to
-    navigating to `/blog/post.html?slug=` if the hook is unavailable.
-- **Accessibility / motion:** `prefers-reduced-motion` freezes time `T`, forces `morphT=1`,
-  and disables pulses + auto-rotate (single static frame); overlays still open.
+- **`go(i, silent)`** is the single entry point. Nav buttons, rail ticks, lit nodes, keys, and the
+  scrub snap all call it. It pushes `#key` (or the bare path for home) unless `silent`.
+- **Deep links / history:** on load `keyFromHash()` maps `#about|#goodies|#blog|#journal` to the
+  index and the app starts *on* that section (`p = tp = i`, no morph); `popstate` → `go(idx, true)`.
+- **Clicking the canvas** (pointer-up with < 6 px movement): a hovered lit node opens its section;
+  empty space returns home. Mouse drag rotates (`tgtYaw += dx·0.006`, `userPitch ±1`); on touch a
+  vertical drag scrubs and a horizontal one rotates.
+- **Journal** is section 4 — the window holds the weekly-summary tree **and** the contributions
+  heatmap (same modules as before, no separate overlay).
+- **Blog posts & repo READMEs** open in the shared `#postOverlay` reader. `spatial.js` intercepts
+  clicks inside `#win`: `.repo-expand-btn` in the **capture phase** + `stopPropagation` (so
+  `goodies.js`'s inline expander does NOT also fire) → `openReadme(repo, branch)` →
+  `window.GELEUS.loadReadme`; `.blog-card` → `openPost(slug)` → `window.GELEUS.loadPost`, falling
+  back to `/blog/post.html?slug=` if the hook is unavailable. `Esc` precedence: reader → home.
+- **Accessibility / motion:** `prefers-reduced-motion` freezes `T`, makes `p = tp` (instant
+  morph), disables auto-rotate, pulses, bolts, trails and the typing effect; the window and
+  reader still work. `#win` toggles `aria-hidden`.
 
 ---
 
 ## 4. CSS (`css/styles.css`, single file)
 
 - **Scoping:** all spatial-app rules are under **`body.spatial`** (set on `index.html` only),
-  so the fallback pages are untouched. `body.spatial` is `height:100vh; overflow:hidden`
-  (the app doesn't scroll; the drawer and overlays scroll internally).
+  so the fallback pages are untouched. `body.spatial` is `height:100dvh; overflow:hidden`
+  (the app doesn't scroll; `#winBody` and the reader scroll internally).
 - **Design tokens** in `:root` (charcoal/grey/moss): `--bg #1a1c1b`, `--surface #232624`,
-  `--text #e6e8e4`, `--text-dim #9aa09a`, `--moss #8faf78`, `--moss-bright #a8c891`,
-  `--border`/`--border-2`, fonts `--font-sans` / `--font-mono` (JetBrains Mono). Contribution
-  ramp `--contrib-0..4` (moss scale). **The canvas palette is inlined as `rgba()` in `spatial.js`
-  / `cluster.js` and must be kept in sync with these by hand.**
-- **Key classes:** `.hud-top`/`.hud-nav` (fixed top bar), `.hud-corner` (readout, hidden ≤720px),
-  `.hero-id` (fixed bottom-left identity), `.journal-trigger` (top-center pill), `.panel`+`.drawer-*`
-  (right drawer), `.journal-overlay`/`.journal-overlay-inner`/`.journal-close`/`.journal-head`/`.journal-contrib`
-  (full-screen overlays — `#postOverlay` reuses `.journal-overlay`).
-- **Overlay backdrop:** `.journal-overlay { background: rgba(12,14,13,.95); backdrop-filter: blur(22px) }`
-  — near-opaque on purpose (earlier 0.62 let background text bleed through and overlap the title).
-- **Mobile (`@media max-width:640px`):** `.hud-top` becomes `display:block` so the nav wraps onto
-  its own line under the brand (nav dots hidden to save width); the drawer goes **full-width and
-  more translucent** (`.panel { width:100%; background: rgba(16,18,17,.58) }`) so the cluster shows
-  through. Further tightening at `max-width:360px`.
-- Drawer content reuses existing component styles (`.repo-card/.blog-card/.timeline-tree/.contrib-*`).
+  `--text #e6e8e4`, `--text-dim #9aa09a`, `--text-faint`, `--moss #8faf78`, `--moss-bright #a8c891`,
+  `--border`/`--border-2`, fonts `--font-sans` / `--font-mono` (JetBrains Mono — vendored weights
+  are Regular/Medium/Bold/ExtraBold only). Contribution ramp `--contrib-0..4`. **The canvas palette
+  is inlined as `rgba()` in `geo.js`/`spatial.js` and must be kept in sync by hand.**
+- **Key classes:** `.frame` (corner brackets), `.hud-top`/`.hud-nav` (top bar), `.rail`/`.tick`/
+  `.rail-dot` (section rail), `.hero-id` (identity: `.eyebrow`, `h1`, `.role-line`, `.status`+`.caret`),
+  `.tele` (telemetry), `.hint`, `.win`/`.win-bar`/`.win-body`/`.win-head`/`.win-sub`/`.win-links`/
+  `.h-*` (the window), `.journal-contrib`, `.reader-overlay`/`.reader-inner`/`.reader-close` (reader).
+- **Window glass:** `.win { background: rgba(16,18,17,.5); backdrop-filter: blur(5px) }` — deliberately
+  translucent so the cluster shows through; `.win.moving` drops the blur while dragging/resizing for
+  smoothness. The window's `left/top/width/height` are inline styles set by JS.
+- **Reader backdrop:** `.reader-overlay { background: rgba(12,14,13,.95); blur(22px) }` — near-opaque
+  on purpose (earlier 0.62 let background text bleed through).
+- **Mobile (`@media max-width:760px`, matches `spatial.js` `W > 760`):** the rail docks under the
+  brand as a horizontal strip (labels hidden), telemetry + hint hide, the identity block tightens,
+  and the window becomes a **bottom sheet** (`height:62%`, no drag/resize handles).
+- Window content reuses existing component styles (`.repo-card/.blog-card/.timeline-tree/.contrib-*`);
+  inside the window the repo/blog grids are `repeat(auto-fill, minmax(240px, 1fr))`.
 
 ---
 
 ## 5. Content modules & their contracts
 
 Each module is an IIFE that finds its root element and renders into it. They run on every
-page that contains their root — that's how the **same** code serves the app drawers/overlays
+page that contains their root — that's how the **same** code serves the app window/reader
 and the fallback pages. Shared hooks live on `window.GELEUS`.
 
 | Module | Renders into | Data source | Cache | Notes |
@@ -242,13 +249,13 @@ and the fallback pages. Shared hooks live on `window.GELEUS`.
 ## 6. Fallback pages & `cluster.js`
 
 `goodies/index.html`, `blog/index.html`, `blog/post.html` are classic header/nav/main/footer
-pages. They set `<body data-shape="…">` and load `js/cluster.js`, which injects a fixed
-full-viewport background canvas (class `.topo-bg`, `z-index:-1`, `pointer-events:none`) that:
-renders the per-page shape (`goodies`→lattice, `blog`→field, post→`lab` knot), flows pulses,
-has a deep field, fires the same **lightning bolts** (§3.2), and **fades on scroll** so text
-stays readable. `cluster.js` is a slimmed, non-interactive cousin of `spatial.js` (it has its
-own copy of the shape builders + `knn`). The fallback scroll-fade was raised so the bolts are
-visible behind content (`top 0.22→0.42`, `min 0.08→0.16`).
+pages. They set `<body data-shape="…">` and load `js/geo.js` + `js/cluster.js`, which injects a
+fixed full-viewport background canvas (class `.topo-bg`, `z-index:-1`, `pointer-events:none`) that:
+morphs from the nebula into the page's shape on load (`goodies`→crystal, `blog`→field, `lab`
+(post)→knot, `journal`→spine, `home`→nebula), rotates slowly, follows the mouse with a little
+parallax, and reuses every geo.js draw pass (faces, depth of field, pulses, bolts, grain).
+It **fades on scroll** so text stays readable (`top 0.42 → min 0.16` over 260 px; home `1.0 → 0.12`
+over 560 px). `cluster.js` has **no shape code of its own** — all geometry lives in `geo.js`.
 `topo.js` is the previous contour background — **kept but no longer referenced** anywhere.
 
 ---
@@ -295,15 +302,16 @@ journal — run `gh workflow run weekly-summary.yml` or wait for the cron.
   with `?v=N` in the HTML. **Bump `N` whenever you edit that file**, or stale assets get
   served (this caused repeated "still broken" reports). Bump across every HTML file that
   references the asset. Current snapshot (will drift — treat the *rule* as the source of truth):
-  `styles.css?v=24`, `spatial.js?v=9`, `goodies.js?v=2`, `blog.js?v=3`, `contributions.js?v=8`,
-  `cluster.js?v=14` (fallback pages). `summary.js`, `profile.js`, `lang-colors.js`, `nav.js`,
+  `styles.css?v=27`, `geo.js?v=1` (all four pages), `spatial.js?v=10`, `goodies.js?v=5`, `blog.js?v=3`,
+  `contributions.js?v=8`, `cluster.js?v=15` (fallback pages). `summary.js`, `profile.js`, `lang-colors.js`, `nav.js`,
   and `lib/*` are currently unversioned. Blog **content** (`.md`/`.json`) is handled by the
   `cache:'no-cache'` fetch instead of a version query.
-- **localStorage keys** (clear to force a refresh): `geleus_repos`, `geleus_contrib`, `geleus_profile`.
+- **localStorage keys** (clear to force a refresh): `geleus_repos`, `geleus_contrib`, `geleus_profile`,
+  `geleus_win` (homepage window rect `{x,y,w,h}`).
 - **JS style:** every file is an IIFE; no globals except the `window.GELEUS` namespace;
   `camelCase`; `getElementById`/`querySelector`. HTML-escape any user/API content.
 - **No build step.** Edit → bump `?v=` → commit → push to `main` → GitHub Pages deploys.
-- **Canvas palette** is duplicated as literals in `spatial.js`/`cluster.js`; keep it in sync
+- **Canvas palette** is duplicated as literals in `geo.js`/`spatial.js`; keep it in sync
   with `:root` if you change colors.
 
 ---
@@ -314,31 +322,37 @@ journal — run `gh workflow run weekly-summary.yml` or wait for the cron.
 1. Create `blog/posts/<slug>.md` (body only; no need for an `# H1` — the reader shows the title).
 2. Prepend an entry to `blog/posts.json` (`slug`, `title`, `date`, `excerpt`, `tags`, `draft:false`).
 3. Commit + push. No version bump needed (content uses `no-cache`). It appears in the blog
-   drawer/list and opens in the full-screen reader.
+   window/list and opens in the full-screen reader.
 
 **Change the tagline / identity**
 - Edit `.role-line` / `h1` in `index.html`. Note `profile.js` overwrites `.hero h1` from GitHub —
   keep the tagline as `.role-line` (not `.bio`) so it isn't overwritten.
 
-**Add a nav item / section to the app**
-1. Add `<button data-node="X">X</button>` to `.hud-nav` in `index.html`.
-2. Add a `<section class="drawer-page" data-page="X">…</section>` in `#panel` (include a root
-   element if a module should fill it).
-3. In `spatial.js`: add a shape builder + `SHAPES.X = {pos, edges: knn(pos,k), desc}` and add
-   `['X', <index>]` to `PAGE_LIST` (pick an unused node index 0–47).
+**Add a section to the timeline**
+1. In `geo.js`: add a shape builder returning **exactly 96** `{x,y,z}` + an edge list, and register
+   it in `buildShapes()` (faces/eset are derived automatically). Bump `geo.js?v=` in all four pages.
+2. In `spatial.js`: append `{ key, n:'05', shape, pitch, desc }` to `SEC`, add an unused node index
+   to `ANCH`, and extend the `/^[1-5]$/` key shortcut if you want one.
+3. In `index.html`: add `<button data-node="key">` to `.hud-nav`, a `.tick[data-i="5"]` to `.rail`,
+   and a `<section data-page="5">` inside `#winBody` (include a root element if a module should fill it).
 4. Bump `spatial.js?v=` and `styles.css?v=` if you touched CSS.
 
-**Add an external link node (like resume)** — add the button/`PAGE_LIST` entry, then special-case
-it in `goPage()` like `resume` (open a URL and return early; no `SHAPES` entry needed).
+**Add an external link (like resume)** — nav button only; special-case its `data-node` in the nav
+click handler in `spatial.js` (no shape, no rail tick).
 
-**Retune the look** — edit the constants in §3.2: cluster density (`N`), spin (`0.0045`), morph
-speed (`0.024`), background visibility (field alphas), pulses, drawer slide (`-W*0.18`). Bump `spatial.js?v=`.
+**Retune the look** — constants in §3.2: spin (`0.0035`), scrub gain/snap, easing, `DEL` stagger,
+trails, lens, bolts, grain (spatial.js); face/edge/node alphas and the depth LUT (geo.js — affects
+the fallback pages too). Bump the matching `?v=`.
+
+**Change the window defaults** — `defaultWin()` / `clampWin()` in `spatial.js`; the free-region
+rules in `layoutTarget()`. Visitors' saved rects live in `localStorage.geleus_win`.
 
 **Change colors** — edit `:root` tokens in `css/styles.css` AND the inlined `rgba()` literals in
-`spatial.js`/`cluster.js`. Bump `styles.css?v=` (and the JS versions).
+`geo.js`/`spatial.js`. Bump `styles.css?v=` (and the JS versions).
 
-**Edit a fallback page's background shape** — change `<body data-shape="…">` (`home/about/goodies/blog/lab`)
-in that page; shapes are defined in `cluster.js`.
+**Edit a fallback page's background shape** — change `<body data-shape="…">`
+(`home/about/goodies/blog/lab/journal`) in that page; the mapping is `PAGE_SHAPE` in `cluster.js`,
+the shapes are in `geo.js`.
 
 **Refresh the journal manually** — `gh workflow run weekly-summary.yml` (needs the repo secrets).
 
@@ -353,274 +367,191 @@ in that page; shapes are defined in `cluster.js`.
   `"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu \
   --window-size=1280,860 --virtual-time-budget=3000 --screenshot=out.png http://localhost:8000/index.html#journal`.
   (Note: headless Chrome renders narrow-viewport/responsive layout unreliably — verify mobile on a real device.)
-- **Smoke check after changes:** home cluster spins + drags; each nav node morphs + opens its
-  drawer with live content; the journal arrow opens the overlay (tree + heatmap); a blog card
-  and a repo "readme" each open the full-screen reader; `Esc`/back work; fallback pages still load.
+- **Smoke check after changes:** home cluster spins + drags; the wheel scrubs the morph and snaps;
+  each nav item / rail tick / lit node opens its window with live content (journal = tree + heatmap);
+  the window drags/resizes and the cluster reflows; a blog card and a repo "readme" each open the
+  full-screen reader; `Esc`/back work; fallback pages still load.
+- **Testing gotcha:** `requestAnimationFrame` is paused in a hidden/background tab, and the window
+  only opens once the morph has landed — so a tab driven by automation while hidden looks "stuck".
+  Keep the tab visible (or interleave screenshots) when smoke-testing with browser automation.
 
 ---
 
 ## 11. Appendix — exact geometry & math (replication spec)
 
-Everything needed to reproduce the node animation **100%**, transcribed verbatim from
-`js/spatial.js` (homepage app) and `js/cluster.js` (fallback-page background). The two files
-share identical primitives, shape builders, `knn`, projection, and render math; they differ
-only in interaction (app) vs. scroll-fade (background) and a couple of constants (noted in
-§11.10). All canvas coordinates are in **CSS pixels** (the context is pre-scaled by `dpr` via
-`ctx.setTransform(dpr,0,0,dpr,0,0)`); `dpr = min(devicePixelRatio, 2)`.
+Everything needed to reproduce the node animation **100%**, transcribed from `js/geo.js`
+(shared), `js/spatial.js` (homepage app) and `js/cluster.js` (fallback background). All canvas
+coordinates are **CSS pixels** (context pre-scaled by `dpr = min(devicePixelRatio, 2)` via
+`ctx.setTransform(dpr,0,0,dpr,0,0)`).
 
-### 11.1 Global constants
+### 11.1 Global constants (geo.js)
 ```js
-CAM = 3.2          // camera distance (perspective)
-N   = 48           // node count — every shape MUST return exactly 48 points
-T   = 0            // global time; T += 0.016 per frame (frozen under prefers-reduced-motion)
+N   = 96     // node count — every shape MUST return exactly 96 points
+CAM = 3.4    // camera distance (perspective)
+T   = 0      // per engine; T += 0.016 per frame (frozen under prefers-reduced-motion)
 ```
 
-### 11.2 Primitives (shared, verbatim)
+### 11.2 Primitives (verbatim)
 ```js
-// deterministic hash → pseudo-random in [0,1); same seed ⇒ same value (stable layouts)
 function rand(s){ var x = Math.sin(s*127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
-
-// cubic ease in/out, used for both morph progress and edge crossfade
-function easeIO(t){ return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
-
 function lerp(a,b,t){ return a + (b-a)*t; }
-
-// rotated-z (depth) → near-camera brightness factor in [0,1]
-function nearOf(z){ var n = 1 - (z+1)/2.4; return n < 0 ? 0 : (n > 1 ? 1 : n); }
+function clamp(v,a,b){ return v < a ? a : (v > b ? b : v); }
+function easeIO(t){ return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+function nearOf(z){ return clamp(1 - (z+1)/2.4, 0, 1); }   // rotated depth → near-camera factor
 ```
 
-### 11.3 Shape builders (verbatim — each returns N=48 `{x,y,z}`)
-The point set is **deterministic** (seeded `rand`), so the layout is identical every load.
+### 11.3 Graph helpers (verbatim logic)
+- **`knn(pos, k, skip)`** — for each node, its `k` nearest by squared distance, excluding
+  `a === b` and pairs where `skip(a,b)` is true; undirected, deduped by `lo_hi` key → `[[lo,hi],…]`.
+- **`trisOf(edges)`** — every triple `a<b<c` with all three sides present in the edge set → faces.
+  `buildShapes()` keeps at most the first 260.
+- **`buildShapes()`** → `{ nebula, knot, crystal, field, spine }`, each `{ pos, edges, tris, eset }`;
+  `field` also has `dynamic: true` (its `pos` is regenerated each frame with `field(T)`).
+
+### 11.4 Shape builders (each returns N = 96 points)
 ```js
-// home — chaotic ball: cube-root radius ≈ uniform volume density, anisotropic scale + jitter
-function clusterPos(){
-  var p=[];
-  for(var i=0;i<N;i++){
-    var r=Math.cbrt(rand(i*5+1))*1.0,
-        a=rand(i*5+2)*6.2832,            // azimuth 0..2π
-        b=Math.acos(2*rand(i*5+3)-1);    // inclination (uniform on sphere)
-    var x=r*Math.sin(b)*Math.cos(a)*1.3, // x stretched ×1.3
-        y=r*Math.cos(b)*0.85,            // y squashed ×0.85
-        z=r*Math.sin(b)*Math.sin(a)*1.1; // z ×1.1
-    x+=(rand(i*5+4)-0.5)*0.3; y+=(rand(i*5+5)-0.5)*0.3;  // ±0.15 jitter
-    p.push({x:x,y:y,z:z});
-  }
-  return p;
-}
+// nebula (home) — chaotic ball: cube-root radius (uniform volume), anisotropic scale, ±0.15 jitter
+r = cbrt(rand(i*5+1)); a = rand(i*5+2)·2π; b = acos(2·rand(i*5+3) − 1)
+x = r·sin b·cos a·1.35 + (rand(i*5+4)−.5)·.3 ; y = r·cos b·.9 + (rand(i*5+5)−.5)·.3 ; z = r·sin b·sin a·1.15
+edges = knn(pos, 3)
 
-// about — double helix: 24 pairs, 2.3 turns, height 1.95, radius 0.52, strands π apart
-function helixPos(){
-  var p=[], pairs=N/2;                    // 24
-  for(var k=0;k<pairs;k++){
-    var tt=k/(pairs-1), a=tt*Math.PI*2*2.3, y=(tt-0.5)*1.95, r=0.52;
-    p.push({x:r*Math.cos(a),         y:y, z:r*Math.sin(a)});
-    p.push({x:r*Math.cos(a+Math.PI), y:y, z:r*Math.sin(a+Math.PI)});
-  }
-  return p;
-}
+// knot (about) — (P,Q) = (2,3) torus knot, R = .74, rr = .3, lying in the x–z plane
+t = i/N·2π ; r = R + rr·cos(Q t)
+x = r·cos(P t) ; y = rr·sin(Q t)·1.2 ; z = r·sin(P t)
+edges = chain [k, k+1 mod N]  ∪  knn(pos, 2, skip: ring distance ≤ 3)
 
-// goodies — 4×4×3 cube lattice, spans x,y = 1.55, z = 1.25, centered at origin
-function latticePos(){
-  var p=[], nx=4, ny=4, nz=3;
-  for(var x=0;x<nx;x++) for(var y=0;y<ny;y++) for(var z=0;z<nz;z++)
-    p.push({ x:(x/(nx-1)-0.5)*1.55, y:(y/(ny-1)-0.5)*1.55, z:(z/(nz-1)-0.5)*1.25 });
-  return p;
-}
+// crystal (goodies) — three nested shells. icosphere() = icosahedron (12 verts, 20 faces)
+// subdivided once, midpoints normalised → 42 verts, 120 edges, 80 faces.
+pos[0..41]  = icosphere verts · 1.02
+pos[42..83] = icosphere verts rotated about Y by 0.62 rad · 0.58
+pos[84..95] = the 12 icosahedron verts rotated about Y by 1.1 rad · 0.24
+edges = icosphere edges on both shells (offset +42)  ∪  knn(core12, 5) (+84)
+      ∪  spokes: for o = 0,3,6,…,39 → nearest inner-shell vertex
 
-// blog — 8×6 undulating field; y animates with time t (call with t=T each frame)
-function wavePos(t){
-  var p=[], nx=8, nz=6;
-  for(var i=0;i<nx;i++) for(var j=0;j<nz;j++){
-    var x=(i/(nx-1)-0.5)*1.95, z=(j/(nz-1)-0.5)*1.5;
-    p.push({ x:x, y:Math.sin(x*3+t*1.6)*0.24 + Math.cos(z*3+t*1.2)*0.24, z:z });
-  }
-  return p;
-}
+// field (blog) — 12×8 grid (FX=12, FZ=8), y animates with t
+x = (i/(FX−1) − .5)·2.15 ; z = (j/(FZ−1) − .5)·1.5
+y = sin(x·2.6 + t·1.5)·.22 + cos(z·3 + t·1.1)·.2 + sin((x+z)·1.8 − t·.9)·.1
+edges (fixed): (i,j)–(i+1,j), (i,j)–(i,j+1), (i,j)–(i+1,j+1)   // grid + one diagonal → triangle mesh
 
-// fallback /blog/post.html only (cluster.js) — (p,q)=(2,3) torus knot
-function knotPos(){
-  var p=[], pp=2, qq=3;
-  for(var i=0;i<N;i++){
-    var u=i/N*Math.PI*2, r=0.5*(2+Math.cos(qq*u));
-    p.push({ x:r*Math.cos(pp*u)*0.6, y:r*Math.sin(pp*u)*0.6, z:0.58*Math.sin(qq*u) });
-  }
-  return p;
-}
+// spine (journal) — trunk of 16 + 5 branches each
+trunk k: y = (k/15 − .5)·2.1 ; x = sin(y·1.7)·.1 ; z = cos(y·1.3)·.08 ; edge [k−1,k]
+branch (k,j), s = k·9 + j·3:  a = rand(s+1)·2π ; len = .2 + rand(s+2)·.6 ; tilt = .06 + rand(s+3)·.2
+  pos = trunk[k] + (cos a·len,  tilt·len·2,  sin a·len) ; edge [k, idx]
 ```
+Counts: nebula 184 edges / 79 faces · knot 216 / 48 · crystal 284 / 180 · field 249 / 154 · spine 95 / 0.
 
-### 11.4 Edge graph — `knn` (verbatim)
-For each node, connect to its `k` nearest neighbours by squared distance; undirected edges are
-de-duplicated by a `lo_hi` key. Returns `[[lo,hi], …]`.
+### 11.5 Background parallax field (`bgField(90)`)
 ```js
-function knn(pos,k){
-  var edges=[], seen={};
-  for(var a=0;a<pos.length;a++){
-    var d=[];
-    for(var b=0;b<pos.length;b++){ if(a===b) continue;
-      var dx=pos[a].x-pos[b].x, dy=pos[a].y-pos[b].y, dz=pos[a].z-pos[b].z;
-      d.push({b:b, dd:dx*dx+dy*dy+dz*dz});
-    }
-    d.sort(function(p,q){return p.dd-q.dd;});
-    for(var e=0;e<k;e++){ var bi=d[e].b, lo=Math.min(a,bi), hi=Math.max(a,bi), key=lo+'_'+hi;
-      if(!seen[key]){ seen[key]=1; edges.push([lo,hi]); } }
-  }
-  return edges;
-}
+u = rand(i+7), v = rand(i+77), w = rand(i+777); r = 1.5 + 1.8·cbrt(u); a = v·2π; b = acos(2w−1)
+pos = (r·sin b·cos a, r·cos b, r·sin b·sin a);  edges = knn(pos, 1)
 ```
-**`k` per shape:** home `knn(c,3)`, about `knn(h,2)`, goodies `knn(g,3)`, blog `knn(w,3)`,
-lab/knot `knn(k,2)` (cluster.js), background field `knn(BGFIELD,1)`.
+Drawn by `drawDeepField(ctx, bg, W, H, T, px, py, reduced)`: own camera `fby = T·0.03` (yaw;
+`0.4` under reduced motion), pitch `−0.18`, `ff = 5/(5+z)`, `fbs = min(W,H)·0.52`,
+screen `= centre + r·ff·fbs − (px,py)·ff` where `(px,py) = (mouse − centre)·0.02` (parallax).
+Depth `fn = 1 − (z+3.3)/6.6`: edges `rgba(120,134,124, .04+fn·.08)`, dots radius `.8+fn·1.4`
+`rgba(143,175,120, .06+fn·.18)`.
 
-### 11.5 Background parallax field (verbatim)
-78 points on a spherical shell (radius `1.5 + 1.7·cbrt(u)`), wired with `k=1`:
+### 11.6 Rotation + projection (verbatim)
 ```js
-BGFIELD = (function(){
-  var p=[];
-  for(var i=0;i<78;i++){
-    var u=rand(i+7), v=rand(i+77), w=rand(i+777);
-    var r=1.5+1.7*Math.cbrt(u), a=v*6.2832, b=Math.acos(2*w-1);
-    p.push({ x:r*Math.sin(b)*Math.cos(a), y:r*Math.cos(b), z:r*Math.sin(b)*Math.sin(a) });
-  }
-  return p;
-})();
-BGEDGES = knn(BGFIELD, 1);
-```
-It is rotated on its own slow camera and rendered dim, **behind** the cluster (see §11.8).
-
-### 11.6 Rotation + perspective projection (verbatim)
-```js
-// yaw about the Y axis, then pitch about the X axis
-function rotP(p, yaw, pitch){
+function rotP(p, yaw, pitch){           // yaw about Y, then pitch about X
   var c=Math.cos(yaw), s=Math.sin(yaw), x1=p.x*c - p.z*s, z1=p.x*s + p.z*c;
   var cp=Math.cos(pitch), sp=Math.sin(pitch);
   return { x:x1, y:p.y*cp - z1*sp, z:p.y*sp + z1*cp };
 }
+f = CAM/(CAM + r.z);  screenX = cx + r.x·f·scale;  screenY = cy + r.y·f·scale
+// app: (cx, cy, scale) come from layoutTarget() (§3.2), eased at 0.08
+// background: cx = W/2, cy = H/2, scale = min(W,H)·(W<700 ? .46 : .33)
 ```
-Screen mapping for a rotated point `r`:
-```
-f      = CAM / (CAM + r.z)                 // perspective divide
-scale  = min(W,H) * sf * zoom              // sf = (W < 700 ? 0.46 : 0.33)
-screenX = cx + r.x * f * scale             // cx = W/2 + camShiftX   (camShiftX = 0 in cluster.js)
-screenY = cy + r.y * f * scale             // cy = H/2
-```
-Background field uses a separate, pushed-back camera: `fcamF = 5`, `ff = fcamF/(fcamF + r.z)`,
-`fbs = min(W,H)*0.52`, rotated by `fby = T*0.03` (yaw) and `fbp = -0.18` (pitch).
+The projected point keeps `rx, ry, z` (rotated coords) for face shading.
 
-### 11.7 Morph + dynamic blog (verbatim logic)
-On `setShape(key)`: `fromPos = clone(posCur)`, `toPos = SHAPES[key].pos`, `morphT = 0`.
-Each frame:
+### 11.7 Morph (app: timeline; background: load-in)
 ```js
-if (morphT < 1){
-  morphT = Math.min(1, morphT + 0.024);     // 0.022 in cluster.js
-  var e = easeIO(morphT);
-  for (i) posCur[i] = lerp(fromPos[i], toPos[i], e);  // per-axis
-} else if (curKey === 'blog' && !reduced){
-  posCur = wavePos(T);                       // live field once settled
-}
-// edge crossfade during a morph:
-var me = morphT < 1 ? easeIO(morphT) : 1;
-drawEdges(fromEdges, alpha*(1-me));          // only while morphT < 1
-drawEdges(toEdges,   alpha*me);
+DEL[k] = rand(k·3.3 + 9)·0.4                          // per-node delay
+e_k    = easeIO(clamp((f − DEL[k]) / 0.6, 0, 1))      // f = progress 0..1
+cur[k] = lerp(A[k], B[k], e_k)                        // per axis
+ef     = easeIO(f)                                    // faces + edges crossfade weight
+// app:  f = p − floor(p), p += (tp − p)·0.075 each frame (p = tp under reduced motion)
+// bg:   f = morphT, morphT += 0.014 per frame, nebula → page shape once on load
 ```
 
-### 11.8 Render pipeline (exact draw math, per frame)
-Order: clear → backdrop image → background field → cluster edges → pulses → nodes → lightning bolts (§11.12) → (app) labels.
+### 11.8 Draw passes (geo.js, exact per-frame math)
+Order (app): trail-clear → vignette → deep field → faces → edges → pulses → nodes → bolts →
+anchors + leader lines → window tethers → grain. (Background: same minus anchors/tethers.)
+- **Trail clear**: `fillRect` with `rgba(14,16,15, ta)`; app `ta = clamp(1 − speed·2.4, .28, 1)`,
+  `speed = |tp−p|·1.6 + |tgtYaw−yaw|·0.9`; background `ta = 0.45` while morphing, else 1.
+- **Vignette** (pre-rendered per resize): radial `(0.5W, 0.45H, r = min·0.2) → (0.5W, 0.5H, r = max·0.8)`,
+  `rgba(10,12,11,0) → rgba(8,9,9,.62)`.
+- **Depth colour** `col(nr)` = 11-step LUT `lerp((104,122,138) → (168,200,145), nr)`.
+- **Faces** (`drawFaces`, weight `w`): view-space normal `n = (b−a) × (c−a)` on `(rx,ry,z)`,
+  `sh = |n.z|/|n|`, `nr = nearOf(mean z)`; fill `rgba(col(nr), (.018 + .09·sh)·(.35 + .65·nr)·w)`.
+- **Edges** (`drawEdges`): `nr = nearOf((zA+zB)/2)`, `lineWidth = .5 + nr·1.3`,
+  stroke `rgba(col(nr), (.07 + nr·.42)·w)`.
+- **Pulses** (`drawPulses`, every 3rd edge, settled only): `ph = (T·.5 + q·.1973) mod 1`,
+  point `lerp(A,B,ph)`, radius `1 + nr·1.5`, fill `rgba(224,236,210, .25 + nr·.5)`.
+- **Nodes** (`drawNodes`, far→near): `nr = nearOf(z)`, `rr = 1.4 + nr·2.6`, `c = col(nr)`.
+  `nr < .4` → out-of-focus disc: radial r 4.5 `rgba(c,.28) → 0` only.
+  `nr > .66` → bloom: radial `rr·3.2` `rgba(c, .26·nr) → 0`. Then core `rgba(c, .4 + nr·.6)` radius `rr`.
+- **Anchors** (app): `rq = 2.6 + nq·2.2`; glow `rq·3.6` `rgba(168,200,145, act ? .55 : .3) → 0`;
+  core `rgba(230,240,222,1)`; active ring at `rq + 5 + sin(3T)·1.2` `rgba(168,200,145,.9)` w1.2;
+  label `500 11px JetBrains Mono` `rgba(230,232,228, act ? .98 : .42 + nq·.3)` at `(x+rq+7, y+4)`;
+  leader to the rail tick: desktop `node → (tick.x−56, node.y) → (tick.x−38, tick.y) → (tick.x−8, tick.y)`,
+  mobile `node → (node.x, tick.y+40) → (tick.x, tick.y+26) → (tick.x, tick.y+8)`; active solid
+  `rgba(143,175,120,.6)`, others dashed `[2,5]` `rgba(120,134,124,.16)`. Hover pick radius 22 px.
+- **Window tethers** (app, desktop, window open): each corner → nearest node with `nearOf ≥ .3`,
+  dashed `[3,5]`, alpha `clamp(1 − d/(min(W,H)·.7), .08, .5)`, 5 px square at the corner (alpha +.3);
+  active anchor → `(WIN.x, WIN.y + 18)` solid `rgba(168,200,145,.75)` w1.2 + 3 px dot.
+- **Grain**: 140×140 random grey tile (`120..255`) as a repeating pattern, `globalAlpha .055` (bg `.05`).
 
-- **Backdrop** `buildBg()` (pre-rendered once per resize): vertical linear gradient
-  `#0f1110 → #0a0b0a`; radial vignette from `(0.5W, 0.42H, r=min(W,H)·0.18)` to
-  `(0.5W, 0.5H, r=max(W,H)·0.78)`, `rgba(0,0,0,0) → rgba(0,0,0,0.5)`.
-- **Background field** per node depth `fn = 1 - (z+3.2)/6.4` (clamped ≥0):
-  edges `rgba(133,148,133, 0.05+fn·0.09)` (cluster.js: `rgba(124,132,124, 0.02+fn·0.04)`),
-  nodes radius `0.9+fn·1.5` `rgba(143,175,120, 0.08+fn·0.2)` (cluster.js: `0.8+fn·1.3`, `0.04+fn·0.13`).
-- **Cluster edges** per edge `nr = nearOf((zA+zB)/2)`:
-  `lineWidth = 0.7 + nr·1.4`, stroke `rgba(143,175,120, (0.1 + nr·0.5)·aMul)`.
-- **Pulses** (skipped under reduced motion) per edge index `e`:
-  `ph = (T·0.55 + e·0.1973) mod 1`; point `= lerp(A, B, ph)`;
-  `nr = nearOf(zA + (zB-zA)·ph)`; radius `1.1 + nr·1.7`;
-  fill `rgba(224,236,210, (0.3 + nr·0.55)·me)` (cluster.js omits the `·me`).
-- **Nodes** drawn far→near (sort by `z` descending): `nr = nearOf(z)`, `r = 1.7 + nr·2.6`;
-  if `nr > 0.62` a radial glow of radius `r·3` `rgba(168,200,145, 0.22·nr → 0)`;
-  core `rgba(168,200,145, 0.42 + nr·0.55)`.
-- **Labeled page-nodes** (app only): for each `PAGE_LIST` node, `rr = 3 + nr·2.4`;
-  glow radius `rr·3.4` `rgba(168,200,145, 0.32+0.3·nr → 0)`; white core `rgba(224,236,210,1)` radius `rr`;
-  if active, ring stroke at `rr+5` `rgba(168,200,145,0.9)` width 1.4; label text
-  `${(11.5+nr·2)}px ui-monospace…` `rgba(230,232,228, active?0.98:0.5+nr·0.4)` at `(x+rr+5, y+3.5)`.
-  Hover pick = nearest page node with squared screen distance `< 460`.
-
-### 11.9 Camera dynamics & input (app, `spatial.js`)
+### 11.9 Camera & input (app)
 ```
-initial:        yaw = 0.6, pitch = -0.3
-auto-rotate:    if home & !dragging & !hovering:  tgtYaw += 0.0045   (per frame)
-easing:         yaw   += (tgtYaw   - yaw)   * 0.07
-                pitch += (tgtPitch - pitch) * 0.07
-                camShiftX += (tgtShiftX - camShiftX) * 0.09
-                zoom      += (tgtZoom    - zoom)      * 0.09
-drag:           tgtYaw   += dx * 0.006
-                tgtPitch  = clamp(tgtPitch + dy*0.006, -1.2, 1.2)
-tap vs drag:    treat as a click (open hovered node / go home) if total moved < 6 px
-drawer open:    tgtShiftX = (W > 760 ? -W*0.18 : 0);  tgtZoom = 1.1   (else 0 / 1.0)
+initial:   yaw = 0.6, pitch = −0.28, p = tp = index-from-hash
+idle:      tgtYaw += 0.0035 (home, not dragging, nothing hovered)
+ease:      yaw += (tgtYaw − yaw)·0.07 ; pitch += (SEC.pitch + userPitch − pitch)·0.05
+mouse:     tgtYaw += dx·0.006 ; userPitch = clamp(userPitch + dy·0.006, −1, 1)
+touch:     |dy| > |dx| ? scrub(−dy·0.004) : tgtYaw += dx·0.007
+wheel:     scrub(deltaY·0.0014) ; snap to round(tp) after 360 ms
+tap:       moved < 6 px → open hovered anchor, else home
+lens:      d < 150 → push (1 − d/150)²·26 px radially ; offsets ease 0.18
 ```
-`cluster.js` (background) has **no input**: constant `pitch = -0.3`, `yaw += 0.0045` per frame.
+Background (`cluster.js`): `yaw += 0.0035`/frame, pitch `−0.3`, both nudged by the eased mouse
+parallax (`yaw + px·0.01`, `pitch + py·0.006`), no other input.
 
-### 11.10 `spatial.js` vs `cluster.js` — the only differences
+### 11.10 `spatial.js` vs `cluster.js`
 | | `spatial.js` (homepage app) | `cluster.js` (fallback background) |
 |---|---|---|
-| Shapes | home, about, goodies, blog | home, about, goodies, blog, **lab=knot** |
-| Interaction | drag-rotate, click nodes, drawers, overlays | none (decorative) |
-| Camera | eased yaw/pitch/shift/zoom + auto-rotate | fixed pitch −0.3, constant yaw spin |
-| Morph step | `morphT += 0.024` | `morphT += 0.022` (cluster→page on load) |
-| Page select | `PAGE_LIST` + `#hash` routing | `<body data-shape>` |
-| Pulse alpha | `×me` (morph-aware) | no `me` factor |
-| Field colors | `rgba(133,148,133,…)`/brighter | `rgba(124,132,124,…)`/dimmer |
-| Visibility | full-screen `<canvas id=spatialCanvas>` | injected fixed `.topo-bg`, `z-index:-1`, **scroll-fade** |
-| Scroll fade | n/a | `opacity = top - (top-min)·min(1, scrollY/dist)`; home `top1.0,min0.12,dist560`; others `top0.42,min0.16,dist260` |
-| Lightning bolts | all three layers (field/cross/cluster), §3.2 + §11.12 | same code, same three layers |
+| Shapes | all five, on a scrubbable timeline | one per page via `data-shape` (`PAGE_SHAPE`), morph-in from nebula |
+| Interaction | scrub, drag-rotate, lit nodes, window, reader | mouse parallax only |
+| Camera | eased yaw/pitch + layout-driven centre/scale | fixed pitch, constant spin, viewport centre |
+| Morph | `p → tp` ease 0.075, staggered | `morphT += 0.014`, staggered |
+| Extras | anchors, leader lines, window tethers, telemetry | scroll-fade (`opacity = top − (top−min)·min(1, scrollY/dist)`) |
+| Bolts | one node↔node layer `boltLayer(2, .8)`, `lim = scale·0.2` | same |
 
-### 11.11 Per-page mapping (the tech behind each page's nodes)
-| Page | Engine | shape key / `data-shape` | Builder | k | Motion |
-|---|---|---|---|---|---|
-| `/` home | spatial.js | `home` | `clusterPos` | 3 | auto-rotate + pulses + parallax field |
-| `/#about` | spatial.js | `about` | `helixPos` | 2 | morph-in + pulses (spins via drag) |
-| `/#goodies` | spatial.js | `goodies` | `latticePos` | 3 | morph-in + pulses |
-| `/#blog` | spatial.js | `blog` | `wavePos(T)` | 3 | live undulating field + pulses |
-| `/goodies/` | cluster.js | `goodies` | `latticePos` | 3 | background spin + pulses + scroll-fade |
-| `/blog/` | cluster.js | `blog` | `wavePos(T)` | 3 | live field + scroll-fade |
-| `/blog/post.html` | cluster.js | `lab` | `knotPos` | 2 | background spin + pulses + scroll-fade |
+### 11.11 Per-page mapping
+| Page | Engine | shape | Motion |
+|---|---|---|---|
+| `/` | spatial.js | nebula | idle spin + pulses + bolts + parallax field |
+| `/#about` | spatial.js | knot | scrub-in, window |
+| `/#goodies` | spatial.js | crystal | scrub-in, window (`#repo-root`) |
+| `/#blog` | spatial.js | field (live) | scrub-in, window (`#blog-list-root`) |
+| `/#journal` | spatial.js | spine | scrub-in, window (`#summary-root` + `#contrib-root`) |
+| `/goodies/` | cluster.js | crystal | morph-in + spin + scroll-fade |
+| `/blog/` | cluster.js | field (live) | morph-in + scroll-fade |
+| `/blog/post.html` | cluster.js | knot (`lab`) | morph-in + spin + scroll-fade |
 
-> Replication note: because every position comes from the seeded `rand` and fixed builders,
-> dropping these functions into a fresh `<canvas>` with the projection (§11.6) and render
-> (§11.8) reproduces the exact look. The only non-deterministic inputs are viewport size
-> (`W,H,dpr`), time `T`, and user drag.
+### 11.12 Lightning bolts (geo.js, exact)
+One layer per engine: `boltLayer(max = 2, cd = 0.8)`, `SPARK = 0.42 s`. Per frame when settled:
+`stepBolts(ctx, st, () => closestUnlinked(sp, eset, scale·0.2, W, H), T)`.
+- **closestUnlinked(pts, eset, lim, W, H)**: min squared screen distance over on-screen pairs
+  (`[-48, W+48] × [-48, H+48]`) `a<b` with `eset[a+'_'+b]` unset; returns `{A,B}` if `< lim²`.
+- **stepBolts**: `cd −= 0.016`; if `cd ≤ 0` and `s.length < max`: on a hit push
+  `{ax,ay,bx,by, life:0, seed: rand(T·1.7 + A.x·0.013 + B.y·0.017)·1000}` and `cd = 0.3 + rand(T·3.1)·0.7`;
+  on a miss `cd = 0.08`. Advance `life += 0.016`, cull at `≥ SPARK`, else `drawBolt`.
+- **drawBolt**: `p = life/SPARK`, `fs = seed + floor(life·90)`, envelope
+  `env = (p < .16 ? p/.16 : 1 − (p−.16)/.84)` clamped ≥ 0, × `(.85 + .15·rand(fs+11))`.
+  5-segment polyline with perpendicular jitter `(rand(fs + s·4.7 + pass·.5) − .5)·len·.3·(1 − |2t−1|)`;
+  passes `[2.6, '120,146,170', .26]` then `[.9, '198,212,226', .6]` (alpha × env), round caps;
+  endpoint flashes radius `1.5 + 1.5·env` `rgba(180,198,214, .45·env)`.
 
-### 11.12 Lightning bolts (exact math, verbatim)
-Identical in `spatial.js` and `cluster.js`. State (module scope):
-```
-SPARK_DUR = 0.42
-fieldSpk   = { sparks:[], cd:0.5, max:4 }   // dot ↔ dot
-crossSpk   = { sparks:[], cd:0.5, max:4 }   // dot ↔ cluster node
-clusterSpk = { sparks:[], cd:0.8, max:2 }   // cluster node ↔ node
-```
-Per frame, after nodes (skipped under reduced motion), with `minWH = min(W,H)` and
-`ckeys`/`edgeSet` = the current cluster edge-key set:
-```
-stepBolts(fieldSpk,   () => closestUnlinked(fsp, bgEdgeSet, minWH*0.18))
-stepBolts(crossSpk,   () => closestCross(fsp, sp,           minWH*0.13))
-stepBolts(clusterSpk, () => closestUnlinked(sp, ckeys, max(avgEdgeLen(sp,edges)*1.4, scale*0.16)))
-```
-- **onScreen(P)** = P within `[-48, W+48] × [-48, H+48]`.
-- **closestUnlinked(pts, eSet, lim)**: min squared screen distance over on-screen pairs
-  `a<b` with `eSet[a+'_'+b]` unset; returns `{A,B}` (the points) if `< lim²`, else null.
-- **closestCross(ptsA, ptsB, lim)**: same, across the two arrays (no edge filter).
-- **stepBolts(st, finder)**: `st.cd -= 0.016`; if `cd ≤ 0` and `sparks.length < max`, run
-  `finder()`; on hit push `{ax,ay,bx,by, life:0, seed:rand(T·1.7 + A.x·0.013 + B.y·0.017)·1000}`
-  and `cd = 0.22 + rand(T·3.1)·0.5`; on miss `cd = 0.06`. Then advance each spark
-  `life += 0.016`, cull at `≥ SPARK_DUR`, else `drawBolt`.
-- **drawBolt(spk)**: `p = life/SPARK_DUR`; `fseed = seed + floor(life·90)`;
-  envelope `env = (p < 0.16 ? p/0.16 : 1 − (p−0.16)/0.84)` clamped ≥0, then ×`(0.85+0.15·rand(fseed+11))`.
-  Direction unit `(dx,dy)/len`, normal `(−dy,dx)/len`, `segs = 5`. Two passes
-  `[[2.6,'120,146,170',0.26],[0.9,'198,212,226',0.6]]`: polyline `A→…→B` with per-vertex
-  offset `jit = (rand(fseed + s·4.7 + pass·0.5) − 0.5)·len·0.3·(1 − |2t−1|)` along the normal;
-  `lineWidth = pass[0]`, stroke `rgba(pass[1], pass[2]·env)`, round caps/joins. Endpoint flash
-  radius `1.5 + 1.5·env`, fill `rgba(180,198,214, 0.45·env)` at both ends.
-
-> Non-deterministic inputs: `W,H`, `T`, and which pairs happen to drift within `lim`. Endpoints
-> are frozen at strike time, so a bolt does not track the nodes during its 0.42 s life.
+> Non-deterministic inputs: `W,H,dpr`, time `T`, pointer, the saved window rect, and which pairs
+> drift within `lim`. Everything else is seeded, so dropping `geo.js` into a fresh canvas with the
+> projection (§11.6) and passes (§11.8) reproduces the exact look.
