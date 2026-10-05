@@ -2,7 +2,8 @@
 
 Personal site / open-source hub for Vadim Pidoshva (Full Stack Engineer, Utah).
 Static site on **GitHub Pages** at **geleus.com**, deployed from `main`. No framework,
-no build step. Interactive terminal résumé lives separately at geleus.io.
+no build step. The interactive terminal résumé is section 5 of the homepage (`/#resume`);
+geleus.io just redirects there (that repo is free for dev use).
 
 > **Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full deep dive** (engine internals,
 > CSS, data/automation, and a "how to edit common things" cookbook). This file is the
@@ -15,10 +16,10 @@ no build step. Interactive terminal résumé lives separately at geleus.io.
 ## What this site is now (spatial v2, October 2026)
 
 The **homepage (`/`) is an interactive app**, not a normal page: a full-viewport `<canvas>`
-rendering one cluster of **96 nodes** on a **scrubbable timeline of five sections**
-(home → about → goodies → blog → journal). Wheel / swipe / arrow keys / clicking a lit node
+rendering one cluster of **96 nodes** on a **scrubbable timeline of six sections**
+(home → about → goodies → blog → journal → resume). Wheel / swipe / arrow keys / clicking a lit node
 scrub it; the cluster pours (per-node staggered) from one shape into the next — nebula,
-torus knot, nested crystal, standing wave, spine — and snaps to the nearest section.
+torus knot, nested crystal, standing wave, spine, double helix — and snaps to the nearest section.
 Translucent faces, depth of field, a cursor lens, motion trails, lightning bolts and a deep
 parallax field dress it. Content lives in a **floating glass window** that is *part of the
 scene*: draggable, resizable (8 handles), remembered in `localStorage`; the cluster reflows
@@ -36,6 +37,7 @@ deep links + SEO) that use `js/cluster.js` (same shapes/look, non-interactive) a
 | Frontend | hand-written HTML/CSS/vanilla JS, no framework/build |
 | Rendering | hand-rolled 3D on a 2D `<canvas>` (no WebGL/Three.js) |
 | Fonts/icons | JetBrains Mono, Font Awesome 5.15 (vendored in `lib/`) |
+| Terminal | jquery.terminal 2.42.2 + jQuery 3.7.1 (vendored in `lib/`, loaded only when `/#resume` opens) |
 | Markdown/code | `marked` + `highlight.js` (vendored in `lib/`) |
 | APIs | GitHub REST (repos/profile), jogruber contributions API |
 | Automation | `scripts/weekly-summary.py` + GitHub Actions + Claude Haiku |
@@ -55,6 +57,7 @@ HUD/code/labels. The canvas palette is duplicated as `rgba()` literals in the JS
 | `js/geo.js` | ★ shared geometry + draw passes (`window.GELEUS.geo`) — load before either engine |
 | `js/spatial.js` | ★ homepage engine: timeline scrub, morph, window, nav, hash routing, reader |
 | `js/cluster.js` | animated background for fallback pages (`<body data-shape>`), built on geo.js |
+| `js/resume.js` | terminal résumé content + commands (`#resume-root`); lazy-loaded with `lib/jquery*` by spatial.js; `window.GELEUS.initResume` |
 | `js/goodies.js` | repo cards (`#repo-root`); `window.GELEUS.loadReadme` |
 | `js/blog.js` | post list/reader (`#blog-list-root`/`#post-root`); `window.GELEUS.loadPost` |
 | `js/summary.js` | weekly-summary tree (`#summary-root`) |

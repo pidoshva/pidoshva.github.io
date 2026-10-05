@@ -134,9 +134,22 @@ window.GELEUS = window.GELEUS || {};
     return { pos: p, edges: edges };
   }
 
+  function helix() { // resume: double helix — 48 rungs, 2.3 turns; strands chained, rungs across, sparse cross-links
+    var p = [], edges = [], pairs = N / 2;
+    for (var k = 0; k < pairs; k++) {
+      var tt = k / (pairs - 1), a = tt * Math.PI * 2 * 2.3, y = (tt - 0.5) * 2.0, r = 0.55;
+      p.push({ x: r * Math.cos(a), y: y, z: r * Math.sin(a) });
+      p.push({ x: r * Math.cos(a + Math.PI), y: y, z: r * Math.sin(a + Math.PI) });
+      edges.push([2 * k, 2 * k + 1]);                                   // rung
+      if (k > 0) { edges.push([2 * k - 2, 2 * k]); edges.push([2 * k - 1, 2 * k + 1]); } // strands
+    }
+    var cross = knn(p, 1, function (a, b) { return Math.abs(a - b) <= 3; });
+    return { pos: p, edges: edges.concat(cross) };
+  }
+
   // Build the full registry once: {pos, edges, tris, eset, dynamic}
   function buildShapes() {
-    var S = { nebula: nebula(), knot: knot(), crystal: crystal(), field: { pos: field(0), edges: fieldEdges(), dynamic: true }, spine: spine() };
+    var S = { nebula: nebula(), knot: knot(), crystal: crystal(), field: { pos: field(0), edges: fieldEdges(), dynamic: true }, spine: spine(), helix: helix() };
     Object.keys(S).forEach(function (k) {
       var s = S[k]; s.tris = trisOf(s.edges).slice(0, 260); s.eset = {};
       s.edges.forEach(function (e) { s.eset[e[0] + '_' + e[1]] = 1; });

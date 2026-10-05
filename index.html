@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css?v=28">
+  <link rel="stylesheet" href="/css/styles.css?v=29">
   <link rel="stylesheet" href="/lib/hljs/atom-one-dark.min.css">
 </head>
 <body class="spatial">
@@ -26,7 +26,7 @@
   <header class="hud-top">
     <a href="/" class="brand">geleus<span>spatial</span></a>
     <nav class="hud-nav" aria-label="Primary">
-      <button data-node="home" class="active">home</button><button data-node="about">about</button><button data-node="goodies">goodies</button><button data-node="blog">blog</button><button data-node="journal">journal</button><button data-node="resume">resume ↗</button>
+      <button data-node="home" class="active">home</button><button data-node="about">about</button><button data-node="goodies">goodies</button><button data-node="blog">blog</button><button data-node="journal">journal</button><button data-node="resume">resume</button>
     </nav>
   </header>
 
@@ -38,6 +38,7 @@
     <button class="tick" data-i="2"><i class="tick-dot"></i><span class="tick-n">02</span><span class="tick-l">goodies</span></button>
     <button class="tick" data-i="3"><i class="tick-dot"></i><span class="tick-n">03</span><span class="tick-l">blog</span></button>
     <button class="tick" data-i="4"><i class="tick-dot"></i><span class="tick-n">04</span><span class="tick-l">journal</span></button>
+    <button class="tick" data-i="5"><i class="tick-dot"></i><span class="tick-n">05</span><span class="tick-l">resume</span></button>
   </nav>
 
   <!-- Identity (kept as .hero so js/profile.js can sync the name) -->
@@ -117,6 +118,15 @@
         </div>
       </section>
 
+      <section data-page="5" class="win-resume" hidden>
+        <div class="win-head">
+          <div class="ptag">$ ssh guest@geleus.com</div>
+          <h2>Résumé</h2>
+          <p class="win-sub">An interactive terminal. Type <code>help</code>, or <code>less all</code> for everything.</p>
+        </div>
+        <div id="resume-root" class="term-host"><div class="blog-loading">Booting terminal...</div></div>
+      </section>
+
     </div>
     <i class="h h-n" data-d="n"></i><i class="h h-s" data-d="s"></i><i class="h h-e" data-d="e"></i><i class="h h-w" data-d="w"></i>
     <i class="h h-ne" data-d="ne"></i><i class="h h-nw" data-d="nw"></i><i class="h h-se" data-d="se"></i><i class="h h-sw" data-d="sw"></i>
@@ -130,8 +140,8 @@
 
   <div class="contrib-tooltip" id="contrib-tooltip"></div>
 
-  <script src="/js/geo.js?v=1"></script>
-  <script src="/js/spatial.js?v=11"></script>
+  <script src="/js/geo.js?v=2"></script>
+  <script src="/js/spatial.js?v=12"></script>
   <script src="/js/lang-colors.js"></script>
   <script src="/lib/marked/marked.min.js"></script>
   <script src="/lib/hljs/highlight.min.js"></script>

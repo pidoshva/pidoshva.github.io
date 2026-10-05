@@ -31,12 +31,12 @@
     { key: 'about',   n: '01', shape: 'knot',    pitch: -0.55, desc: 'two strands, one surface. who i am and where i am from.' },
     { key: 'goodies', n: '02', shape: 'crystal', pitch: -0.22, desc: 'three nested shells. open-source repos and experiments.' },
     { key: 'blog',    n: '03', shape: 'field',   pitch: -0.6,  desc: 'a standing wave. notes, writeups, things learned.' },
-    { key: 'journal', n: '04', shape: 'spine',   pitch: -0.08, desc: 'a trunk with branches. the week, auto-generated.' }
+    { key: 'journal', n: '04', shape: 'spine',   pitch: -0.08, desc: 'a trunk with branches. the week, auto-generated.' },
+    { key: 'resume',  n: '05', shape: 'helix',   pitch: -0.35, desc: 'a double helix. the interactive terminal r\u00e9sum\u00e9 \u2014 type help.' }
   ];
-  var SHAPE_LABEL = { nebula: 'nebula', knot: 'torus knot', crystal: 'crystal', field: 'field', spine: 'spine' };
+  var SHAPE_LABEL = { nebula: 'nebula', knot: 'torus knot', crystal: 'crystal', field: 'field', spine: 'spine', helix: 'helix' };
   SEC.forEach(function (s) { s.S = SHAPES[s.shape]; });
-  var LAST = SEC.length - 1, ANCH = [5, 20, 41, 63, 84];
-  var RESUME_URL = 'https://geleus.io/';
+  var LAST = SEC.length - 1, ANCH = [5, 20, 41, 63, 84, 70];
   function posAt(i) { return (SEC[i].S.dynamic && !reduced) ? G.field(T) : SEC[i].S.pos; }
   function idxOfKey(k) { for (var i = 0; i < SEC.length; i++) if (SEC[i].key === k) return i; return 0; }
   function keyFromHash() { return idxOfKey(location.hash.slice(1)); }
@@ -90,6 +90,7 @@
     clampWin();
     win.style.left = WIN.x + 'px'; win.style.top = WIN.y + 'px'; win.style.width = WIN.w + 'px'; win.style.height = WIN.h + 'px';
     if (winDim) winDim.textContent = Math.round(WIN.w) + ' × ' + Math.round(WIN.h);
+    if (window.GELEUS.resumeResize) window.GELEUS.resumeResize();
     if (save) { try { localStorage.setItem(WKEY, JSON.stringify(WIN)); } catch (e) {} }
   }
   function loadWin() {
@@ -183,12 +184,34 @@
     Array.prototype.forEach.call(pages, function (s) { s.hidden = (+s.getAttribute('data-page') !== i); });
     var tag = $('winTag'); if (tag) tag.textContent = SEC[i].n + ' / ' + SEC[i].key;
     win.classList.add('open'); win.setAttribute('aria-hidden', 'false'); if (winBody) winBody.scrollTop = 0;
+    if (SEC[i].key === 'resume') loadResume();
   }
+  // --- r\u00e9sum\u00e9 terminal: jquery + jquery.terminal + js/resume.js are fetched the first time the window opens ---
+  var resumeState = 0; // 0 idle \u00b7 1 loading \u00b7 2 ready
+  function loadScript(src) { return new Promise(function (res, rej) { var el = document.createElement('script'); el.src = src; el.onload = res; el.onerror = rej; document.head.appendChild(el); }); }
+  function loadStyle(href) { return new Promise(function (res, rej) { var el = document.createElement('link'); el.rel = 'stylesheet'; el.href = href; el.onload = res; el.onerror = rej; document.head.appendChild(el); }); }
+  function loadResume() {
+    var root = $('resume-root');
+    if (!root) return;
+    if (resumeState === 2) { if (window.GELEUS.resumeResize) window.GELEUS.resumeResize(); if (window.GELEUS.resumeFocus) window.GELEUS.resumeFocus(); return; }
+    if (resumeState === 1) return;
+    resumeState = 1;
+    loadStyle('/lib/jquery.terminal/jquery.terminal.min.css')
+      .then(function () { return loadScript('/lib/jquery/jquery.min.js'); })
+      .then(function () { return loadScript('/lib/jquery.terminal/jquery.terminal.min.js'); })
+      .then(function () { return loadScript('/lib/jquery.terminal/less.min.js'); })
+      .then(function () { return loadScript('/lib/jquery.terminal/autocomplete_menu.js'); })
+      .then(function () { return loadScript('/js/resume.js?v=1'); })
+      .then(function () {
+        resumeState = 2; root.innerHTML = '';
+        if (window.GELEUS.initResume) window.GELEUS.initResume(root);
+      })
+      .catch(function () { resumeState = 0; root.innerHTML = '<p class="blog-error">Could not load the terminal. <a href="https://github.com/pidoshva">See GitHub instead \u2192</a></p>'; });
+  }
+  window.GELEUS.goSection = function (key) { go(idxOfKey(key)); };
   Array.prototype.forEach.call(navBtns, function (b) {
     b.addEventListener('click', function () {
-      var k = b.getAttribute('data-node');
-      if (k === 'resume') { window.open(RESUME_URL, '_blank', 'noopener'); return; }
-      go(idxOfKey(k));
+      go(idxOfKey(b.getAttribute('data-node')));
     });
   });
   Array.prototype.forEach.call(ticks, function (b) { b.addEventListener('click', function () { go(+b.getAttribute('data-i')); }); });
@@ -237,11 +260,11 @@
   });
 
   window.addEventListener('keydown', function (e) {
-    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) && e.key !== 'Escape') return; // the terminal owns its keys
     if (e.key === 'Escape') { if (postOverlay && postOverlay.classList.contains('open')) closeReader(); else if (tp !== 0) go(0); else return; }
     else if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown') go(Math.round(tp) + 1);
     else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') go(Math.round(tp) - 1);
-    else if (/^[1-5]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey) go(+e.key - 1);
+    else if (/^[1-6]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey) go(+e.key - 1);
     else return;
     e.preventDefault();
   });

@@ -13,8 +13,8 @@ shape while the content slides in. Built with vanilla JS and a hand-rolled 3D sc
 
 - **`/`** — the spatial app (`js/spatial.js` on the shared `js/geo.js`): a 96-node cluster
   you scroll through five sections (nebula → torus knot → crystal → wave → spine), a
-  floating resizable window for about/goodies/blog/journal that shares the scene, and a
-  full-screen reader for blog posts and repo READMEs.
+  floating resizable window for about/goodies/blog/journal/resume that shares the scene
+  (the résumé is an interactive terminal), and a full-screen reader for blog posts and repo READMEs.
 - **`/goodies/`, `/blog/`, `/blog/post.html`** — fallback pages (normal HTML for links + SEO)
   with an animated cluster background (`js/cluster.js`).
 - **Résumé** — external link to [geleus.io](https://geleus.io).

@@ -53,6 +53,7 @@ pidoshva.github.io/
 │   ├── spatial.js             # ★ homepage app: timeline scrub, morph, window, nav, reader
 │   ├── cluster.js             # animated background for fallback pages (per-page shape), on geo.js
 │   ├── topo.js                # LEGACY background (kept, unused — safe to ignore)
+│   ├── resume.js              # terminal résumé (section 5): content + commands; lazy-loaded with lib/jquery*
 │   ├── goodies.js             # repo cards; exposes window.GELEUS.loadReadme
 │   ├── blog.js                # post list + reader; exposes window.GELEUS.loadPost
 │   ├── summary.js             # weekly-summary tree (#summary-root)
@@ -85,14 +86,14 @@ requires a matching change in `js/spatial.js`**:
 | `canvas#spatialCanvas` | render target (fixed, full viewport) |
 | `.frame` | four viewfinder corner brackets (decorative) |
 | `.hud-top > .brand` | "geleus" wordmark (links to `/`) |
-| `.hud-nav button[data-node="…"]` | nav; `data-node` ∈ `home,about,goodies,blog,journal,resume` (`resume` opens geleus.io) |
-| `.rail .tick[data-i="0..4"]` + `.tick-dot` + `#railDot` | section rail (the timeline); leader lines are drawn to each `.tick-dot`; `#railDot` is the progress dot |
+| `.hud-nav button[data-node="…"]` | nav; `data-node` ∈ `home,about,goodies,blog,journal,resume` |
+| `.rail .tick[data-i="0..5"]` + `.tick-dot` + `#railDot` | section rail (the timeline); leader lines are drawn to each `.tick-dot`; `#railDot` is the progress dot |
 | `.hero-id.hero` → `#eyebrow`, `h1`, `.role-line`, `#status` | identity block; `.hero h1` is synced by `profile.js`; `#status` is the typed section description |
 | `.tele` → `#tLinks/#tFaces/#tMorph/#tRot/#tFps` | live telemetry (desktop only) |
 | `#hint` | first-use hint; fades after the first scrub |
 | `#win` | **the window**; `.open` toggles; `#winBar` (drag handle, `#winTag`, `#winDim`, `#winFit`, `#winClose`), `#winBody` (scrolls), `.h[data-d=n|s|e|w|ne|nw|se|sw]` resize handles |
-| `#win section[data-page="1..4"]` | window sections (about=1, goodies=2, blog=3, journal=4); only the active one is shown |
-| `#repo-root` / `#blog-list-root` / `#summary-root` / `#contrib-root` | module injection roots inside the window sections |
+| `#win section[data-page="1..5"]` | window sections (about=1, goodies=2, blog=3, journal=4, resume=5); only the active one is shown |
+| `#repo-root` / `#blog-list-root` / `#summary-root` / `#contrib-root` / `#resume-root` | module injection roots inside the window sections |
 | `#postOverlay` + `#postClose` + `#post-overlay-content` | full-screen **reader** for blog posts AND repo READMEs (`.reader-overlay`) |
 | `#contrib-tooltip` | hover tooltip used by `contributions.js` |
 
@@ -120,14 +121,25 @@ colour LUT `col(nr)` (far steel `104,122,138` → near moss `168,200,145`), and 
 | 2 | `goodies` | `crystal` — 3 nested icosphere shells | −0.22 | `#repo-root` |
 | 3 | `blog` | `field` — 12×8 standing wave (`dynamic`, rebuilt each frame) | −0.6 | `#blog-list-root` |
 | 4 | `journal` | `spine` — trunk 16 + 5 branches each | −0.08 | `#summary-root` + `#contrib-root` |
+| 5 | `resume` | `helix` — double helix, 48 rungs, 2.3 turns | −0.35 | `#resume-root` (terminal) |
 
-`ANCH = [5, 20, 41, 63, 84]` pins each section's **lit, labelled node** to a fixed node index so
-it rides every morph. `resume` is nav-only (`window.open('https://geleus.io/')`).
+`ANCH = [5, 20, 41, 63, 84, 70]` pins each section's **lit, labelled node** to a fixed node index so
+it rides every morph.
+
+**Résumé terminal (section 5).** Nothing terminal-related is in the initial page load. The first
+time `settle(5)` opens the window, `loadResume()` fetches, in order, `lib/jquery.terminal/*.css`,
+`lib/jquery/jquery.min.js`, `lib/jquery.terminal/{jquery.terminal.min,less.min,autocomplete_menu}.js`
+and `js/resume.js`, then calls `window.GELEUS.initResume(#resume-root)`. `resume.js` holds the
+content (jquery.terminal `[[b;#hex;]…]` markup via the `h/k/s/f` palette helpers), the command
+`switch`, and exposes `resumeResize()` (called by `applyWin`) and `resumeFocus()`. Its `startx`,
+`exit`, `hub`/`home`, `goodies`, `blog`, `journal` commands call `window.GELEUS.goSection(key)`.
+Keys typed into the terminal are left alone by the app's keydown handler, except `Esc` (→ home).
+geleus.io redirects to `/#resume`.
 
 **Timeline scrub.** `tp` is the target position (0..4), `p` eases toward it (`p += (tp−p)·0.075`).
 Wheel: `tp += deltaY·0.0014` (ignored over `#win`/`.reader-overlay` so content scrolls); touch
 vertical drag: `tp −= dy·0.004`; both snap to `round(tp)` 360 ms after the last input via `go()`.
-Keys: arrows / PageUp/Down step, `1–5` jump, `Esc` closes the reader, else goes home.
+Keys: arrows / PageUp/Down step, `1–6` jump, `Esc` closes the reader, else goes home.
 `go(i, silent)` sets `tp`, updates nav/rail/eyebrow/status (`liveUpdate`), hides stale window
 content (`settle(-1)`), and pushes history unless `silent`.
 
@@ -179,7 +191,7 @@ window. Because this is frame-driven, a **hidden tab** (rAF paused) keeps its ol
 
 - **`go(i, silent)`** is the single entry point. Nav buttons, rail ticks, lit nodes, keys, and the
   scrub snap all call it. It pushes `#key` (or the bare path for home) unless `silent`.
-- **Deep links / history:** on load `keyFromHash()` maps `#about|#goodies|#blog|#journal` to the
+- **Deep links / history:** on load `keyFromHash()` maps `#about|#goodies|#blog|#journal|#resume` to the
   index and the app starts *on* that section (`p = tp = i`, no morph); `popstate` → `go(idx, true)`.
 - **Clicking the canvas** (pointer-up with < 6 px movement): a hovered lit node opens its section;
   empty space returns home. Mouse drag rotates (`tgtYaw += dx·0.006`, `userPitch ±1`); on touch a
@@ -261,6 +273,10 @@ morphs from the nebula into the page's shape on load (`goodies`→crystal, `blog
 parallax, and reuses every geo.js draw pass (faces, depth of field, pulses, bolts, grain).
 It **fades on scroll** so text stays readable (`top 0.42 → min 0.16` over 260 px; home `1.0 → 0.12`
 over 560 px). `cluster.js` has **no shape code of its own** — all geometry lives in `geo.js`.
+Optional hooks (used by the geleus.io résumé, which vendors `geo.js` + `cluster.js`):
+`<body data-bg-fade="off">` disables the scroll-fade; `window.GELEUS.clusterLayout(W,H)` may return
+`{cx, cy, s}` to place/scale the cluster (eased at 0.08); `window.GELEUS.clusterHook(ctx, sp, W, H, T)`
+draws over the cluster each frame (`sp` = projected points).
 `topo.js` is the previous contour background — **kept but no longer referenced** anywhere.
 
 ---
@@ -307,8 +323,8 @@ journal — run `gh workflow run weekly-summary.yml` or wait for the cron.
   with `?v=N` in the HTML. **Bump `N` whenever you edit that file**, or stale assets get
   served (this caused repeated "still broken" reports). Bump across every HTML file that
   references the asset. Current snapshot (will drift — treat the *rule* as the source of truth):
-  `styles.css?v=28`, `geo.js?v=1` (all four pages), `spatial.js?v=11`, `goodies.js?v=5`, `blog.js?v=3`,
-  `contributions.js?v=8`, `cluster.js?v=15` (fallback pages). `summary.js`, `profile.js`, `lang-colors.js`, `nav.js`,
+  `styles.css?v=29`, `geo.js?v=2` (all four pages), `spatial.js?v=12`, `resume.js?v=1` (lazy), `goodies.js?v=5`, `blog.js?v=3`,
+  `contributions.js?v=8`, `cluster.js?v=17` (fallback pages). `summary.js`, `profile.js`, `lang-colors.js`, `nav.js`,
   and `lib/*` are currently unversioned. Blog **content** (`.md`/`.json`) is handled by the
   `cache:'no-cache'` fetch instead of a version query.
 - **localStorage keys** (clear to force a refresh): `geleus_repos`, `geleus_contrib`, `geleus_profile`,
@@ -410,7 +426,7 @@ function nearOf(z){ return clamp(1 - (z+1)/2.4, 0, 1); }   // rotated depth → 
   `a === b` and pairs where `skip(a,b)` is true; undirected, deduped by `lo_hi` key → `[[lo,hi],…]`.
 - **`trisOf(edges)`** — every triple `a<b<c` with all three sides present in the edge set → faces.
   `buildShapes()` keeps at most the first 260.
-- **`buildShapes()`** → `{ nebula, knot, crystal, field, spine }`, each `{ pos, edges, tris, eset }`;
+- **`buildShapes()`** → `{ nebula, knot, crystal, field, spine, helix }`, each `{ pos, edges, tris, eset }`;
   `field` also has `dynamic: true` (its `pos` is regenerated each frame with `field(T)`).
 
 ### 11.4 Shape builders (each returns N = 96 points)
@@ -442,8 +458,14 @@ edges (fixed): (i,j)–(i+1,j), (i,j)–(i,j+1), (i,j)–(i+1,j+1)   // grid + o
 trunk k: y = (k/15 − .5)·2.1 ; x = sin(y·1.7)·.1 ; z = cos(y·1.3)·.08 ; edge [k−1,k]
 branch (k,j), s = k·9 + j·3:  a = rand(s+1)·2π ; len = .2 + rand(s+2)·.6 ; tilt = .06 + rand(s+3)·.2
   pos = trunk[k] + (cos a·len,  tilt·len·2,  sin a·len) ; edge [k, idx]
+
+// helix (resume) — double helix: 48 rungs, 2.3 turns, radius .55, height 2.0
+rung k: tt = k/47 ; a = tt·2π·2.3 ; y = (tt − .5)·2.0
+  pos[2k]   = (.55·cos a,     y, .55·sin a)
+  pos[2k+1] = (.55·cos(a+π),  y, .55·sin(a+π))
+edges = rungs [2k, 2k+1]  ∪  strand chains [2k−2, 2k], [2k−1, 2k+1]  ∪  knn(pos, 1, skip: |a−b| ≤ 3)
 ```
-Counts: nebula 184 edges / 79 faces · knot 216 / 48 · crystal 284 / 180 · field 249 / 154 · spine 95 / 0.
+Counts: nebula 184 edges / 79 faces · knot 216 / 48 · crystal 284 / 180 · field 249 / 154 · spine 95 / 0 · helix 203 / 61.
 
 ### 11.5 Background parallax field (`bgField(90)`)
 ```js
@@ -539,6 +561,7 @@ parallax (`yaw + px·0.01`, `pitch + py·0.006`), no other input.
 | `/#goodies` | spatial.js | crystal | scrub-in, window (`#repo-root`) |
 | `/#blog` | spatial.js | field (live) | scrub-in, window (`#blog-list-root`) |
 | `/#journal` | spatial.js | spine | scrub-in, window (`#summary-root` + `#contrib-root`) |
+| `/#resume` | spatial.js | helix | scrub-in, window (`#resume-root` terminal, lazy-loaded) |
 | `/goodies/` | cluster.js | crystal | morph-in + spin + scroll-fade |
 | `/blog/` | cluster.js | field (live) | morph-in + scroll-fade |
 | `/blog/post.html` | cluster.js | knot (`lab`) | morph-in + spin + scroll-fade |
