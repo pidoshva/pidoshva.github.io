@@ -216,9 +216,14 @@ window. Because this is frame-driven, a **hidden tab** (rAF paused) keeps its ol
   smoothness. The window's `left/top/width/height` are inline styles set by JS.
 - **Reader backdrop:** `.reader-overlay { background: rgba(12,14,13,.95); blur(22px) }` — near-opaque
   on purpose (earlier 0.62 let background text bleed through).
-- **Mobile (`@media max-width:760px`, matches `spatial.js` `W > 760`):** the rail docks under the
-  brand as a horizontal strip (labels hidden), telemetry + hint hide, the identity block tightens,
-  and the window becomes a **bottom sheet** (`height:62%`, no drag/resize handles).
+- **Mobile (`@media max-width:760px`, matches `spatial.js` `W > 760`):** the rail becomes a
+  dots-only horizontal strip whose `top` is set by `spatial.js` (`measure()`) from the measured,
+  possibly wrapped, header; telemetry + hint hide; the window becomes a **bottom sheet**
+  (`height:62%`, `background .84`, no drag/resize handles, close label swaps to "✕ close" via
+  `.lbl-desktop/.lbl-mobile`); `body.win-open` (toggled in `settle()`) fades the identity block
+  so it never bleeds through the sheet. The cluster then fits the band between the rail and the
+  sheet top (`H·0.38`) — see `layoutTarget()`. Touch: vertical drag scrubs (`−dy·0.006`),
+  horizontal rotates, and a tap picks the nearest lit node on release (`pickAnchor`).
 - Window content reuses existing component styles (`.repo-card/.blog-card/.timeline-tree/.contrib-*`);
   inside the window the repo/blog grids are `repeat(auto-fill, minmax(240px, 1fr))`.
 
@@ -302,7 +307,7 @@ journal — run `gh workflow run weekly-summary.yml` or wait for the cron.
   with `?v=N` in the HTML. **Bump `N` whenever you edit that file**, or stale assets get
   served (this caused repeated "still broken" reports). Bump across every HTML file that
   references the asset. Current snapshot (will drift — treat the *rule* as the source of truth):
-  `styles.css?v=27`, `geo.js?v=1` (all four pages), `spatial.js?v=10`, `goodies.js?v=5`, `blog.js?v=3`,
+  `styles.css?v=28`, `geo.js?v=1` (all four pages), `spatial.js?v=11`, `goodies.js?v=5`, `blog.js?v=3`,
   `contributions.js?v=8`, `cluster.js?v=15` (fallback pages). `summary.js`, `profile.js`, `lang-colors.js`, `nav.js`,
   and `lib/*` are currently unversioned. Blog **content** (`.md`/`.json`) is handled by the
   `cache:'no-cache'` fetch instead of a version query.
@@ -508,9 +513,9 @@ initial:   yaw = 0.6, pitch = −0.28, p = tp = index-from-hash
 idle:      tgtYaw += 0.0035 (home, not dragging, nothing hovered)
 ease:      yaw += (tgtYaw − yaw)·0.07 ; pitch += (SEC.pitch + userPitch − pitch)·0.05
 mouse:     tgtYaw += dx·0.006 ; userPitch = clamp(userPitch + dy·0.006, −1, 1)
-touch:     |dy| > |dx| ? scrub(−dy·0.004) : tgtYaw += dx·0.007
+touch:     |dy| > |dx| ? scrub(−dy·0.006) : tgtYaw += dx·0.007
 wheel:     scrub(deltaY·0.0014) ; snap to round(tp) after 360 ms
-tap:       moved < 6 px → open hovered anchor, else home
+tap:       moved < 6 px → open the anchor within 22 px of the release point, else home
 lens:      d < 150 → push (1 − d/150)²·26 px radially ; offsets ease 0.18
 ```
 Background (`cluster.js`): `yaw += 0.0035`/frame, pitch `−0.3`, both nudged by the eased mouse

@@ -916,6 +916,7 @@ body.spatial .hero-id .caret { display: inline-block; width: 0.5em; height: 1em;
 .win-btns { display: flex; gap: 1.1rem; }
 .win-btns button { font: inherit; letter-spacing: 0.1em; text-transform: inherit; background: none; border: 0; padding: 0; color: var(--text-faint); cursor: pointer; }
 .win-btns button:hover, .win-btns button:focus-visible { color: var(--text); outline: none; }
+.win-btns .lbl-mobile { display: none; }
 .win-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 1.5rem 1.7rem 2.2rem; }
 .win section[hidden] { display: none; }
 .win-head { margin-bottom: 1.1rem; }
@@ -980,20 +981,29 @@ body.spatial .timeline-tree { font-size: 0.85rem; }
 /* Spatial app on small screens: nav tightens, the rail docks under the brand as a
    horizontal strip, telemetry/hint hide, and the window becomes a bottom sheet. */
 @media (max-width: 760px) {
-  .hud-top { padding: calc(1.1rem + env(safe-area-inset-top)) calc(1rem + env(safe-area-inset-right)) 0 calc(1rem + env(safe-area-inset-left)); }
+  .hud-top { align-items: flex-start; padding: calc(1.1rem + env(safe-area-inset-top)) calc(1rem + env(safe-area-inset-right)) 0 calc(1rem + env(safe-area-inset-left)); }
   .hud-top .brand span { display: none; }
-  .hud-nav { gap: 0.9rem; font-size: 0.68rem; flex-wrap: wrap; justify-content: flex-end; }
+  .hud-nav { gap: 0.55rem 0.9rem; font-size: 0.66rem; flex-wrap: wrap; justify-content: flex-end; max-width: 75%; }
+  .hud-nav button { padding: 0.35rem 0; } /* taller tap targets */
   body.spatial .frame { inset: 10px; }
-  .rail { right: auto; left: calc(1rem + env(safe-area-inset-left)); top: calc(3.4rem + env(safe-area-inset-top)); transform: none; flex-direction: row; gap: 1.1rem; padding: 0; }
+  /* rail: dots only, docked under the nav (top is set by spatial.js from the measured header) */
+  .rail { right: auto; left: calc(1rem + env(safe-area-inset-left)); top: calc(3.4rem + env(safe-area-inset-top)); transform: none; flex-direction: row; gap: 1rem; padding: 0.3rem 0; }
   .rail-dot { display: none; }
-  .tick { gap: 0.4rem; }
-  .tick .tick-l { display: none; }
-  body.spatial .hero-id { padding: 0 calc(1rem + env(safe-area-inset-right)) calc(1.4rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left)); max-width: calc(100% - 2rem); }
+  .tick { gap: 0; padding: 0.35rem 0.1rem; }
+  .tick .tick-n, .tick .tick-l { display: none; }
+  .tick .tick-dot { width: 12px; height: 12px; }
+  .tick.active .tick-dot { background: var(--moss); box-shadow: 0 0 10px var(--moss); }
+  body.spatial .hero-id { padding: 0 calc(1rem + env(safe-area-inset-right)) calc(1.4rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left)); max-width: calc(100% - 2rem); transition: opacity 0.3s; }
+  body.spatial.win-open .hero-id { opacity: 0; pointer-events: none; } /* under the sheet — don't bleed through */
   .tele, .hint { display: none; }
-  .win { left: 0 !important; top: auto !important; bottom: 0; width: 100% !important; height: 62% !important; border-left: 0; border-right: 0; transform: translateY(104%); background: rgba(16, 18, 17, 0.62); }
+  /* the window becomes a bottom sheet */
+  .win { left: 0 !important; top: auto !important; bottom: 0; width: 100% !important; height: 62% !important; border-left: 0; border-right: 0; transform: translateY(104%); background: rgba(16, 18, 17, 0.84); }
   .win.open { transform: none; }
   .win .h, .win-dim, #winFit { display: none; }
-  .win-bar { cursor: default; }
+  .win-bar { cursor: default; padding: 0.8rem 1rem; }
+  .win-btns .lbl-desktop { display: none; }
+  .win-btns .lbl-mobile { display: inline; }
+  .win-btns button { padding: 0.2rem 0; }
   .win-body { padding: 1.2rem 1rem calc(2rem + env(safe-area-inset-bottom)); }
   .reader-inner { padding: calc(4.5rem + env(safe-area-inset-top)) calc(1.1rem + env(safe-area-inset-right)) calc(3rem + env(safe-area-inset-bottom)) calc(1.1rem + env(safe-area-inset-left)); }
 }

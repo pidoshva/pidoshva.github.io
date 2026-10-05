@@ -51,7 +51,7 @@
   var DEL = []; for (var di = 0; di < N; di++) DEL.push(rand(di * 3.3 + 9) * 0.4); // per-node morph delay
   var cur = new Array(N), sp = new Array(N), ox = [], oy = [];
   for (var oi = 0; oi < N; oi++) { ox.push(0); oy.push(0); }
-  var tickPts = [], identTop = 0, frames = 0, fps = 0, fpsT = performance.now(), fpsN = 0;
+  var tickPts = [], identTop = 0, mobTop = 0, frames = 0, fps = 0, fpsT = performance.now(), fpsN = 0;
   var bolts = G.boltLayer(2, 0.8);
 
   // --- DOM ---
@@ -62,12 +62,16 @@
   var tele = { links: $('tLinks'), faces: $('tFaces'), morph: $('tMorph'), rot: $('tRot'), fps: $('tFps') };
 
   var vigC = document.createElement('canvas'), grain = G.makeGrain();
+  var rail = document.querySelector('.rail'), hud = document.querySelector('.hud-top');
   function measure() {
     var cr = cv.getBoundingClientRect();
+    // phones: the rail docks just under the (possibly wrapped) nav, so place it from the measured header
+    if (rail && hud) rail.style.top = (W <= 760) ? (hud.getBoundingClientRect().bottom - cr.top + 10) + 'px' : '';
     tickPts = Array.prototype.map.call(document.querySelectorAll('.rail .tick-dot'), function (el) {
       var r = el.getBoundingClientRect(); return { x: r.left - cr.left + r.width / 2, y: r.top - cr.top + r.height / 2 };
     });
     if (ident) identTop = ident.getBoundingClientRect().top - cr.top;
+    if (rail) mobTop = rail.getBoundingClientRect().bottom - cr.top + 8;
   }
   function resize() {
     W = cv.clientWidth; H = cv.clientHeight;
@@ -100,7 +104,10 @@
   function layoutTarget() {
     var base = Math.min(W, H) * (W < 700 ? 0.42 : 0.34);
     if (!(tp > 0)) return { cx: W / 2, cy: H / 2, s: base };
-    if (W <= 760) return { cx: W / 2, cy: H / 2 - H * 0.16, s: base };
+    if (W <= 760) { // phone: the window is a 62% bottom sheet; the cluster fits the band above it
+      var mt = mobTop || 110, mb = H * 0.38, mh = mb - mt;
+      return { cx: W / 2, cy: mt + mh / 2, s: clamp(Math.min(W * 0.9, mh) * 0.5, base * 0.35, base) };
+    }
     var top = 72, bot = (identTop || H - 215) - 10;
     var regs = [
       { x: 0, y: top, w: WIN.x, h: bot - top },
@@ -171,6 +178,7 @@
   }
   function settle(i) { // the window opens only once the morph has landed
     if (i === shown) return; shown = i; winOpen = i > 0;
+    document.body.classList.toggle('win-open', winOpen);
     if (i <= 0) { win.classList.remove('open'); win.setAttribute('aria-hidden', 'true'); return; }
     Array.prototype.forEach.call(pages, function (s) { s.hidden = (+s.getAttribute('data-page') !== i); });
     var tag = $('winTag'); if (tag) tag.textContent = SEC[i].n + ' / ' + SEC[i].key;
@@ -245,12 +253,18 @@
     var q = rel(e); mouseX = q.x; mouseY = q.y;
     if (!drag) return;
     var dx = e.clientX - lx, dy = e.clientY - ly; moved += Math.abs(dx) + Math.abs(dy); lx = e.clientX; ly = e.clientY;
-    if (ptype === 'touch') { if (Math.abs(dy) > Math.abs(dx)) scrub(-dy * 0.004); else tgtYaw += dx * 0.007; }
+    if (ptype === 'touch') { if (Math.abs(dy) > Math.abs(dx)) scrub(-dy * 0.006); else tgtYaw += dx * 0.007; }
     else { tgtYaw += dx * 0.006; userPitch = clamp(userPitch + dy * 0.006, -1, 1); }
   });
-  cv.addEventListener('pointerup', function () {
+  function pickAnchor(x, y) { // nearest lit node within 22 px (touch has no hover, so pick on release)
+    var best = -1, hb = 22 * 22;
+    for (var ai = 0; ai < ANCH.length; ai++) { var Q = sp[ANCH[ai]]; if (!Q) continue; var dx = Q.x - x, dy = Q.y - y, dd = dx * dx + dy * dy; if (dd < hb) { hb = dd; best = ai; } }
+    return best;
+  }
+  cv.addEventListener('pointerup', function (e) {
     drag = false;
-    if (moved < 6) { if (hovered >= 0) go(hovered); else if (Math.round(tp) !== 0) go(0); }
+    if (moved < 6) { var q = rel(e), hit = pickAnchor(q.x, q.y); if (hit >= 0) go(hit); else if (Math.round(tp) !== 0) go(0); }
+    if (ptype === 'touch') { mouseX = -1; mouseY = -1; }
   });
   cv.addEventListener('pointerleave', function () { mouseX = -1; mouseY = -1; });
   window.addEventListener('pointerup', function () { drag = false; });
