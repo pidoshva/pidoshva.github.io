@@ -242,25 +242,25 @@
   // The story the demo tells, bottom of the helix → top: the OrderProtection chapter.
   // Source: the résumé (Oct 2026). Every number is from merged work.
   F0.resumeStory = [
-    { eyebrow: 'april 2025 \u2192 now', title: 'OrderProtection',
+    { eyebrow: 'april 2025 \u2192 now', title: 'OrderProtection', stat: { value: '15+', label: 'backend services' },
       lines: ['Shipping protection and extended warranties for Shopify and BigCommerce merchants.', 'A small \u201cadd protection\u201d control in the cart, backed by 15+ services and a claims AI.', 'I joined to ship features. I ended up owning how the product gets installed, sold and operated.'] },
-    { eyebrow: 'the chore', title: 'Every store, by hand',
+    { eyebrow: 'the chore', title: 'Every store, by hand', stat: { value: '1', label: 'engineer per install' },
       lines: ['Installing the widget meant an engineer hand-editing each merchant\u2019s theme, store by store.', 'Merchants\u2019 own theme updates broke installs without anyone noticing.', 'Onboarding speed was capped by engineering time.'] },
-    { eyebrow: 'automation \u00b7 /imp', title: 'Automating implementation',
+    { eyebrow: 'automation \u00b7 /imp', title: 'Automating implementation', stat: { value: '2', label: 'platforms, one click' },
       lines: ['Built a tool and an AI playbook: fetch the theme, apply a tested recipe, save to a draft copy, verify.', 'Never the live store. Credentials locked down. Several times faster.', 'Extended it to a second platform, BigCommerce.', 'Now a one-click job an agent runs from the dashboard, with live progress, cancel, and honest pass/fail.'] },
-    { eyebrow: 'implementation team', title: 'Onboarding on autopilot',
+    { eyebrow: 'implementation team', title: 'Onboarding on autopilot', stat: { value: '0', label: 'manual steps per store' },
       lines: ['A Slack alert and automatic check the moment a merchant publishes a new theme \u2014 breakages caught before shoppers see them.', 'A daily report of stores on outdated widget versions, biggest accounts first.', 'New stores arrive set up and ready to publish. The Slack assistant can stage a deployment from a chat message.', 'A per-store engineering chore became a reviewable automated job.'] },
-    { eyebrow: 'revenue', title: 'A second product line',
+    { eyebrow: 'revenue', title: 'A second product line', stat: { value: '2', label: 'products sold at checkout' },
       lines: ['The company sold shipping protection. I built everything needed to sell extended warranties too.', 'Data model and migrations, event pipelines, transactional email, admin configuration, A/B tests, and the selector shoppers tap.', 'Live on merchant stores: new revenue on every protected order.', 'A bug recording $0 for every warranty sold was caught from real data before it spread.'] },
-    { eyebrow: 'claims', title: 'Automating claims',
+    { eyebrow: 'claims', title: 'Automating claims', stat: { value: 'AI', label: 'applies the tags itself' },
       lines: ['Claims used to wait on a person. The claims AI now applies merchant-approved order tags itself.', 'Merchant-defined tag rules that survive server restarts, so tags reach the merchants\u2019 other tools reliably.', 'Warranty claim settings, per-claim email muting, order numbers optional for in-store claims.', 'Groundwork for an international reshipment partner.'] },
-    { eyebrow: '58 merged changes', title: 'The widget shoppers see',
+    { eyebrow: '58 merged changes', title: 'The widget shoppers see', stat: { value: '~139', label: 'stores, one rule, no incidents' },
       lines: ['Added warranty choices to the cart and checkout.', 'Fixed a protection toggle that ignored taps or flipped back on slow carts.', 'Replaced a fragile setting with one clear rule based on the shopper\u2019s choice \u2014 ~139 stores, without incident.', 'Fixed wrong protection prices for international shoppers; removed duplicated work on busy pages.'] },
-    { eyebrow: 'production', title: 'Debugging from real data',
+    { eyebrow: 'production', title: 'Debugging from real data', stat: { value: '5', label: 'root causes, fixed in production' },
       lines: ['Shoppers refunded twice. $0 premiums. Wrong pricing tiers on international orders.', 'Events silently dropped during pod evictions. A checkout control that ignored taps.', 'Each traced to its root cause in production data, and fixed.'] },
-    { eyebrow: 'may 2025 \u2013 oct 2026', title: 'By the numbers',
+    { eyebrow: 'may 2025 \u2013 oct 2026', title: 'By the numbers', stat: { value: '240', label: 'merged pull requests' },
       lines: ['240 merged pull requests in 17 months.', 'Six repositories: 13 backend services, two frontends, two widget codebases, shared libraries, infrastructure.', 'About 77,000 lines added, with unit and end-to-end tests alongside.', 'Nothing estimated.'] },
-    { eyebrow: 'impact', title: 'What changed',
+    { eyebrow: 'impact', title: 'What changed', stat: { value: '77,000', label: 'lines shipped, with tests' },
       lines: ['Installation: an engineering chore became a job an agent runs.', 'Revenue: a second product line sells on merchant stores.', 'Claims: resolved with less human handoff.', 'geleus.com \u00b7 github.com/pidoshva \u00b7 type help to explore.'] }
   ];
 })();

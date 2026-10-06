@@ -202,7 +202,7 @@
       .then(function () { return loadScript('/lib/jquery.terminal/jquery.terminal.min.js'); })
       .then(function () { return loadScript('/lib/jquery.terminal/less.min.js'); })
       .then(function () { return loadScript('/lib/jquery.terminal/autocomplete_menu.js'); })
-      .then(function () { return loadScript('/js/resume.js?v=3'); })
+      .then(function () { return loadScript('/js/resume.js?v=4'); })
       .then(function () {
         resumeState = 2; root.innerHTML = '';
         if (window.GELEUS.initResume) window.GELEUS.initResume(root);
@@ -215,8 +215,32 @@
   // --- demo: the résumé story, told on the helix. Chapters come from window.GELEUS.resumeStory
   // (js/resume.js). The helix lights up rung by rung as the frontier climbs, the camera orbits and
   // tracks the frontier, captions type into a DOM card. Space/→/click next · ← prev · p pause · Esc exit.
-  var demo = { on: false, i: 0, t0: 0, paused: false, pausedAt: 0, frontier: 0, target: 0, ring: 0, dur: 8000, pending: false };
+  var demo = { on: false, i: 0, t0: 0, paused: false, pausedAt: 0, frontier: 0, target: 0, ring: 0, dur: 8000, pending: false,
+               pitchT: -0.2, scan: 0, burst: false, parts: [] };
   var demoCap = $('demoCap'), demoN = $('demoN'), demoTitle = $('demoTitle'), demoLines = $('demoLines'), demoBar = $('demoBar');
+  var demoStat = $('demoStat'), demoStatV = $('demoStatV'), demoStatL = $('demoStatL');
+  var SCRAMBLE = '\u2591\u2592\u2593#%&*+=<>/\\|ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+  function scramble(el, text) { // title resolves out of noise, left to right
+    if (reduced) { el.textContent = text; return; }
+    var frame = 0, total = Math.max(14, text.length * 2);
+    (function step() {
+      var solved = Math.floor(frame / total * text.length), out = '';
+      for (var c = 0; c < text.length; c++) out += (c < solved || text[c] === ' ') ? text[c] : SCRAMBLE[Math.floor(rand(frame * 7.3 + c * 1.7) * SCRAMBLE.length)];
+      el.textContent = out;
+      if (++frame <= total) demoTimers.push(setTimeout(step, 28));
+      else el.textContent = text;
+    })();
+  }
+  function countUp(el, value) { // "240" → counts up; "15+" keeps its suffix; non-numeric shows as is
+    var m = /^([~$]?)(\d[\d,]*)(.*)$/.exec(value);
+    if (!m || reduced) { el.textContent = value; return; }
+    var pre = m[1], num = parseInt(m[2].replace(/,/g, ''), 10), suf = m[3], t0 = performance.now(), dur = 1400;
+    (function step() {
+      var p = Math.min(1, (performance.now() - t0) / dur), e = 1 - Math.pow(1 - p, 3), v = Math.round(num * e);
+      el.textContent = pre + v.toLocaleString('en-US') + suf;
+      if (p < 1) demoTimers.push(setTimeout(step, 30));
+    })();
+  }
   var bright = [], demoTimers = [];
   for (var bi = 0; bi < N; bi++) bright.push(1);
   function story() { return window.GELEUS.resumeStory || null; }
@@ -226,7 +250,7 @@
     if (!story()) { demo.pending = true; if (tp !== 5) go(5); loadResume(); return; }
     demo.pending = false;
     if (tp !== 5) go(5);
-    demo.on = true; demo.frontier = 0; demo.paused = false;
+    demo.on = true; demo.frontier = 0; demo.paused = false; demo.parts = []; bolts.max = 6;
     document.body.classList.add('demo'); if (demoCap) demoCap.hidden = false;
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     if (window.GELEUS.resumeDisable) window.GELEUS.resumeDisable();
@@ -234,7 +258,7 @@
   }
   function stopDemo(complete) {
     if (!demo.on) return;
-    demo.on = false; clearDemoTimers();
+    demo.on = false; clearDemoTimers(); demo.parts = []; bolts.max = 2;
     document.body.classList.remove('demo'); document.body.classList.remove('demo-paused'); if (demoCap) demoCap.hidden = true;
     for (var k = 0; k < N; k++) bright[k] = 1;
     if (window.GELEUS.resumeEnable) window.GELEUS.resumeEnable();
@@ -246,24 +270,31 @@
     if (i >= S.length) { stopDemo(true); return; }
     if (i < 0) i = 0;
     clearDemoTimers();
-    demo.i = i; demo.target = (i + 1) / S.length; demo.t0 = performance.now(); demo.ring = 1; demo.paused = false;
+    demo.i = i; demo.target = (i + 1) / S.length; demo.t0 = performance.now(); demo.ring = 1; demo.scan = 1; demo.burst = true; demo.paused = false;
+    demo.pitchT = (i % 2 ? -0.06 : -0.4);                 // alternate low / high shots
+    if (!reduced) tgtYaw += (i % 2 ? 0.55 : -0.55);        // camera swing at every beat
     document.body.classList.remove('demo-paused');
     var ch = S[i], chars = 0;
     if (demoN) demoN.textContent = (i < 9 ? '0' : '') + (i + 1) + ' / ' + (S.length < 10 ? '0' : '') + S.length + (ch.eyebrow ? ' \u00b7 ' + ch.eyebrow : '');
-    if (demoTitle) demoTitle.textContent = ch.title;
+    if (demoTitle) scramble(demoTitle, ch.title);
+    if (demoStat) {
+      demoStat.hidden = !ch.stat;
+      if (ch.stat) { demoStatL.textContent = ch.stat.label; demoTimers.push(setTimeout(function () { countUp(demoStatV, ch.stat.value); }, 500)); demoStatV.textContent = ''; }
+    }
     if (demoLines) {
       demoLines.innerHTML = '';
-      var delay = 350;
+      var delay = 900;                                      // let the title resolve first
       ch.lines.forEach(function (line) {
         var el = document.createElement('p'); demoLines.appendChild(el); chars += line.length;
         if (reduced) { el.textContent = line; return; }
-        var start = delay; delay += 240 + line.length * 17;
+        var start = delay; delay += 520 + line.length * 30;
         demoTimers.push(setTimeout(function () {
-          var j = 0; (function step() { el.textContent = line.slice(0, ++j); if (j < line.length) demoTimers.push(setTimeout(step, 11 + rand(j) * 13)); })();
+          el.classList.add('typing');
+          var j = 0; (function step() { el.textContent = line.slice(0, ++j); if (j < line.length) demoTimers.push(setTimeout(step, 17 + rand(j) * 16)); else el.classList.remove('typing'); })();
         }, start));
       });
     }
-    demo.dur = clamp(3800 + chars * 42, 6000, 16000);
+    demo.dur = clamp(delay + 2500 + chars * 40, 12000, 30000); // typing time + reading time
     if (demoCap) { demoCap.classList.remove('in'); void demoCap.offsetWidth; demoCap.classList.add('in'); }
   }
   function demoTick(now) {
@@ -279,7 +310,7 @@
     document.body.classList.toggle('demo-paused', demo.paused);
   }
   function demoLayout() { // frontier (the lit edge of the helix) stays near the vertical centre
-    var base = Math.min(W, H) * (W < 700 ? 0.42 : 0.34), s = base * (W <= 760 ? 1.0 : 1.3);
+    var base = Math.min(W, H) * (W < 700 ? 0.42 : 0.34), s = base * (W <= 760 ? 1.0 : 1.3) * (1 + 0.22 * demo.ring);
     var fy = lerp(1, -1, demo.frontier), r = G.rotP({ x: 0, y: fy, z: 0 }, yaw, pitch), off = r.y * (CAM / (CAM + r.z)) * s;
     return { cx: W / 2, cy: H * (W <= 760 ? 0.34 : 0.42) - off, s: s };
   }
@@ -385,10 +416,10 @@
     if (reduced) p = tp; else p += (tp - p) * 0.075;
     var i = clamp(Math.floor(p + 1e-6), 0, LAST), f = clamp(p - i, 0, 1), ri = Math.round(p), S = SEC[ri], k;
     if (!reduced && ri === 0 && !drag && hovered < 0) tgtYaw += 0.0035;
-    if (demo.on && !reduced) tgtYaw += 0.005;
-    yaw += (tgtYaw - yaw) * 0.07;
-    pitch += (((demo.on ? -0.15 : S.pitch) + userPitch) - pitch) * 0.05;
-    if (demo.on) { demo.frontier += (demo.target - demo.frontier) * (reduced ? 1 : 0.035); demo.ring *= 0.955; }
+    if (demo.on && !reduced) tgtYaw += 0.004;
+    yaw += (tgtYaw - yaw) * (demo.on ? 0.045 : 0.07);
+    pitch += (((demo.on ? demo.pitchT : S.pitch) + userPitch) - pitch) * (demo.on ? 0.03 : 0.05);
+    if (demo.on) { demo.frontier += (demo.target - demo.frontier) * (reduced ? 1 : 0.02); demo.ring *= 0.962; demo.scan *= 0.94; }
     var L = demo.on ? demoLayout() : layoutTarget();
     if (sclS === 0) { cxS = L.cx; cyS = L.cy; sclS = L.s; }
     cxS += (L.cx - cxS) * 0.08; cyS += (L.cy - cyS) * 0.08; sclS += (L.s - sclS) * 0.08;
@@ -402,7 +433,7 @@
     var ef = B ? easeIO(f) : 0;
 
     // trails: clear less when things move fast
-    var speed = Math.abs(tp - p) * 1.6 + Math.abs(tgtYaw - yaw) * 0.9, ta = reduced ? 1 : clamp(1 - speed * 2.4, 0.28, 1);
+    var speed = Math.abs(tp - p) * 1.6 + Math.abs(tgtYaw - yaw) * 0.9 + (demo.on ? demo.ring * 0.4 : 0), ta = reduced ? 1 : clamp(1 - speed * 2.4, demo.on ? 0.2 : 0.28, 1);
     ctx.fillStyle = 'rgba(14,16,15,' + ta.toFixed(3) + ')'; ctx.fillRect(0, 0, W, H);
     ctx.drawImage(vigC, 0, 0, W, H);
 
@@ -429,10 +460,37 @@
     else { G.drawFaces(ctx, sp, SEC[i].S.tris, 1, BR); G.drawEdges(ctx, sp, SEC[i].S.edges, 1, BR); }
     if (!reduced && !B) G.drawPulses(ctx, sp, SEC[i].S.edges, demo.on ? T * 1.8 : T, demo.on ? 1 : 3, BR);
     G.drawNodes(ctx, sp, BR);
-    if (demo.on && demo.ring > 0.02) { // chapter beat: a ring expands from the frontier
+    if (demo.on) {
       var fr = G.rotP({ x: 0, y: lerp(1, -1, demo.frontier), z: 0 }, yaw, pitch), ffz = CAM / (CAM + fr.z);
-      var rx = cx + fr.x * ffz * scale, ry = cy + fr.y * ffz * scale, rad = (1 - demo.ring) * scale * 0.9 + 6;
-      ctx.strokeStyle = 'rgba(168,200,145,' + (demo.ring * 0.55).toFixed(3) + ')'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(rx, ry, rad, 0, 7); ctx.stroke();
+      var rx = cx + fr.x * ffz * scale, ry = cy + fr.y * ffz * scale, q2;
+      if (demo.burst && !reduced) { // chapter beat: sparks fly off the frontier + a lightning storm between lit nodes
+        demo.burst = false;
+        for (q2 = 0; q2 < 28; q2++) { var an = rand(T * 9 + q2) * 6.2832, spd = 1.5 + rand(T * 3 + q2 * 2) * 4.5;
+          demo.parts.push({ x: rx, y: ry, vx: Math.cos(an) * spd, vy: Math.sin(an) * spd - 1, life: 1, r: 1 + rand(q2 * 5) * 1.6 }); }
+        var hot = [], lit = [];
+        for (k = 0; k < N; k++) { if (bright[k] > 1) hot.push(k); else if (bright[k] >= 1) lit.push(k); }
+        for (q2 = 0; q2 < 6 && hot.length && lit.length; q2++) {
+          var ha = sp[hot[Math.floor(rand(T + q2) * hot.length)]], hb = sp[lit[Math.floor(rand(T * 2 + q2 * 3) * lit.length)]];
+          bolts.s.push({ ax: ha.x, ay: ha.y, bx: hb.x, by: hb.y, life: -q2 * 0.05, seed: rand(T * 1.7 + q2) * 1000 });
+        }
+      }
+      if (demo.ring > 0.02) { // double shockwave + flash
+        var rad = (1 - demo.ring) * scale * 0.9 + 6;
+        var fl = ctx.createRadialGradient(rx, ry, 0, rx, ry, scale * 0.5); fl.addColorStop(0, 'rgba(168,200,145,' + (demo.ring * 0.28).toFixed(3) + ')'); fl.addColorStop(1, 'rgba(168,200,145,0)');
+        ctx.fillStyle = fl; ctx.beginPath(); ctx.arc(rx, ry, scale * 0.5, 0, 7); ctx.fill();
+        ctx.strokeStyle = 'rgba(168,200,145,' + (demo.ring * 0.6).toFixed(3) + ')'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(rx, ry, rad, 0, 7); ctx.stroke();
+        ctx.strokeStyle = 'rgba(125,150,173,' + (demo.ring * 0.35).toFixed(3) + ')'; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.arc(rx, ry, rad * 1.6, 0, 7); ctx.stroke();
+      }
+      for (q2 = demo.parts.length - 1; q2 >= 0; q2--) { // sparks
+        var pt = demo.parts[q2]; pt.x += pt.vx; pt.y += pt.vy; pt.vx *= 0.97; pt.vy = pt.vy * 0.97 + 0.03; pt.life -= 0.013;
+        if (pt.life <= 0) { demo.parts.splice(q2, 1); continue; }
+        ctx.fillStyle = 'rgba(224,236,210,' + (pt.life * 0.9).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.r * pt.life, 0, 7); ctx.fill();
+      }
+      if (demo.scan > 0.03) { // scan-line sweep across the frame
+        var sx = (1 - demo.scan) * (W + 160) - 80, sg = ctx.createLinearGradient(sx - 60, 0, sx + 60, 0);
+        sg.addColorStop(0, 'rgba(168,200,145,0)'); sg.addColorStop(0.5, 'rgba(168,200,145,' + (demo.scan * 0.14).toFixed(3) + ')'); sg.addColorStop(1, 'rgba(168,200,145,0)');
+        ctx.fillStyle = sg; ctx.fillRect(sx - 60, 0, 120, H);
+      }
     }
     if (!reduced && !B) G.stepBolts(ctx, bolts, function () { return G.closestUnlinked(sp, SEC[i].S.eset, scale * 0.2, W, H); }, T);
 

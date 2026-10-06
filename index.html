@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css?v=30">
+  <link rel="stylesheet" href="/css/styles.css?v=31">
   <link rel="stylesheet" href="/lib/hljs/atom-one-dark.min.css">
 </head>
 <body class="spatial">
@@ -135,6 +135,7 @@
   <!-- Résumé demo captions (cinematic story on the helix; see spatial.js startDemo) -->
   <div class="demo-cap" id="demoCap" aria-live="polite" hidden>
     <div class="demo-top"><span id="demoN">01 / 10</span><span class="demo-hint">space · next &nbsp; ← · back &nbsp; p · pause &nbsp; esc · exit</span></div>
+    <div class="demo-stat" id="demoStat" hidden><b id="demoStatV"></b><span id="demoStatL"></span></div>
     <h2 id="demoTitle"></h2>
     <div class="demo-lines" id="demoLines"></div>
     <div class="demo-bar"><i id="demoBar"></i></div>
@@ -148,8 +149,8 @@
 
   <div class="contrib-tooltip" id="contrib-tooltip"></div>
 
-  <script src="/js/geo.js?v=3"></script>
-  <script src="/js/spatial.js?v=14"></script>
+  <script src="/js/geo.js?v=4"></script>
+  <script src="/js/spatial.js?v=15"></script>
   <script src="/js/lang-colors.js"></script>
   <script src="/lib/marked/marked.min.js"></script>
   <script src="/lib/hljs/highlight.min.js"></script>

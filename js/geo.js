@@ -271,7 +271,7 @@ window.GELEUS = window.GELEUS || {};
       if (pr) { st.s.push({ ax: pr.A.x, ay: pr.A.y, bx: pr.B.x, by: pr.B.y, life: 0, seed: rand(T * 1.7 + pr.A.x * 0.013 + pr.B.y * 0.017) * 1000 }); st.cd = 0.3 + rand(T * 3.1) * 0.7; }
       else st.cd = 0.08;
     }
-    for (var i = st.s.length - 1; i >= 0; i--) { st.s[i].life += 0.016; if (st.s[i].life >= SPARK) { st.s.splice(i, 1); continue; } drawBolt(ctx, st.s[i]); }
+    for (var i = st.s.length - 1; i >= 0; i--) { st.s[i].life += 0.016; if (st.s[i].life >= SPARK) { st.s.splice(i, 1); continue; } if (st.s[i].life >= 0) drawBolt(ctx, st.s[i]); }
   }
 
   // film grain tile (drawn as a repeating pattern at low alpha) + a soft vignette
