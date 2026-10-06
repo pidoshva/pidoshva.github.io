@@ -138,7 +138,7 @@ geleus.io redirects to `/#resume`.
 
 **Demo mode (the story).** Typing `demo` in the terminal (suggested in its greeting and `help`)
 calls `window.GELEUS.startDemo()`. Chapters live in `window.GELEUS.resumeStory` (`js/resume.js`,
-`{eyebrow, title, lines[]}`, bottom of the helix → top, sourced from the résumé). While playing
+`{eyebrow, title, lines[]}`, bottom of the helix → top — the OrderProtection story only: chore → /imp automation → onboarding → second product line → claims → widget → debugging → numbers → impact). While playing
 (`body.demo`): the window, identity block, telemetry and hint fade out and the rail dims; the
 caption card `#demoCap` (`#demoN`, `#demoTitle`, `#demoLines`, `#demoBar`) types each line in;
 the **frontier** `demo.frontier` eases toward `(i+1)/n` and every node with model `y` above it
@@ -338,7 +338,7 @@ journal — run `gh workflow run weekly-summary.yml` or wait for the cron.
   with `?v=N` in the HTML. **Bump `N` whenever you edit that file**, or stale assets get
   served (this caused repeated "still broken" reports). Bump across every HTML file that
   references the asset. Current snapshot (will drift — treat the *rule* as the source of truth):
-  `styles.css?v=30`, `geo.js?v=3` (all four pages), `spatial.js?v=13`, `resume.js?v=2` (lazy), `goodies.js?v=5`, `blog.js?v=3`,
+  `styles.css?v=30`, `geo.js?v=3` (all four pages), `spatial.js?v=14`, `resume.js?v=3` (lazy), `goodies.js?v=5`, `blog.js?v=3`,
   `contributions.js?v=8`, `cluster.js?v=17` (fallback pages). `summary.js`, `profile.js`, `lang-colors.js`, `nav.js`,
   and `lib/*` are currently unversioned. Blog **content** (`.md`/`.json`) is handled by the
   `cache:'no-cache'` fetch instead of a version query.

@@ -239,27 +239,28 @@
   F0.resumeEnable = function () { if (term) term.enable(); };
   F0.resumeEcho = function (msg) { if (term) term.echo(f(msg)); };
 
-  // The story the demo tells, bottom of the helix → top. Source: the résumé (Oct 2026).
+  // The story the demo tells, bottom of the helix → top: the OrderProtection chapter.
+  // Source: the résumé (Oct 2026). Every number is from merged work.
   F0.resumeStory = [
-    { eyebrow: 'enerhodar \u2192 utah', title: 'Origin',
-      lines: ['Born in Enerhodar, Ukraine. Now in Lehi, Utah.', 'Geleus \u2014 the nickname that became the domain.', 'A builder who takes things from idea to production, end to end.'] },
-    { eyebrow: '2020 \u2013 2025', title: 'Learning the craft',
-      lines: ['Utah Valley University.', 'A.S. in Computer Science, then a B.S. in Software Engineering.', 'A Programmer Certificate along the way.'] },
-    { eyebrow: '2024', title: 'First production code',
-      lines: ['Utah County Health Department.', 'Built a patient filtering and nurse assignment platform from scratch.', '10,000+ patient records, CSV imports, real-time filtering.', 'Shaped by the nurses who used it every day.'] },
-    { eyebrow: 'april 2025', title: 'OrderProtection',
-      lines: ['Shipping protection and extended warranties for Shopify and BigCommerce stores.', 'A small \u201cadd protection\u201d control in the cart, backed by 15+ services and a claims AI.', 'Owned the installer, the implementation dashboard, widget releases and the editor merchants use.'] },
-    { eyebrow: 'automation', title: '/imp \u2014 automating the chore',
-      lines: ['Installing the widget meant an engineer hand-editing each store\u2019s theme.', 'Built a tool and an AI playbook: fetch the theme, apply a tested recipe, save to a draft, verify.', 'Several times faster, credentials locked down, a second platform added.', 'Now a one-click job run by an agent, with live progress and honest pass/fail.'] },
-    { eyebrow: 'product', title: 'Whole product lines',
-      lines: ['Extended warranties, from the data model to the selector shoppers tap.', 'Merchant-defined order tags that survive server restarts.', 'A widget editor merchants use without touching code.', 'Previews that match each store\u2019s real fonts and colours.'] },
+    { eyebrow: 'april 2025 \u2192 now', title: 'OrderProtection',
+      lines: ['Shipping protection and extended warranties for Shopify and BigCommerce merchants.', 'A small \u201cadd protection\u201d control in the cart, backed by 15+ services and a claims AI.', 'I joined to ship features. I ended up owning how the product gets installed, sold and operated.'] },
+    { eyebrow: 'the chore', title: 'Every store, by hand',
+      lines: ['Installing the widget meant an engineer hand-editing each merchant\u2019s theme, store by store.', 'Merchants\u2019 own theme updates broke installs without anyone noticing.', 'Onboarding speed was capped by engineering time.'] },
+    { eyebrow: 'automation \u00b7 /imp', title: 'Automating implementation',
+      lines: ['Built a tool and an AI playbook: fetch the theme, apply a tested recipe, save to a draft copy, verify.', 'Never the live store. Credentials locked down. Several times faster.', 'Extended it to a second platform, BigCommerce.', 'Now a one-click job an agent runs from the dashboard, with live progress, cancel, and honest pass/fail.'] },
+    { eyebrow: 'implementation team', title: 'Onboarding on autopilot',
+      lines: ['A Slack alert and automatic check the moment a merchant publishes a new theme \u2014 breakages caught before shoppers see them.', 'A daily report of stores on outdated widget versions, biggest accounts first.', 'New stores arrive set up and ready to publish. The Slack assistant can stage a deployment from a chat message.', 'A per-store engineering chore became a reviewable automated job.'] },
+    { eyebrow: 'revenue', title: 'A second product line',
+      lines: ['The company sold shipping protection. I built everything needed to sell extended warranties too.', 'Data model and migrations, event pipelines, transactional email, admin configuration, A/B tests, and the selector shoppers tap.', 'Live on merchant stores: new revenue on every protected order.', 'A bug recording $0 for every warranty sold was caught from real data before it spread.'] },
+    { eyebrow: 'claims', title: 'Automating claims',
+      lines: ['Claims used to wait on a person. The claims AI now applies merchant-approved order tags itself.', 'Merchant-defined tag rules that survive server restarts, so tags reach the merchants\u2019 other tools reliably.', 'Warranty claim settings, per-claim email muting, order numbers optional for in-store claims.', 'Groundwork for an international reshipment partner.'] },
+    { eyebrow: '58 merged changes', title: 'The widget shoppers see',
+      lines: ['Added warranty choices to the cart and checkout.', 'Fixed a protection toggle that ignored taps or flipped back on slow carts.', 'Replaced a fragile setting with one clear rule based on the shopper\u2019s choice \u2014 ~139 stores, without incident.', 'Fixed wrong protection prices for international shoppers; removed duplicated work on busy pages.'] },
     { eyebrow: 'production', title: 'Debugging from real data',
-      lines: ['Shoppers refunded twice. $0 premiums on every warranty sold.', 'Wrong prices for international orders. Events dropped during pod evictions.', 'A checkout toggle that ignored taps on slow carts.', 'Each traced to its root cause and fixed in production.'] },
+      lines: ['Shoppers refunded twice. $0 premiums. Wrong pricing tiers on international orders.', 'Events silently dropped during pod evictions. A checkout control that ignored taps.', 'Each traced to its root cause in production data, and fixed.'] },
     { eyebrow: 'may 2025 \u2013 oct 2026', title: 'By the numbers',
-      lines: ['240 merged pull requests in 17 months.', 'Six repositories: 13 backend services, two frontends, two widget codebases.', 'About 77,000 lines added, with unit and end-to-end tests alongside.', 'Every number from merged work. Nothing estimated.'] },
-    { eyebrow: 'tools', title: 'The stack',
-      lines: ['TypeScript \u00b7 NestJS \u00b7 Prisma + PostgreSQL \u00b7 Kafka \u00b7 BullMQ \u00b7 GraphQL federation', 'Nuxt 3 \u00b7 Vue 3 \u00b7 Web Components \u00b7 Shopify & BigCommerce APIs', 'MCP servers \u00b7 Claude agents \u00b7 draft-only autonomous workflows', 'Docker \u00b7 Kubernetes \u00b7 GCP \u00b7 Terraform \u00b7 GitHub Actions'] },
-    { eyebrow: 'now', title: 'Still building',
-      lines: ['Taking things end to end, and sharing what I learn along the way.', 'geleus.com \u00b7 github.com/pidoshva', 'Type help to explore the terminal.'] }
+      lines: ['240 merged pull requests in 17 months.', 'Six repositories: 13 backend services, two frontends, two widget codebases, shared libraries, infrastructure.', 'About 77,000 lines added, with unit and end-to-end tests alongside.', 'Nothing estimated.'] },
+    { eyebrow: 'impact', title: 'What changed',
+      lines: ['Installation: an engineering chore became a job an agent runs.', 'Revenue: a second product line sells on merchant stores.', 'Claims: resolved with less human handoff.', 'geleus.com \u00b7 github.com/pidoshva \u00b7 type help to explore.'] }
   ];
 })();

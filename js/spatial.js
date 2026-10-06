@@ -202,7 +202,7 @@
       .then(function () { return loadScript('/lib/jquery.terminal/jquery.terminal.min.js'); })
       .then(function () { return loadScript('/lib/jquery.terminal/less.min.js'); })
       .then(function () { return loadScript('/lib/jquery.terminal/autocomplete_menu.js'); })
-      .then(function () { return loadScript('/js/resume.js?v=2'); })
+      .then(function () { return loadScript('/js/resume.js?v=3'); })
       .then(function () {
         resumeState = 2; root.innerHTML = '';
         if (window.GELEUS.initResume) window.GELEUS.initResume(root);
