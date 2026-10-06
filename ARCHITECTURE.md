@@ -136,6 +136,21 @@ content (jquery.terminal `[[b;#hex;]…]` markup via the `h/k/s/f` palette helpe
 Keys typed into the terminal are left alone by the app's keydown handler, except `Esc` (→ home).
 geleus.io redirects to `/#resume`.
 
+**Demo mode (the story).** Typing `demo` in the terminal (suggested in its greeting and `help`)
+calls `window.GELEUS.startDemo()`. Chapters live in `window.GELEUS.resumeStory` (`js/resume.js`,
+`{eyebrow, title, lines[]}`, bottom of the helix → top, sourced from the résumé). While playing
+(`body.demo`): the window, identity block, telemetry and hint fade out and the rail dims; the
+caption card `#demoCap` (`#demoN`, `#demoTitle`, `#demoLines`, `#demoBar`) types each line in;
+the **frontier** `demo.frontier` eases toward `(i+1)/n` and every node with model `y` above it
+(screen: below it) is lit, a band of ±0.06 around it is "hot" (`bright[k] = 1.5` → bigger, bloom),
+the rest dims to 0.12 — passed as the `br` array to the geo.js draw passes; pulses run on lit links
+only (every edge, `T·1.8`); a ring expands from the frontier at each chapter beat; the camera orbits
+(`tgtYaw += 0.005`), pitch −0.15, and `demoLayout()` keeps the frontier near `0.42·H` at
+`base·1.3` scale. Auto-advance after `clamp(3800 + chars·42, 6000, 16000)` ms (progress bar);
+**Space / → / Enter / click** next, **←** back, **p** pause, **Esc** exit. Leaving the section ends it.
+On completion the window returns and the terminal echoes "demo complete". The terminal is
+`disable()`d during the demo so Space doesn't type into it. Reduced motion: no typing/easing.
+
 **Timeline scrub.** `tp` is the target position (0..4), `p` eases toward it (`p += (tp−p)·0.075`).
 Wheel: `tp += deltaY·0.0014` (ignored over `#win`/`.reader-overlay` so content scrolls); touch
 vertical drag: `tp −= dy·0.004`; both snap to `round(tp)` 360 ms after the last input via `go()`.
@@ -323,7 +338,7 @@ journal — run `gh workflow run weekly-summary.yml` or wait for the cron.
   with `?v=N` in the HTML. **Bump `N` whenever you edit that file**, or stale assets get
   served (this caused repeated "still broken" reports). Bump across every HTML file that
   references the asset. Current snapshot (will drift — treat the *rule* as the source of truth):
-  `styles.css?v=29`, `geo.js?v=2` (all four pages), `spatial.js?v=12`, `resume.js?v=1` (lazy), `goodies.js?v=5`, `blog.js?v=3`,
+  `styles.css?v=30`, `geo.js?v=3` (all four pages), `spatial.js?v=13`, `resume.js?v=2` (lazy), `goodies.js?v=5`, `blog.js?v=3`,
   `contributions.js?v=8`, `cluster.js?v=17` (fallback pages). `summary.js`, `profile.js`, `lang-colors.js`, `nav.js`,
   and `lib/*` are currently unversioned. Blog **content** (`.md`/`.json`) is handled by the
   `cache:'no-cache'` fetch instead of a version query.
@@ -392,6 +407,8 @@ the shapes are in `geo.js`.
   each nav item / rail tick / lit node opens its window with live content (journal = tree + heatmap);
   the window drags/resizes and the cluster reflows; a blog card and a repo "readme" each open the
   full-screen reader; `Esc`/back work; fallback pages still load.
+- **Demo smoke:** on `/#resume` type `demo` → window fades, helix lights from the bottom, captions
+  type; Space advances, Esc returns the window and the terminal still accepts input.
 - **Testing gotcha:** `requestAnimationFrame` is paused in a hidden/background tab, and the window
   only opens once the morph has landed — so a tab driven by automation while hidden looks "stuck".
   Keep the tab visible (or interleave screenshots) when smoke-testing with browser automation.

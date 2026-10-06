@@ -23,6 +23,7 @@
 
   var commands = {
     help: 'shows help',
+    demo: 'play the story (cinematic)',
     less: 'use less as output method',
     whois: 'list basic details',
     social: 'list social networks',
@@ -84,7 +85,7 @@
   ];
 
   var work = [
-    f('---') + '\n' + h('Software Engineer') + '\nOrderProtection.com\n' + s('Lehi, UT') + '\n' + s('January 2026 - Present') + '\n\n' +
+    f('---') + '\n' + h('Software Engineer') + '\nOrderProtection.com\n' + s('Lehi, UT') + '\n' + s('April 2025 - Present') + '\n\n' +
     '- Developed and maintained features across a 14+ NestJS microservices platform powered by GraphQL \n  Federation, Kafka, and BullMQ for e-commerce order protection at scale.\n' +
     '- Built multi-platform cart protection widgets using Web Components and React, shipping to Shopify \n  and Fluid storefronts via event-driven architecture.\n' +
     '- Engineered warranty management, claims categorization, and policy systems handling merchant \n  order protection workflows end-to-end.\n' +
@@ -159,7 +160,7 @@
   var banner = (narrow ? h('VADIM PIDOSHVA') + '  ' + f('v2') + '\n\n' :
     '[[b;' + H + ';]█░█ ▄▀█ █▀▄ █ █▀▄▀█   █▀█ █ █▀▄ █▀█ █▀ █░█ █░█ ▄▀█]\n' +
     '[[b;' + H + ';]▀▄▀ █▀█ █▄▀ █ █░▀░█   █▀▀ █ █▄▀ █▄█ ▄█ █▀█ ▀▄▀ █▀█]  ' + f('v2') + '\n\n') +
-    'Welcome to Vadim\'s interactive resume.\n' + f('Type ') + h('help') + f(' for a list of commands, or ') + h('startx') + f(' to go back to the cluster.') + '\n';
+    'Welcome to Vadim\'s interactive resume.\n' + f('Type ') + h('help') + f(' for a list of commands, or ') + h('demo') + f(' to watch the story on the helix.') + '\n';
 
   function goSection(key) { if (F0.goSection) F0.goSection(key); }
 
@@ -202,6 +203,7 @@
         case 'certifications': echoArray(certifications); break;
         case 'about': echoArray(misc); break;
         case 'help': case '?': t.echo(help); break;
+        case 'demo': t.echo(f('starting the story \u2026  ') + f('space: next \u00b7 \u2190 back \u00b7 p: pause \u00b7 esc: exit')); if (F0.startDemo) setTimeout(F0.startDemo, 350); break;
         case 'all': echoArray(all.flat(1)); break;
         case 'source': t.echo(source); break;
         case 'goodies': case 'blog': case 'journal': t.echo(f('opening ') + h(parts[0]) + f(' \u2026')); goSection(parts[0]); break;
@@ -233,4 +235,31 @@
   };
   F0.resumeResize = function () { if (term) term.resize(); };
   F0.resumeFocus = function () { if (term) term.focus(); };
+  F0.resumeDisable = function () { if (term) term.disable(); };
+  F0.resumeEnable = function () { if (term) term.enable(); };
+  F0.resumeEcho = function (msg) { if (term) term.echo(f(msg)); };
+
+  // The story the demo tells, bottom of the helix → top. Source: the résumé (Oct 2026).
+  F0.resumeStory = [
+    { eyebrow: 'enerhodar \u2192 utah', title: 'Origin',
+      lines: ['Born in Enerhodar, Ukraine. Now in Lehi, Utah.', 'Geleus \u2014 the nickname that became the domain.', 'A builder who takes things from idea to production, end to end.'] },
+    { eyebrow: '2020 \u2013 2025', title: 'Learning the craft',
+      lines: ['Utah Valley University.', 'A.S. in Computer Science, then a B.S. in Software Engineering.', 'A Programmer Certificate along the way.'] },
+    { eyebrow: '2024', title: 'First production code',
+      lines: ['Utah County Health Department.', 'Built a patient filtering and nurse assignment platform from scratch.', '10,000+ patient records, CSV imports, real-time filtering.', 'Shaped by the nurses who used it every day.'] },
+    { eyebrow: 'april 2025', title: 'OrderProtection',
+      lines: ['Shipping protection and extended warranties for Shopify and BigCommerce stores.', 'A small \u201cadd protection\u201d control in the cart, backed by 15+ services and a claims AI.', 'Owned the installer, the implementation dashboard, widget releases and the editor merchants use.'] },
+    { eyebrow: 'automation', title: '/imp \u2014 automating the chore',
+      lines: ['Installing the widget meant an engineer hand-editing each store\u2019s theme.', 'Built a tool and an AI playbook: fetch the theme, apply a tested recipe, save to a draft, verify.', 'Several times faster, credentials locked down, a second platform added.', 'Now a one-click job run by an agent, with live progress and honest pass/fail.'] },
+    { eyebrow: 'product', title: 'Whole product lines',
+      lines: ['Extended warranties, from the data model to the selector shoppers tap.', 'Merchant-defined order tags that survive server restarts.', 'A widget editor merchants use without touching code.', 'Previews that match each store\u2019s real fonts and colours.'] },
+    { eyebrow: 'production', title: 'Debugging from real data',
+      lines: ['Shoppers refunded twice. $0 premiums on every warranty sold.', 'Wrong prices for international orders. Events dropped during pod evictions.', 'A checkout toggle that ignored taps on slow carts.', 'Each traced to its root cause and fixed in production.'] },
+    { eyebrow: 'may 2025 \u2013 oct 2026', title: 'By the numbers',
+      lines: ['240 merged pull requests in 17 months.', 'Six repositories: 13 backend services, two frontends, two widget codebases.', 'About 77,000 lines added, with unit and end-to-end tests alongside.', 'Every number from merged work. Nothing estimated.'] },
+    { eyebrow: 'tools', title: 'The stack',
+      lines: ['TypeScript \u00b7 NestJS \u00b7 Prisma + PostgreSQL \u00b7 Kafka \u00b7 BullMQ \u00b7 GraphQL federation', 'Nuxt 3 \u00b7 Vue 3 \u00b7 Web Components \u00b7 Shopify & BigCommerce APIs', 'MCP servers \u00b7 Claude agents \u00b7 draft-only autonomous workflows', 'Docker \u00b7 Kubernetes \u00b7 GCP \u00b7 Terraform \u00b7 GitHub Actions'] },
+    { eyebrow: 'now', title: 'Still building',
+      lines: ['Taking things end to end, and sharing what I learn along the way.', 'geleus.com \u00b7 github.com/pidoshva', 'Type help to explore the terminal.'] }
+  ];
 })();

@@ -1029,3 +1029,20 @@ body.spatial .timeline-tree { font-size: 0.85rem; }
 .terminal .cursor-menu li:hover, .terminal .cursor-menu li.active { background: rgba(143, 175, 120, 0.18); }
 @media (prefers-reduced-motion: reduce) { .terminal, .cmd { --animation: none; } }
 @media (max-width: 760px) { .terminal, .cmd { --size: 0.95; } .term-host { min-height: 240px; } }
+
+/* --- résumé demo: cinematic story on the helix (body.spatial.demo while playing) --- */
+body.spatial.demo .win, body.spatial.demo .hero-id, body.spatial.demo .tele, body.spatial.demo .hint { opacity: 0 !important; pointer-events: none !important; }
+body.spatial.demo .rail { opacity: 0.25; pointer-events: none; }
+body.spatial .win, body.spatial .hero-id, body.spatial .rail { transition: opacity 0.4s, transform 0.5s cubic-bezier(.2,.8,.2,1); }
+.demo-cap { position: fixed; left: 50%; bottom: calc(2.6rem + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 25; width: min(64ch, calc(100% - 2rem)); pointer-events: none; opacity: 0; }
+.demo-cap.in { animation: capin 0.6s cubic-bezier(.2,.8,.2,1) forwards; }
+@keyframes capin { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.demo-top { display: flex; justify-content: space-between; gap: 1rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--moss); margin-bottom: 0.8rem; font-variant-numeric: tabular-nums; }
+.demo-top .demo-hint { color: var(--text-faint); letter-spacing: 0.1em; text-transform: none; white-space: nowrap; }
+.demo-cap h2 { font-family: var(--font-sans); font-weight: 300; font-size: clamp(1.7rem, 4vw, 2.8rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 0.9rem; color: var(--text); text-wrap: balance; }
+.demo-lines p { margin: 0 0 0.35rem; font-family: var(--font-mono); font-size: clamp(0.8rem, 1.4vw, 0.95rem); line-height: 1.55; color: var(--text-dim); min-height: 1.4em; }
+.demo-bar { height: 1px; background: var(--border-2); margin-top: 1.1rem; }
+.demo-bar i { display: block; height: 100%; width: 0; background: var(--moss); }
+body.demo-paused .demo-bar i { opacity: 0.4; }
+@media (prefers-reduced-motion: reduce) { .demo-cap.in { animation: none; opacity: 1; } }
+@media (max-width: 760px) { .demo-cap { bottom: calc(1.4rem + env(safe-area-inset-bottom)); } .demo-top .demo-hint { display: none; } }

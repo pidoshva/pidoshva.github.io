@@ -188,44 +188,51 @@ window.GELEUS = window.GELEUS || {};
       ctx.fillStyle = 'rgba(143,175,120,' + (0.06 + fn * 0.18).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(fsp[k].x, fsp[k].y, 0.8 + fn * 1.4, 0, 7); ctx.fill(); }
     return fsp;
   }
-  function drawFaces(ctx, sp, list, wgt) {
+  // Every pass takes an optional `br` array: per-node brightness 0..1.5 (1 = normal, <1 dims,
+  // >1 = "hot": bigger + stronger bloom). Used by the résumé demo to light the helix progressively.
+  function bOf(br, k) { return br ? br[k] : 1; }
+  function drawFaces(ctx, sp, list, wgt, br) {
     if (wgt <= 0.01) return;
     for (var q = 0; q < list.length; q++) {
       var a = sp[list[q][0]], b = sp[list[q][1]], c = sp[list[q][2]];
+      var bw = br ? Math.min(Math.min(br[list[q][0]], br[list[q][1]]), br[list[q][2]]) : 1; if (bw > 1) bw = 1;
       var ux = b.rx-a.rx, uy = b.ry-a.ry, uz = b.z-a.z, vx = c.rx-a.rx, vy = c.ry-a.ry, vz = c.z-a.z;
       var nx = uy*vz-uz*vy, ny = uz*vx-ux*vz, nz = ux*vy-uy*vx, nl = Math.sqrt(nx*nx+ny*ny+nz*nz) || 1, sh = Math.abs(nz / nl);
       var nr = nearOf((a.z + b.z + c.z) / 3);
-      ctx.fillStyle = 'rgba(' + col(nr) + ',' + ((0.018 + 0.09*sh) * (0.35 + 0.65*nr) * wgt).toFixed(3) + ')';
+      ctx.fillStyle = 'rgba(' + col(nr) + ',' + ((0.018 + 0.09*sh) * (0.35 + 0.65*nr) * wgt * bw).toFixed(3) + ')';
       ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.closePath(); ctx.fill();
     }
   }
-  function drawEdges(ctx, sp, list, wgt) {
+  function drawEdges(ctx, sp, list, wgt, br) {
     if (wgt <= 0.01) return;
     for (var q = 0; q < list.length; q++) {
       var a = sp[list[q][0]], b = sp[list[q][1]], nr = nearOf((a.z + b.z) / 2);
-      ctx.lineWidth = 0.5 + nr * 1.3; ctx.strokeStyle = 'rgba(' + col(nr) + ',' + ((0.07 + nr * 0.42) * wgt).toFixed(3) + ')';
+      var bw = br ? Math.min(br[list[q][0]], br[list[q][1]]) : 1;
+      ctx.lineWidth = (0.5 + nr * 1.3) * (bw > 1 ? 1.4 : 1); ctx.strokeStyle = 'rgba(' + col(nr) + ',' + ((0.07 + nr * 0.42) * wgt * Math.min(bw, 1.3)).toFixed(3) + ')';
       ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
     }
   }
-  function drawPulses(ctx, sp, E, T, step) {
+  function drawPulses(ctx, sp, E, T, step, br) {
     for (var q = 0; q < E.length; q += step) {
+      if (br && Math.min(br[E[q][0]], br[E[q][1]]) < 0.5) continue; // no pulses on unlit links
       var a = sp[E[q][0]], b = sp[E[q][1]], ph = (T * 0.5 + q * 0.1973) % 1, nr = nearOf(a.z + (b.z - a.z) * ph);
       ctx.fillStyle = 'rgba(224,236,210,' + (0.25 + nr * 0.5).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(a.x + (b.x - a.x) * ph, a.y + (b.y - a.y) * ph, 1 + nr * 1.5, 0, 7); ctx.fill();
     }
   }
   // nodes far→near with depth of field: far = soft out-of-focus disc, near = crisp dot + bloom
-  function drawNodes(ctx, sp) {
+  function drawNodes(ctx, sp, br) {
     var ord = [], k; for (k = 0; k < N; k++) ord.push(k);
     ord.sort(function (a, b) { return sp[b].z - sp[a].z; });
     for (var o = 0; o < N; o++) {
-      k = ord[o]; var P = sp[k], nr = nearOf(P.z), rr = 1.4 + nr * 2.6, c = col(nr);
-      if (nr < 0.4) {
-        var g = ctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, 4.5); g.addColorStop(0, 'rgba(' + c + ',.28)'); g.addColorStop(1, 'rgba(' + c + ',0)');
+      k = ord[o]; var P = sp[k], nr = nearOf(P.z), b = bOf(br, k), hot = b > 1, rr = (1.4 + nr * 2.6) * (hot ? 1.5 : 1), c = hot ? '224,236,210' : col(nr);
+      var al = Math.min(b, 1);
+      if (nr < 0.4 && !hot) {
+        var g = ctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, 4.5); g.addColorStop(0, 'rgba(' + c + ',' + (0.28 * al).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + c + ',0)');
         ctx.fillStyle = g; ctx.beginPath(); ctx.arc(P.x, P.y, 4.5, 0, 7); ctx.fill(); continue;
       }
-      if (nr > 0.66) { var g2 = ctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, rr * 3.2); g2.addColorStop(0, 'rgba(' + c + ',' + (0.26 * nr).toFixed(3) + ')'); g2.addColorStop(1, 'rgba(' + c + ',0)');
-        ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(P.x, P.y, rr * 3.2, 0, 7); ctx.fill(); }
-      ctx.fillStyle = 'rgba(' + c + ',' + (0.4 + nr * 0.6).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(P.x, P.y, rr, 0, 7); ctx.fill();
+      if (nr > 0.66 || hot) { var g2 = ctx.createRadialGradient(P.x, P.y, 0, P.x, P.y, rr * (hot ? 4.5 : 3.2)); g2.addColorStop(0, 'rgba(' + (hot ? '168,200,145' : c) + ',' + ((hot ? 0.5 : 0.26 * nr) * al).toFixed(3) + ')'); g2.addColorStop(1, 'rgba(' + c + ',0)');
+        ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(P.x, P.y, rr * (hot ? 4.5 : 3.2), 0, 7); ctx.fill(); }
+      ctx.fillStyle = 'rgba(' + c + ',' + ((0.4 + nr * 0.6) * al).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(P.x, P.y, rr, 0, 7); ctx.fill();
     }
   }
 

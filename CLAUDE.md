@@ -100,6 +100,7 @@ the journal — all have step-by-step recipes in [`ARCHITECTURE.md`](ARCHITECTUR
 check: cluster spins/drags; wheel scrubs the morph and snaps; each nav item / rail tick / lit node
 opens its window with live content (journal = tree + heatmap); the window drags and resizes and
 the cluster reflows; a blog card and a repo "readme" each open the full-screen reader; `Esc`/back
-work; fallback pages still load. (Headless Chrome misrenders narrow viewports — check mobile on a
+work; on `/#resume` typing `demo` plays the story on the helix (Space next, Esc exit); fallback pages
+still load. (Headless Chrome misrenders narrow viewports — check mobile on a
 real device. Also: `requestAnimationFrame` pauses in a hidden tab, so the window only opens once
 the morph has *landed* — a background tab looks "stuck" until it is shown.)

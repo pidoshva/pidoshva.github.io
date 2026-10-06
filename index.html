@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
   <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/css/styles.css?v=29">
+  <link rel="stylesheet" href="/css/styles.css?v=30">
   <link rel="stylesheet" href="/lib/hljs/atom-one-dark.min.css">
 </head>
 <body class="spatial">
@@ -122,7 +122,7 @@
         <div class="win-head">
           <div class="ptag">$ ssh guest@geleus.com</div>
           <h2>Résumé</h2>
-          <p class="win-sub">An interactive terminal. Type <code>help</code>, or <code>less all</code> for everything.</p>
+          <p class="win-sub">An interactive terminal. Type <code>help</code> for commands, or <code>demo</code> to watch the story.</p>
         </div>
         <div id="resume-root" class="term-host"><div class="blog-loading">Booting terminal...</div></div>
       </section>
@@ -132,6 +132,14 @@
     <i class="h h-ne" data-d="ne"></i><i class="h h-nw" data-d="nw"></i><i class="h h-se" data-d="se"></i><i class="h h-sw" data-d="sw"></i>
   </aside>
 
+  <!-- Résumé demo captions (cinematic story on the helix; see spatial.js startDemo) -->
+  <div class="demo-cap" id="demoCap" aria-live="polite" hidden>
+    <div class="demo-top"><span id="demoN">01 / 10</span><span class="demo-hint">space · next &nbsp; ← · back &nbsp; p · pause &nbsp; esc · exit</span></div>
+    <h2 id="demoTitle"></h2>
+    <div class="demo-lines" id="demoLines"></div>
+    <div class="demo-bar"><i id="demoBar"></i></div>
+  </div>
+
   <!-- Full-screen reader: blog posts + repo READMEs -->
   <div class="reader-overlay" id="postOverlay" aria-hidden="true" role="dialog" aria-label="Reader">
     <button class="reader-close" id="postClose" aria-label="Close"><i class="fas fa-chevron-up"></i></button>
@@ -140,8 +148,8 @@
 
   <div class="contrib-tooltip" id="contrib-tooltip"></div>
 
-  <script src="/js/geo.js?v=2"></script>
-  <script src="/js/spatial.js?v=12"></script>
+  <script src="/js/geo.js?v=3"></script>
+  <script src="/js/spatial.js?v=13"></script>
   <script src="/js/lang-colors.js"></script>
   <script src="/lib/marked/marked.min.js"></script>
   <script src="/lib/hljs/highlight.min.js"></script>

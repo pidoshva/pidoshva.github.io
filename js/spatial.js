@@ -169,6 +169,7 @@
   }
   // go(i): set the timeline target; pushes history unless silent (popstate / initial)
   function go(i, silent) {
+    if (demo.on && Math.round(i) !== 5) stopDemo(false);
     tp = clamp(Math.round(i), 0, LAST); liveUpdate(); if (hint) hint.classList.add('gone');
     if (shown !== tp) settle(-1);                  // never show a stale section while the morph travels
     if (silent) return;
@@ -201,14 +202,89 @@
       .then(function () { return loadScript('/lib/jquery.terminal/jquery.terminal.min.js'); })
       .then(function () { return loadScript('/lib/jquery.terminal/less.min.js'); })
       .then(function () { return loadScript('/lib/jquery.terminal/autocomplete_menu.js'); })
-      .then(function () { return loadScript('/js/resume.js?v=1'); })
+      .then(function () { return loadScript('/js/resume.js?v=2'); })
       .then(function () {
         resumeState = 2; root.innerHTML = '';
         if (window.GELEUS.initResume) window.GELEUS.initResume(root);
+        if (demo.pending) startDemo();
       })
       .catch(function () { resumeState = 0; root.innerHTML = '<p class="blog-error">Could not load the terminal. <a href="https://github.com/pidoshva">See GitHub instead \u2192</a></p>'; });
   }
   window.GELEUS.goSection = function (key) { go(idxOfKey(key)); };
+
+  // --- demo: the résumé story, told on the helix. Chapters come from window.GELEUS.resumeStory
+  // (js/resume.js). The helix lights up rung by rung as the frontier climbs, the camera orbits and
+  // tracks the frontier, captions type into a DOM card. Space/→/click next · ← prev · p pause · Esc exit.
+  var demo = { on: false, i: 0, t0: 0, paused: false, pausedAt: 0, frontier: 0, target: 0, ring: 0, dur: 8000, pending: false };
+  var demoCap = $('demoCap'), demoN = $('demoN'), demoTitle = $('demoTitle'), demoLines = $('demoLines'), demoBar = $('demoBar');
+  var bright = [], demoTimers = [];
+  for (var bi = 0; bi < N; bi++) bright.push(1);
+  function story() { return window.GELEUS.resumeStory || null; }
+  function clearDemoTimers() { demoTimers.forEach(clearTimeout); demoTimers = []; }
+  function startDemo() {
+    if (demo.on) return;
+    if (!story()) { demo.pending = true; if (tp !== 5) go(5); loadResume(); return; }
+    demo.pending = false;
+    if (tp !== 5) go(5);
+    demo.on = true; demo.frontier = 0; demo.paused = false;
+    document.body.classList.add('demo'); if (demoCap) demoCap.hidden = false;
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    if (window.GELEUS.resumeDisable) window.GELEUS.resumeDisable();
+    setChapter(0);
+  }
+  function stopDemo(complete) {
+    if (!demo.on) return;
+    demo.on = false; clearDemoTimers();
+    document.body.classList.remove('demo'); document.body.classList.remove('demo-paused'); if (demoCap) demoCap.hidden = true;
+    for (var k = 0; k < N; k++) bright[k] = 1;
+    if (window.GELEUS.resumeEnable) window.GELEUS.resumeEnable();
+    if (complete && window.GELEUS.resumeEcho) window.GELEUS.resumeEcho('demo complete \u2014 type help to explore, or demo to watch again.');
+    if (window.GELEUS.resumeFocus) { window.GELEUS.resumeFocus(); setTimeout(window.GELEUS.resumeFocus, 450); }
+  }
+  function setChapter(i) {
+    var S = story(); if (!S) return;
+    if (i >= S.length) { stopDemo(true); return; }
+    if (i < 0) i = 0;
+    clearDemoTimers();
+    demo.i = i; demo.target = (i + 1) / S.length; demo.t0 = performance.now(); demo.ring = 1; demo.paused = false;
+    document.body.classList.remove('demo-paused');
+    var ch = S[i], chars = 0;
+    if (demoN) demoN.textContent = (i < 9 ? '0' : '') + (i + 1) + ' / ' + (S.length < 10 ? '0' : '') + S.length + (ch.eyebrow ? ' \u00b7 ' + ch.eyebrow : '');
+    if (demoTitle) demoTitle.textContent = ch.title;
+    if (demoLines) {
+      demoLines.innerHTML = '';
+      var delay = 350;
+      ch.lines.forEach(function (line) {
+        var el = document.createElement('p'); demoLines.appendChild(el); chars += line.length;
+        if (reduced) { el.textContent = line; return; }
+        var start = delay; delay += 240 + line.length * 17;
+        demoTimers.push(setTimeout(function () {
+          var j = 0; (function step() { el.textContent = line.slice(0, ++j); if (j < line.length) demoTimers.push(setTimeout(step, 11 + rand(j) * 13)); })();
+        }, start));
+      });
+    }
+    demo.dur = clamp(3800 + chars * 42, 6000, 16000);
+    if (demoCap) { demoCap.classList.remove('in'); void demoCap.offsetWidth; demoCap.classList.add('in'); }
+  }
+  function demoTick(now) {
+    if (!demo.on || demo.paused) return;
+    var el = (now - demo.t0) / demo.dur;
+    if (demoBar) demoBar.style.width = Math.min(100, el * 100) + '%';
+    if (el >= 1) setChapter(demo.i + 1);
+  }
+  function demoPause() {
+    if (!demo.on) return;
+    demo.paused = !demo.paused;
+    if (demo.paused) demo.pausedAt = performance.now(); else demo.t0 += performance.now() - demo.pausedAt;
+    document.body.classList.toggle('demo-paused', demo.paused);
+  }
+  function demoLayout() { // frontier (the lit edge of the helix) stays near the vertical centre
+    var base = Math.min(W, H) * (W < 700 ? 0.42 : 0.34), s = base * (W <= 760 ? 1.0 : 1.3);
+    var fy = lerp(1, -1, demo.frontier), r = G.rotP({ x: 0, y: fy, z: 0 }, yaw, pitch), off = r.y * (CAM / (CAM + r.z)) * s;
+    return { cx: W / 2, cy: H * (W <= 760 ? 0.34 : 0.42) - off, s: s };
+  }
+  window.GELEUS.startDemo = startDemo; window.GELEUS.stopDemo = stopDemo;
+  var demoBtn = $('demoBtn'); if (demoBtn) demoBtn.addEventListener('click', startDemo);
   Array.prototype.forEach.call(navBtns, function (b) {
     b.addEventListener('click', function () {
       go(idxOfKey(b.getAttribute('data-node')));
@@ -225,7 +301,8 @@
   }
   window.addEventListener('wheel', function (e) {
     if (e.target.closest && e.target.closest('#win, .reader-overlay')) return; // let content scroll
-    e.preventDefault(); scrub(e.deltaY * 0.0014);
+    e.preventDefault(); if (demo.on) return;
+    scrub(e.deltaY * 0.0014);
   }, { passive: false });
 
   // --- full-screen reader: blog posts + repo READMEs (shared overlay) ---
@@ -260,6 +337,14 @@
   });
 
   window.addEventListener('keydown', function (e) {
+    if (demo.on) {
+      if (e.key === 'Escape') stopDemo(false);
+      else if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'PageDown') setChapter(demo.i + 1);
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') setChapter(demo.i - 1);
+      else if (e.key === 'p' || e.key === 'P') demoPause();
+      else return;
+      e.preventDefault(); return;
+    }
     if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) && e.key !== 'Escape') return; // the terminal owns its keys
     if (e.key === 'Escape') { if (postOverlay && postOverlay.classList.contains('open')) closeReader(); else if (tp !== 0) go(0); else return; }
     else if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown') go(Math.round(tp) + 1);
@@ -286,7 +371,10 @@
   }
   cv.addEventListener('pointerup', function (e) {
     drag = false;
-    if (moved < 6) { var q = rel(e), hit = pickAnchor(q.x, q.y); if (hit >= 0) go(hit); else if (Math.round(tp) !== 0) go(0); }
+    if (moved < 6) {
+      if (demo.on) { setChapter(demo.i + 1); }
+      else { var q = rel(e), hit = pickAnchor(q.x, q.y); if (hit >= 0) go(hit); else if (Math.round(tp) !== 0) go(0); }
+    }
     if (ptype === 'touch') { mouseX = -1; mouseY = -1; }
   });
   cv.addEventListener('pointerleave', function () { mouseX = -1; mouseY = -1; });
@@ -297,9 +385,11 @@
     if (reduced) p = tp; else p += (tp - p) * 0.075;
     var i = clamp(Math.floor(p + 1e-6), 0, LAST), f = clamp(p - i, 0, 1), ri = Math.round(p), S = SEC[ri], k;
     if (!reduced && ri === 0 && !drag && hovered < 0) tgtYaw += 0.0035;
+    if (demo.on && !reduced) tgtYaw += 0.005;
     yaw += (tgtYaw - yaw) * 0.07;
-    pitch += ((S.pitch + userPitch) - pitch) * 0.05;
-    var L = layoutTarget();
+    pitch += (((demo.on ? -0.15 : S.pitch) + userPitch) - pitch) * 0.05;
+    if (demo.on) { demo.frontier += (demo.target - demo.frontier) * (reduced ? 1 : 0.035); demo.ring *= 0.955; }
+    var L = demo.on ? demoLayout() : layoutTarget();
     if (sclS === 0) { cxS = L.cx; cyS = L.cy; sclS = L.s; }
     cxS += (L.cx - cxS) * 0.08; cyS += (L.cy - cyS) * 0.08; sclS += (L.s - sclS) * 0.08;
 
@@ -329,19 +419,30 @@
       sp[k] = { x: x + ox[k], y: y + oy[k], z: r.z, rx: r.x, ry: r.y };
     }
 
-    if (B) { G.drawFaces(ctx, sp, SEC[i].S.tris, 1 - ef); G.drawFaces(ctx, sp, SEC[i + 1].S.tris, ef); G.drawEdges(ctx, sp, SEC[i].S.edges, 1 - ef); G.drawEdges(ctx, sp, SEC[i + 1].S.edges, ef); }
-    else { G.drawFaces(ctx, sp, SEC[i].S.tris, 1); G.drawEdges(ctx, sp, SEC[i].S.edges, 1); }
-    if (!reduced && !B) G.drawPulses(ctx, sp, SEC[i].S.edges, T, 3);
-    G.drawNodes(ctx, sp);
+    var BR = null;
+    if (demo.on) { // light the helix up to the frontier; a hot band at the frontier itself
+      var fyB = lerp(1, -1, demo.frontier);
+      for (k = 0; k < N; k++) { var dyB = cur[k].y - fyB; bright[k] = dyB > 0.1 ? 1 : (dyB > -0.06 ? 1.5 : 0.12); }
+      BR = bright;
+    }
+    if (B) { G.drawFaces(ctx, sp, SEC[i].S.tris, 1 - ef, BR); G.drawFaces(ctx, sp, SEC[i + 1].S.tris, ef, BR); G.drawEdges(ctx, sp, SEC[i].S.edges, 1 - ef, BR); G.drawEdges(ctx, sp, SEC[i + 1].S.edges, ef, BR); }
+    else { G.drawFaces(ctx, sp, SEC[i].S.tris, 1, BR); G.drawEdges(ctx, sp, SEC[i].S.edges, 1, BR); }
+    if (!reduced && !B) G.drawPulses(ctx, sp, SEC[i].S.edges, demo.on ? T * 1.8 : T, demo.on ? 1 : 3, BR);
+    G.drawNodes(ctx, sp, BR);
+    if (demo.on && demo.ring > 0.02) { // chapter beat: a ring expands from the frontier
+      var fr = G.rotP({ x: 0, y: lerp(1, -1, demo.frontier), z: 0 }, yaw, pitch), ffz = CAM / (CAM + fr.z);
+      var rx = cx + fr.x * ffz * scale, ry = cy + fr.y * ffz * scale, rad = (1 - demo.ring) * scale * 0.9 + 6;
+      ctx.strokeStyle = 'rgba(168,200,145,' + (demo.ring * 0.55).toFixed(3) + ')'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(rx, ry, rad, 0, 7); ctx.stroke();
+    }
     if (!reduced && !B) G.stepBolts(ctx, bolts, function () { return G.closestUnlinked(sp, SEC[i].S.eset, scale * 0.2, W, H); }, T);
 
-    // anchors: hover test, lit node + label, leader line to its rail tick
+    // anchors: hover test, lit node + label, leader line to its rail tick (hidden during the demo)
     hovered = -1;
-    if (mouseX >= 0 && !drag) { var hb = 22 * 22;
+    if (mouseX >= 0 && !drag && !demo.on) { var hb = 22 * 22;
       for (var ai = 0; ai < ANCH.length; ai++) { var Q = sp[ANCH[ai]], ddx = Q.x - mouseX, ddy = Q.y - mouseY, dd = ddx * ddx + ddy * ddy; if (dd < hb) { hb = dd; hovered = ai; } } }
     cv.style.cursor = drag ? 'grabbing' : (hovered >= 0 ? 'pointer' : 'grab');
     ctx.font = '500 11px "JetBrains Mono", ui-monospace, Menlo, monospace';
-    for (ai = 0; ai < ANCH.length; ai++) {
+    for (ai = 0; ai < ANCH.length && !demo.on; ai++) {
       var Pq = sp[ANCH[ai]], nq = nearOf(Pq.z), act = (ai === ri || ai === hovered), rq = 2.6 + nq * 2.2;
       var g3 = ctx.createRadialGradient(Pq.x, Pq.y, 0, Pq.x, Pq.y, rq * 3.6); g3.addColorStop(0, 'rgba(168,200,145,' + (act ? 0.55 : 0.3) + ')'); g3.addColorStop(1, 'rgba(168,200,145,0)');
       ctx.fillStyle = g3; ctx.beginPath(); ctx.arc(Pq.x, Pq.y, rq * 3.6, 0, 7); ctx.fill();
@@ -360,7 +461,7 @@
     }
 
     // the window belongs to the scene: corners tether to the nearest nodes, the active node docks to the title bar
-    if (winOpen && W > 760) {
+    if (winOpen && W > 760 && !demo.on) {
       var corners = [[WIN.x, WIN.y], [WIN.x + WIN.w, WIN.y], [WIN.x, WIN.y + WIN.h], [WIN.x + WIN.w, WIN.y + WIN.h]];
       ctx.lineWidth = 1; ctx.setLineDash([3, 5]);
       for (var ci = 0; ci < 4; ci++) {
@@ -386,7 +487,7 @@
       var rr0 = railDot.parentNode.getBoundingClientRect(), cr = cv.getBoundingClientRect();
       railDot.style.top = (lerp(tickPts[0].y, tickPts[LAST].y, p / LAST) - (rr0.top - cr.top)) + 'px';
     }
-    frames++; fpsN++; var now = performance.now();
+    frames++; fpsN++; var now = performance.now(); demoTick(now);
     if (now - fpsT > 500) { fps = Math.round(fpsN * 1000 / (now - fpsT)); fpsN = 0; fpsT = now; }
     if (frames % 6 === 0 && tele.links) {
       tele.links.textContent = S.S.edges.length; tele.faces.textContent = S.S.tris.length;
