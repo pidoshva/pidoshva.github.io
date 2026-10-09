@@ -1,6 +1,14 @@
 {
   "posts": [
     {
+      "slug": "building-oaro",
+      "title": "Building Oaro, a Private Home for Group Trips",
+      "date": "2026-10-09",
+      "excerpt": "I've been building Oaro: one private space per trip for the plan, the budget, the stays and every photo anyone took. A web app and a native iPhone app on almost no backend. What's in it, how it's built, and where to try it.",
+      "tags": ["side-project", "ios", "react", "firebase"],
+      "draft": false
+    },
+    {
       "slug": "a-homepage-that-reshapes-itself",
       "title": "A Homepage That Reshapes Itself",
       "date": "2026-06-26",
