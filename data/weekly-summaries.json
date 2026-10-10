@@ -1,6 +1,424 @@
 {
   "summaries": [
     {
+      "week_start": "2026-10-05",
+      "week_end": "2026-10-10",
+      "generated": "2026-10-10T10:59:57.740224+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 100 commits to vacaish (Swift) adding day-adaptive features, engagement screens, and native photo mapping. Authored 22 merged PRs across Implimesh, OrderProtection, and cambrannelly; reviewed 24 PRs. Key work: credential verification flows, warranty automation rules, and portfolio spatial redesign.",
+      "highlights": [
+        "vacaish: Shipped day-adaptive moments, streaks, live feeds, crowns, and readiness features with native iOS photo clustering and engagement screen sizing fixes.",
+        "Implimesh: Authored 7 merged PRs establishing verified credential checks, atomic lease management, runner POST /run endpoint, and HSM-sealed key envelopes.",
+        "brand-ai-agents (OrderProtection): Shipped warranty resolve rules, customer messaging before claims resolution, and free-return tag handling across multiple merchants.",
+        "pidoshva.github.io: Built spatial v2 homepage with scrubbable 96-node timeline, floating window scene sharing, phone layout, and r\u00e9sum\u00e9 section integration.",
+        "monolog (OrderProtection): Authored 2 commits and 1 merged PR adding sentiment verdict drilling and training issue grouping for claims automation feedback.",
+        "Reviewed monolog (OrderProtection): 6 merged PRs covering AI grading on sentiment, escalation approvals, transactional outbox spec, and claims-svc improvements.",
+        "Reviewed Implimesh: 16 merged PRs across console engagement phases, customer email layouts, approval moments, dashboard states, and phone layout refinements.",
+        "tether (cambrannelly): Shipped emoji reaction hold-to-react feature on comments and messages."
+      ],
+      "repos": [
+        "brand-ai-agents",
+        "cart-widget",
+        "documentation",
+        "feed",
+        "geleus-io",
+        "implimesh",
+        "monolog",
+        "pidoshva.github.io",
+        "tether",
+        "vacaish",
+        "widget"
+      ],
+      "prs": [
+        {
+          "title": "feat(claims-svc): group automation feedback into training issues",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "mesh: a developer CLI for the operator API, signed in with Google",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "Organise docs/ by purpose, and move finished and playbooks-era docs to history",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "Retire playbooks: delete the .mjs execution code, keep the scanner and contracts",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(global): stop refunding shipping on partial claims",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "A verified credential is checked by a runner: discovery opens it and asks HubSpot",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "One vendor contract for the Worker and the runner, and Shopify's token is read again",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "An operator can start a run and read it back, through the run rules",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6146] feat(valet): drill into sentiment verdicts and AI runs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(dorai-home): add warranty rules for messaging the customer before resolving",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "A form body that is not a form answers 400, not 500",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Staging gets a runner: container, Durable Object, Workflow, and a way back to the store",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(reactions): hold to react with emoji on comments and messages",
+          "repo": "tether",
+          "org": "cambrannelly",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6098] fix: let an oversized single-word chip title break instead of overflowing",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat(cart-widget,checkout-widget): read the country list under its new name",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "Step 4: the runner serves POST /run, and has an image",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "Adding readme",
+          "repo": "feed",
+          "org": "ekntsk",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "CI only: the #234\u2013#238 stack against main (do not merge)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Step 3: one live lease per credential, taken atomically",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "k2: /connect seals to each environment's HSM key, and k1 retires having sealed nothing",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "The runner opens drops through Cloud KMS, and proves who it is with a per-run token (#98)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "The credential writer, and envelopes that say which key opens them (B4, B6)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Step 2: startRun, the four run steps, and the runner's two classes",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(club-l-london): add the free-return tag through resolve_claim instead of escalating",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6194] feat(claims-svc,claim-automation-svc): add ai_request table",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Console: move an engagement's phase without curl (#189)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6186] fix(checkout-widget): keep the OP line when a tile follows No Coverage",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Customer emails: one layout, an HTML part, and a copy pass (#285)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Customer mail replies to hello@implimesh.com, not an operator's own inbox (#285)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6188] feat(claims-svc,valet): grade AI on customer sentiment",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "docs(integrations/loopwork): add Loop Subscriptions installation guide",
+          "repo": "documentation",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6173] feat(claims-svc): summarise negative claim sentiment",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "fix(frontend): source Google Maps browser key from secrets",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(merchant-svc): per-domain custom-domain TLS via GCP Certificate Manager (ENG-61)",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "feat(global): recommend a resolution on judgement escalations",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6136] feat(claims-svc,mcp,valet): approve an escalation's recommendation",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Staging ships from main, both memory databases get migrated (production trigger unchanged)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Every required Env field has to come from somewhere, in both environments",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-5695] docs(outbox): add transactional outbox spec",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Account: ImpliMesh in the team list, Invite someone, the billing note (#255)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Approvals: who decided, how it turned out, and Watch steps waiting (#254)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Header names the person and company; codename chip; Recap in the nav (#249, #250)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Plan page: plain review first, in depth one switch away (#252)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "The approval moment: the breathing card and the celebration (#263)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Build access granted gets its moment; turning it off stays quiet (#193)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Resolved and monitoring: the state after a fix lands (#253)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Recap in the user menu, where a phone reaches it (#186)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Phone layout: decision first, one-line phase, tab icons (#247)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Dashboard: one count for \"needs you\", Watch steps, the 30-day card (#248)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "k2: /connect seals to the HSM key, and k1 is retired having sealed nothing",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "closed",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "tether": "cambrannelly",
+        "implimesh": "Implimesh",
+        "brand-ai-agents": "OrderProtection",
+        "widget": "OrderProtection",
+        "cart-widget": "OrderProtection",
+        "feed": "ekntsk",
+        "documentation": "OrderProtection"
+      },
+      "repo_languages": {
+        "vacaish": "Swift",
+        "monolog": "TypeScript",
+        "pidoshva.github.io": "JavaScript",
+        "tether": "TypeScript",
+        "implimesh": "TypeScript",
+        "brand-ai-agents": "Python",
+        "widget": "TypeScript",
+        "geleus-io": "HTML",
+        "cart-widget": "TypeScript",
+        "feed": "Python",
+        "documentation": "MDX"
+      },
+      "languages": [
+        "HTML",
+        "JavaScript",
+        "MDX",
+        "Python",
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 135,
+        "prs": 23,
+        "repos_active": 11
+      }
+    },
+    {
       "week_start": "2026-09-28",
       "week_end": "2026-10-03",
       "generated": "2026-10-03T10:15:03.600995+00:00",
