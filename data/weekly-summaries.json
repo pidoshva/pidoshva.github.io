@@ -1,6 +1,246 @@
 {
   "summaries": [
     {
+      "week_start": "2026-10-19",
+      "week_end": "2026-10-24",
+      "generated": "2026-10-24T09:19:46.924925+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 73 commits across 4 repos: Halloween theme & LLM timeout fixes in OrderProtection/monolog (TypeScript), iPhone Duo multi-surface support in oaro (Swift), health monitoring & onboarding features in Implimesh/implimesh (TypeScript), and claim resolution logic in OrderProtection/brand-ai-agents (Python). Reviewed 11 PRs across monolog and implimesh.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped LLM call timeout & cancellation, Halloween theme with flag rollback, and improved boo-box animation stability across mobile & web.",
+        "oaro: Implemented iPhone Duo split-view layouts, dual-screen folds, and landing page showcase with real device screenshots; released v1.56.0 with iOS 27.1 SDK.",
+        "implimesh (Implimesh): Built end-to-end HubSpot Watch runner, health monitoring loop with issue creation & alerts, first-key verification onboarding, and mesh CLI with Google auth.",
+        "brand-ai-agents (OrderProtection): Fixed resolve logic for simple damaged/defective claims and partial shipping refund handling across Dorai home workflow.",
+        "monolog (OrderProtection): Reviewed AI model selection for SOPs, auto-escalation approval, and Operations nav with Claim Automation tabs.",
+        "implimesh (Implimesh): Reviewed 8 PRs covering portal UX consolidation, overview watchdog runner, issue consistency, and security documentation page."
+      ],
+      "repos": [
+        "brand-ai-agents",
+        "implimesh",
+        "monolog",
+        "oaro"
+      ],
+      "prs": [
+        {
+          "title": "perf(ai,claims-svc): cap LLM calls at 5 minutes and cancel them on stop",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "HubSpot Watch end to end: real runner against a fake HubSpot (npm run e2e:hubspot)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): hold the boo scare's box and monsters together",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(global): stop refunding shipping on partial claims",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): Halloween theme behind a LaunchDarkly flag",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Health runs: a check the runner refused is not a broken summary",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(dorai-home): resolve on the filed choice only for simple damaged/defective claims",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Health issue loop: a connection turning unhealthy opens one issue and emails the brand once",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(claims-svc): attach linked personalization lines to shipping claims",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Onboarding: a platform's first key is verified on arrival, and every connection says whose move it is",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "mesh: see what ran, how each connection is doing, and the platform underneath",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Health cycle: every six hours, one read-only health run per live connection",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "HubSpot health: an API headroom check, and a connection graded over its last day of runs",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Monitored means a runner module checks it: Klaviyo and Shopify off until theirs ship, and Fix parked",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(claims-svc): group automation feedback into training issues",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Organise docs/ by purpose, and move finished and playbooks-era docs to history",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "mesh: a developer CLI for the operator API, signed in with Google",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6321] feat(claims-svc,merchant-svc): pick models for SOPs, training, POD",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6330] feat(claims-svc): auto-approve escalations open two weeks",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6332] feat(valet): AI Operations nav with Claim Automation tabs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Apps is the one tab for platforms, with each app's settings on its own page, and secure connect stays inside the portal",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "The console's overview lists what waits on an operator, and runs both watchdogs on demand",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "An issue looks the same wherever it appears, every signed-in page is one width, and a plan lights the tab it belongs to",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "The Windows checks run on pull requests, not again on the merge.",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "A disconnect says what it did, every miss gets one not-found page, and no portal page drops the store",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "The broken-connection email says a person checks the new key, within one business day.",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "After Change, the connect page goes back to one line once the code is good.",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Site: /security, a page that says only what is built",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "brand-ai-agents": "OrderProtection",
+        "implimesh": "Implimesh",
+        "monolog": "OrderProtection"
+      },
+      "repo_languages": {
+        "brand-ai-agents": "Python",
+        "oaro": "Swift",
+        "implimesh": "TypeScript",
+        "monolog": "TypeScript"
+      },
+      "languages": [
+        "Python",
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 73,
+        "prs": 17,
+        "repos_active": 4
+      }
+    },
+    {
       "week_start": "2026-10-12",
       "week_end": "2026-10-17",
       "generated": "2026-10-17T09:02:47.714042+00:00",
