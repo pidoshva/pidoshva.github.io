@@ -1,6 +1,129 @@
 {
   "summaries": [
     {
+      "week_start": "2026-10-26",
+      "week_end": "2026-10-31",
+      "generated": "2026-10-31T10:45:25.379746+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped UI/UX overhaul for oaro's landing and messaging (Swift), documentation architecture notes for knowledge, and merged three Implimesh health-check fixes. Reviewed six OrderProtection features across monolog and brand-ai-agents for claims automation and macro integration.",
+      "highlights": [
+        "oaro: Shipped hero phone theme sync, feed card fixes, and badge system across landing and name components (Swift)",
+        "oaro: Implemented live message search, replies, trip planner, email reservations, and live chat sync with Node 22 upgrade",
+        "oaro: Built animated Founder badge and landing showcase, theme-aware images, and TestFlight beta link management",
+        "knowledge: Added infrastructure, widget installer agent, API architecture, and MCP architecture documentation with diagrams",
+        "implimesh (Implimesh): Shipped recap health-check parity, HubSpot 429 retry logic, and Apps page accuracy fixes across three PRs",
+        "monolog (OrderProtection): Reviewed auto-escalation approval, store macro loading, Rex deploy brand lookup, and order address validation fixes",
+        "brand-ai-agents (OrderProtection): Reviewed Store Macros integration into agent prompt system for ENG-6340"
+      ],
+      "repos": [
+        "brand-ai-agents",
+        "implimesh",
+        "knowledge",
+        "monolog",
+        "oaro"
+      ],
+      "prs": [
+        {
+          "title": "The recap counts checks the way the health strip does, so Overview and Recap agree",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "HubSpot reads wait out a 429 instead of failing on the first one",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "The Apps page says what HubSpot Watch checks, not a setup review it never runs",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(web): templates + social feed + hub discover \u2014 the iOS features, web-wide",
+          "repo": "oaro",
+          "org": "",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(claims-svc): keep long automation runs alive and debounce customer messages",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6340] feat(global): use the Store Macros section when it's in the prompt",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6340] feat(claims-svc): load a store's macros into the agent prompt",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6355] fix(dispatch-svc): find Rex deploy brands by store id",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6354] fix(orders-svc): allow empty address names on order create",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6330] feat(claims-svc): auto-approve escalations open two weeks",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6321] feat(claims-svc,merchant-svc): pick models for SOPs, training, POD",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "implimesh": "Implimesh",
+        "monolog": "OrderProtection",
+        "brand-ai-agents": "OrderProtection"
+      },
+      "repo_languages": {
+        "oaro": "Swift",
+        "implimesh": "TypeScript",
+        "monolog": "TypeScript",
+        "brand-ai-agents": "Python"
+      },
+      "languages": [
+        "Python",
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 16,
+        "prs": 4,
+        "repos_active": 5
+      }
+    },
+    {
       "week_start": "2026-10-19",
       "week_end": "2026-10-24",
       "generated": "2026-10-24T09:19:46.924925+00:00",
