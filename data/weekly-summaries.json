@@ -1,6 +1,152 @@
 {
   "summaries": [
     {
+      "week_start": "2026-11-02",
+      "week_end": "2026-11-07",
+      "generated": "2026-11-07T11:32:48.251816+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 32 commits across 6 repos, primarily fixing OrderProtection/monolog search catalog issues and building the drift dealership website. Implemented seasonal theme controls in valet, escalation logic fixes in brand-ai-agents, and reviewed infrastructure/implimesh PRs from teammates.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped 19 commits fixing search modal hangs, catalog filtering, and LaunchDarkly SDK production deployment",
+        "drift: Built dealership website system with 10 commits; documented notify layer, sync flags, and unverified car notifications",
+        "brand-ai-agents (OrderProtection): Fixed escalation reply logic to prevent false approval; 2 open PRs pending for shipping refunds and bundle resolution",
+        "monolog (OrderProtection): Implemented Thanksgiving seasonal theme with global and per-user controls across valet UI",
+        "Reviewed implimesh#393 and implimesh#383: Brand receipt ordering and key validation operator escalation logic",
+        "Reviewed ops#174 (OrderProtection): Removed hardcoded Bitly token from staging backend environment"
+      ],
+      "repos": [
+        "brain",
+        "brand-ai-agents",
+        "drift",
+        "implimesh",
+        "monolog",
+        "ops"
+      ],
+      "prs": [
+        {
+          "title": "Build the drift dealership website system",
+          "repo": "drift",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(global): an escalation reply is not approval of the recommendation",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(global): stop refunding shipping on partial claims",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(shared-nest-mcp): reject resolve_claim item fields the schema would drop",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(brands): escalate every Pop Maison claim for merchant review",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(dorai-home): resolve only the failed part of bundles, packs and products with parts",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "feat(orders-svc): match catalog search on product tags behind a per-store flag",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): keep the Thanksgiving pie loader round in wide spinner boxes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): make the Thanksgiving theme more immersive",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(valet): add Thanksgiving theme with global and per-user seasonal theme controls",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "The brand's receipt goes before the internal email (F9)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "chore(k8s): remove the hardcoded Bitly token from the staging backend env",
+          "repo": "ops",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "A brand is told a key works only once a run has checked it, and a stuck key reaches an operator.",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Staging's watchdog treats one hour of silence as a fault, for test B12",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "brand-ai-agents": "OrderProtection",
+        "implimesh": "Implimesh",
+        "ops": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "brand-ai-agents": "Python",
+        "drift": "TypeScript",
+        "implimesh": "TypeScript",
+        "ops": "HCL"
+      },
+      "languages": [
+        "HCL",
+        "Python",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 32,
+        "prs": 9,
+        "repos_active": 6
+      }
+    },
+    {
       "week_start": "2026-10-26",
       "week_end": "2026-10-31",
       "generated": "2026-10-31T10:45:25.379746+00:00",
