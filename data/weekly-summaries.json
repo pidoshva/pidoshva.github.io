@@ -1,6 +1,154 @@
 {
   "summaries": [
     {
+      "week_start": "2026-11-09",
+      "week_end": "2026-11-14",
+      "generated": "2026-11-14T11:57:34.903788+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped order management improvements across OrderProtection/monolog and brand-ai-agents, plus festive ASCII animations for kolbascii. Reviewed infrastructure and service updates from teammates including BigCommerce sync and identity security hardening.",
+      "highlights": [
+        "brand-ai-agents (OrderProtection): Shipped address confirmation flow for Dorai Home customers and personalized reship escalation rules across multiple services",
+        "monolog (OrderProtection): Shipped SKU search refinements\u2014report exact matches only when conclusive, throttle partial retries, and retry catalog searches without single words",
+        "kolbascii: Added Halloween graveyard, Thanksgiving, and 3D Christmas tree ASCII animations with new command-line interface and one-line installer",
+        "oaro: Shipped v1.60.0 with trip numbers, invite summaries, seat invites, feed redesign, and tidier profile UI",
+        "monolog (OrderProtection): Reviewed BigCommerce session forwarding, communications service email retention fix, and identity service security lockdown",
+        "implimesh (Implimesh): Reviewed reconnect logic after Action needed status is checked on arrival"
+      ],
+      "repos": [
+        "brand-ai-agents",
+        "implimesh",
+        "kolbascii",
+        "monolog",
+        "oaro",
+        "ops"
+      ],
+      "prs": [
+        {
+          "title": "Add Halloween graveyard animation",
+          "repo": "kolbascii",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(shared-nest-mcp): reject resolve_claim item fields the schema would drop",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "Add kolbascii command, Thanksgiving animation and one-line installer",
+          "repo": "kolbascii",
+          "org": "",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Add kolbascii command, Thanksgiving animation and one-line installer",
+          "repo": "kolbascii",
+          "org": "",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "feat(mcp): report exact SKU matches and retry no-match catalog searches",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "feat(claims-svc): require size and colour proof on offline validation behind a per-store flag",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(brands): ask Dorai Home customers to confirm their address before a reship",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(simple-modern): escalate personalized reships to be placed by hand",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6507] fix(bigcommerce-svc): forward theme sessions to owning pod",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "A reconnect after Action needed is checked on arrival",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6468] feat(bigcommerce-svc): add bigcommerce_sync_op_product tool",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6436] fix(communications-svc): stop retaining inbound emails for 7 days",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6433] fix(identity-svc): lock down profile and password reset",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "chore(k8s): remove the hardcoded Bitly token from the staging backend env",
+          "repo": "ops",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "brand-ai-agents": "OrderProtection",
+        "implimesh": "Implimesh",
+        "ops": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "kolbascii": "Python",
+        "oaro": "Swift",
+        "brand-ai-agents": "Python",
+        "implimesh": "TypeScript",
+        "ops": "HCL"
+      },
+      "languages": [
+        "HCL",
+        "Python",
+        "Swift",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 22,
+        "prs": 6,
+        "repos_active": 6
+      }
+    },
+    {
       "week_start": "2026-11-02",
       "week_end": "2026-11-07",
       "generated": "2026-11-07T11:32:48.251816+00:00",
