@@ -1,6 +1,194 @@
 {
   "summaries": [
     {
+      "week_start": "2026-11-16",
+      "week_end": "2026-11-21",
+      "generated": "2026-11-21T13:15:54.193765+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 221 commits across five repos, primarily oaro (JavaScript, v1.65.1 release with group chat and iOS features) and brand-ai-agents (Python, claim resolution fixes). Authored PRs for OrderProtection and Implimesh repos. Reviewed cart-widget and monolog PRs from teammates.",
+      "highlights": [
+        "oaro: Shipped v1.65.1 release with group chat search, iOS keyboard stability, and new chat features (group chats, live cards, in-chat polls) across 210 commits.",
+        "brand-ai-agents (OrderProtection): Implemented automatic reship for personalized items, partial bundle resolution, and address confirmation before reship across 6 commits.",
+        "implimesh: Shipped three merged PRs (Docs updates, HubSpot answer sizing, rail start validation) with three additional open PRs pending review.",
+        "monolog (OrderProtection): Fixed claim portal preview scrolling and logo sizing; dropped SKU match basis from in-store claims across 2 commits.",
+        "brand-ai-agents (OrderProtection): Reviewed claim resolution logic and authored open PR for Broken Lid macro handling in simple-modern flow.",
+        "implimesh: Reviewed open PRs on API headroom alerts, connection degradation monitoring, and plan rollback semantics from teammates.",
+        "monolog (OrderProtection): Reviewed pricing and dispatch fixes for AI-added items and cart widget sellability from teammate contributions."
+      ],
+      "repos": [
+        "brand-ai-agents",
+        "cart-widget",
+        "implimesh",
+        "monolog",
+        "oaro"
+      ],
+      "prs": [
+        {
+          "title": "fix(simple-modern): send the Broken Lid macro before resolving a lid claim",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(dorai-home): resolve only the failed part of bundles, packs and products with parts",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(simple-modern): reship new-customizer personalized items automatically",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(dorai-home): confirm the address before any reship, on every claim type",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(global): stop refunding shipping on partial claims",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "closed",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): claim portal designer preview scrolls and sizes the logo like the live portal",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Docs: what operators can record, no applying status, and no fix works yet",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "HubSpot checks read real-sized answers, and name an oversize one",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "A new plan can only start at the start of the rail",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Low API headroom goes to us, not the brand (#374)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "A connection degraded for a day tells us, once (#390)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "A failed plan is failed, not rolled back, until something actually reverts it",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6579] fix(concierge): drop SKU match basis from in-store claims",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6326] fix(dispatch-svc): word the not-sellable card for the cart widget",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6326] feat(shopify): hide the cart widget where Shopify won't sell OP",
+          "repo": "cart-widget",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6627] fix(claims-svc): price AI-added items off the paying order",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Shopify scopes match the rebuilt app, and Watch drops the app stack",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "A brand whose HubSpot allowance runs out is told; the usage alert never throws (#406)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "Check now can test the monitoring alert with a shorter window (B12)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6507] fix(bigcommerce-svc): stream theme downloads to disk",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "brand-ai-agents": "OrderProtection",
+        "implimesh": "Implimesh",
+        "cart-widget": "OrderProtection"
+      },
+      "repo_languages": {
+        "oaro": "JavaScript",
+        "monolog": "TypeScript",
+        "brand-ai-agents": "Python",
+        "implimesh": "TypeScript",
+        "cart-widget": "TypeScript"
+      },
+      "languages": [
+        "JavaScript",
+        "Python",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 221,
+        "prs": 12,
+        "repos_active": 5
+      }
+    },
+    {
       "week_start": "2026-11-09",
       "week_end": "2026-11-14",
       "generated": "2026-11-14T11:57:34.903788+00:00",
