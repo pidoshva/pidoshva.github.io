@@ -1,6 +1,216 @@
 {
   "summaries": [
     {
+      "week_start": "2026-11-23",
+      "week_end": "2026-11-28",
+      "generated": "2026-11-28T13:56:53.678066+00:00",
+      "trigger": "schedule",
+      "summary": "Shipped 6 TypeScript fixes across OrderProtection/monolog covering claims automation, valet configuration, and dispatch channels. Authored 3 Python/JavaScript features for brand-ai-agents and implimesh. Reviewed 13 PRs across OrderProtection and Implimesh, covering claims matching, merchant settings, and monitoring.",
+      "highlights": [
+        "monolog (OrderProtection): Shipped 6 TypeScript fixes including claims retry logic, failed delivery handling, automation page refresh, valet flag cleanup, and Ably channel release.",
+        "brand-ai-agents (OrderProtection): Implemented automatic reship for personalized items and Broken Lid macro execution in claims workflow.",
+        "implimesh (Implimesh): Shipped dev seeder account filtering and corrected failed plan status terminology; also fixed API headroom and connection degradation alerting.",
+        "monolog (OrderProtection): Reviewed claims text matching against fakes, merchant settings leak prevention, automation brand holds, and Black Friday capacity restoration.",
+        "implimesh (Implimesh): Reviewed key rotation labeling, operator console management, Klaviyo monitoring module, and HubSpot usage alerting improvements.",
+        "monolog (OrderProtection): Reviewed email logo fix, partner shares display, and claim-scoped Slack thread delivery for claims-svc."
+      ],
+      "repos": [
+        "brand-ai-agents",
+        "implimesh",
+        "monolog"
+      ],
+      "prs": [
+        {
+          "title": "fix(simple-modern): reship new-customizer personalized items automatically",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet,communications-svc): make the email logo stick and reach customers",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "author"
+        },
+        {
+          "title": "fix(claims-svc): clear a failed delivery when a retry goes through",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6656] fix(claims-svc): refresh claim page when automation executes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Dev seeder: seed any account whose engagement is marked as an ImpliMesh test account",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(valet): stop writing the retired onlyCE flag into checkout configs",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(dispatch-svc): release Ably channels after publishing",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "Low API headroom goes to us, not the brand (#374)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "fix(simple-modern): send the Broken Lid macro before resolving a lid claim",
+          "repo": "brand-ai-agents",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "A connection degraded for a day tells us, once (#390)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "A failed plan is failed, not rolled back, until something actually reverts it",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "author"
+        },
+        {
+          "title": "[ENG-6707] feat(valet): show negative partner shares and brand payout",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6686] feat(claims-svc): match report text against known fakes",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "A rotated key says it is a rotation, and internal mail goes to the company inbox",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "Operators are managed from the console, not by a SQL insert",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "open",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6701] fix(merchant-svc): stop public store reads leaking settings",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6056] fix(claims-svc): leave an automation brand hold to the brand card",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6056] fix(dispatch-svc): deliver claim-scoped notes to Slack threads",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6659] chore(deploy): restore Black Friday 2025 prod capacity",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Klaviyo is monitored: a runner module that reads the Watch spec (#355)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "[ENG-6658] fix(claims-svc): price bundle pieces from the named variant, never $0",
+          "repo": "monolog",
+          "org": "OrderProtection",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Shopify scopes match the rebuilt app, and Watch drops the app stack",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "Check now can test the monitoring alert with a shorter window (B12)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        },
+        {
+          "title": "A brand whose HubSpot allowance runs out is told; the usage alert never throws (#406)",
+          "repo": "implimesh",
+          "org": "Implimesh",
+          "state": "merged",
+          "role": "reviewer"
+        }
+      ],
+      "repo_orgs": {
+        "monolog": "OrderProtection",
+        "implimesh": "Implimesh",
+        "brand-ai-agents": "OrderProtection"
+      },
+      "repo_languages": {
+        "monolog": "TypeScript",
+        "implimesh": "JavaScript",
+        "brand-ai-agents": "Python"
+      },
+      "languages": [
+        "JavaScript",
+        "Python",
+        "TypeScript"
+      ],
+      "stats": {
+        "commits": 9,
+        "prs": 11,
+        "repos_active": 3
+      }
+    },
+    {
       "week_start": "2026-11-16",
       "week_end": "2026-11-21",
       "generated": "2026-11-21T13:15:54.193765+00:00",
